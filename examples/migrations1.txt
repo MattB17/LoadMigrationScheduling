@@ -1,0 +1,19 @@
+s0 c1 1 g0
+s1 c4 1 g0 g1
+s2 c0 1 g3
+s3 c2 1 g2 g3
+s4 c2 1 g1
+s5 c3 1 g0
+s6 c3 1 g2
+s7 c1 1 g1
+s8 c3 1 g0
+s9 c4 1
+c0 1
+c1 1
+c2 1
+c3 1
+c4 1
+g0 1
+g1 1
+g2 1
+g3 1
