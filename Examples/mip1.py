@@ -7,7 +7,7 @@
         x, y, z binary
 
 """
-import guropipy as gp
+import gurobipy as gp
 from gurobipy import GRB
 
 if __name__ == "__main__":

@@ -157,6 +157,8 @@
     \Huge{\bf Migration Scheduling Model}
 \end{center}
 
+\section{Formulation}
+
 \noindent It is assumed that the migrations take place in a series of discrete rounds. That is, in each round a collection of migrations occur, respecting the controller resource and QoS constraints. Then these migrations are removed from consideration for subsequent rounds. Our goal is to complete all migrations in the minimum number of rounds. We assume that at most $R$ rounds are needed. We discuss later how to find such a value $R$.
 
 To model this, we consider an Integer Linear Program (ILP). It is assumed that we have $n$ controllers $\mathcal{C} = \{c_{0}, ..., c_{n-1}\}$. Controller $c_{i}$ can handle a load of $\alpha_{i}$ per round. In addition, there are $m$ switches $\mathcal{S} = \{s_{0}, ..., s_{m-1}\}$
@@ -249,6 +251,35 @@ s.t.
         &x^{r}_{k} \in \{0, 1\} &&\forall \, k \in \{0, ..., m - 1\}, \, r \in \{0, ..., R - 1\}
     \end{alignat*}
 \end{center}
+
+\section{Complexity}
+In this section we show the hardness of the migration scheduling problem. Towards that end, consider a graph $G=(V, E)$ where $V$ is the set of vertices and $E$ is the set of edges. 
+
+For any $k \in \mathbb{Z}$, the set $\mathbb{Z}_{k}$ represents the set of integers modulo $k$. That is, $\mathbb{Z}_{k} = \{0, 1, ..., k - 1\}$. A valid $k$-colouring of $G$ is a function $f: V \rightarrow \mathbb{Z}_{k}$ such that for any $u, v \in V$ such that $uv \in E$, $f(u) \neq f(v)$. This corresponds to assigning colours to vertices such that no edge has its two endpoints assigned the same colour. Karp \cite{karp1972reducibility} showed that it is NP-complete to decide whether a given graph $G$ has a $k$-colouring for any $k \geq 3$ (note that graphs with a 1-colouring are an independent set and graphs with a 2-colouring are bipartite).
+
+The chromatic number of $G$, denoted $\chi(G)$ is the minimum $k$ such that $G$ has a $k$-colouring. Note that finding $\chi(G)$ is also NP-complete because if we know $\chi(G)$ then we can answer whether or not $G$ has a $k$-colouring in constant time. Given this, we now prove the following.
+
+\begin{theorem}
+    The migration scheduling problem is NP-hard.
+\end{theorem}
+\begin{proof}
+    Consider a graph $G = (V, E)$ and suppose we want to determine $\chi(G)$. We will construct a migration scheduling instance as follows. We have 2 controllers, $c_{0}$ and $c_{1}$ and let $n = |V|$ switches and $n$ migrations. We relabel the vertices so that $V = \{0, 1, ..., n-1\}$ and then vertex $i$ is associated with a switch $s_{i}$ and migration $m_{i}$. Each migration has $c_{0}$ as the source controller and $c_{1}$ as the destination controller and a load of $w_{i} = 1$. Controller $c_{0}$ can accommodate a load of $\alpha_{0} = n$. Similarly, $\alpha_{1} = n$. So in the absence of QoS groups, all migrations can happen in one round.
+    
+    But now consider an edge $ij \in E$ ($i, j \in \{0, 1, ..., n - 1\}$ with $i \neq j$). We define a QoS group $g_{ij} = \{i, j\}$ with $\beta_{ij} = 1$. That is, there is a QoS group associated with each edge where the group contains the migrations corresponding to the endpoints of the edge. Moreover, $\beta_{ij} = 1$ enforces that the two migrations must complete in different rounds.
+    
+    This gives $|E|$ QoS groups and we have $|V|$ switches. With the addition of the 2 controllers this gives us a migration scheduling instance which has size $O(|V| + |E|)$.
+    
+    Now suppose we solve this instance to get an optimal solution $r*$ and define a function $f: V \rightarrow \mathbb{Z}_{r* + 1}$ such that for $i \in V$, $f(i) = r$ if migration $i$ happens in round $r$ with $0 \leq r \leq r*$. Then consider any edge $ij \in E$. Then QoS group $g_{ij}$ ensures that migrations $i$ and $j$ complete in different rounds, say rounds $r_{1}$ and $r_{2}$ with $r_{1} \neq r_{2}$. Then by the definition of $f$ we have $f(i) = r_{1} \neq r_{2} = f(j)$. Thus, th ends of $ij$ receive different colours. As this is true for every edge of $G$, this gives a valid $r* + 1$ colouring of $G$.
+    
+    Thus $\chi(G) \leq r* + 1$. We claim that $\chi(G) = r* + 1$. To see this, suppose as a contradiction that $\chi(G) < r* + 1$. Then $\exists k \in \mathbb{Z}$ with $k \leq r*$ such that $G$ has a $k$-colouring. Choose such a $k$ colouring $h: V \rightarrow \mathbb{Z}_{k}$. Then consider the following migration schedule: for each migration $i \in \{0, 1, ..., n-1\}$ if $h(i) = r \in \mathbb{Z}_{k}$ then we schedule migration $i$ in round $r$. Then note that all migrations are scheduled within the rounds 0 to $\max_{0 \leq i \leq n-1} h(i) \leq k - 1$. Note that there are $n$ nodes so there are at most $n$ migrations in a single round, meaning the controller capacity constraints are trivially satisfied. Next consider the QoS constraints for a QoS group $g_{ij}$. Then $ij \in E$ and because $h$ is a valid colouring we have that $h(i) \neq h(j)$. So migrations $i$ and $j$ are scheduled in different rounds. That is, at most one migration of $g_{ij}$ is scheduled in each round. As $\beta_{ij} = 1$, the QoS constraints are valid. Thus, we have constructed a valid schedule that completes in at most $k - 1 \leq r*$ rounds, contradicting the optimality of $r*$.
+    
+    Thus, we have shown a complete reduction from finding the chromatic number of a graph $G$ to our problem. As determining $\chi(G)$ is NP-complete we have that the migration scheduling problem is NP-hard. 
+\end{proof}
+
+\newpage
+
+\bibliographystyle{abbrv}
+\bibliography{model.bib}
 
 
 \end{document}
