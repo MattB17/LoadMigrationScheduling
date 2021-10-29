@@ -34,6 +34,10 @@
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 
+\let\oldcenter\center
+\let\oldendcenter\endcenter
+\renewenvironment{center}{\setlength\topsep{0pt}\oldcenter}{\oldendcenter}
+
 \makeatletter
 \newsavebox\myboxA
 \newsavebox\myboxB
@@ -125,7 +129,7 @@
 
 \title{Migration Scheduling Model}
 
-\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{theorem}{Theorem}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -134,14 +138,13 @@
 \begin{document}
 
 \pagestyle{empty}
-\pagenumbering{roman}
+\pagenumbering{arabic}
 
 % The contents of the title page are specified in the "titlepage"
 % environment.
 
 % The rest of the front pages should contain no headers and be numbered using Roman numerals starting with `ii'
 \pagestyle{plain}
-\setcounter{page}{2}
 
 \newpage % Ends the current page and causes all figures and tables that have so far appeared in the input to be printed.
 % In a two-sided printing style, it also makes the next page a right-hand (odd-numbered) page, producing a blank page if necessary.
@@ -154,6 +157,78 @@
     \Huge{\bf Migration Scheduling Model}
 \end{center}
 
+\noindent It is assumed that the migrations take place in a series of discrete rounds. That is, in each round a collection of migrations occur, respecting the controller resource and QoS constraints. Then these migrations are removed from consideration for subsequent rounds. Our goal is to complete all migrations in the minimum number of rounds. We assume that at most $R$ rounds are needed. We discuss later how to find such a value $R$.
+
+To model this, we consider an Integer Linear Program (ILP). It is assumed that we have $n$ controllers $\mathcal{C} = \{c_{0}, ..., c_{n-1}\}$. Controller $c_{i}$ can handle a load of $\alpha_{i}$ per round. In addition, there are $m$ switches $\mathcal{S} = \{s_{0}, ..., s_{m-1}\}$
+
+There are a set of $p$ migrations $\mathcal{M} = \{m_{0}, ..., m_{p-1}\}$. For $k \in \{0, ..., p-1\}$, migration $m_{k}$ migrates switch $s_{j_{k}}$ from controller $c_{a_{k}}$ to $c_{b_{k}}$ where $j_{k} \in \{0, 1, ..., m - 1\}$ and $a_{k}, b_{k} \in \{0, 1, ..., n - 1\}$ with $a_{k} \neq b_{k}$. Moreover, the migration requires $w_{k}$ units of controller resources. 
+
+We add the additional assumption that $s_{j_{0}}, ..., s_{j_{p-1}}$ are all distinct. This excludes the case that we have a switch $s$ that is migrated from controller $a$ to controller $b$ and then later migrated from controller $b$ to controller $c$. Instead, we would just specify a single migration from controller $a$ to $c$. Note, with this constraint, we have that $p \leq m$. For ease of exposition, we can then relabel the switches so that migration $k$ takes place for switch $s_{k}$ and then we can assume $p = m$ (any switch not involved in a migration does not contribute to the model and can thus be removed from consideration).
+
+There are also a set of $q$ groups $\mathcal{G} = \{g_{0}, ..., g_{q-1}\}$. For $l \in \{0, 1, ..., q - 1\}$, group $g_{l}$ is a set of switches associated with a particular QoS constraint such as a specific service or a critical network path. Group $g_{l}$ has a capacity $\beta_{l}$ specifying a limit on the number of switches in $g_{l}$ which can be migrated in one round.
+
+\noindent\textbf{Variables}\newline
+\noindent As mentioned previously, we assume we have an upper bound $R$ on the number of rounds required for all migrations. Thus we introduce binary variables $x^{r}_{k}$ for $k \in \{0, 1, ..., p - 1\}$ and $r \in \{0, 1, ..., R - 1\}$ where
+\[
+    x^{r}_{k} =
+    \begin{cases}
+        1 &\text{ if migration } k \text { is scheduled in round } r \\
+        0 &\text{ otherwise}
+    \end{cases}
+\]
+
+\noindent\textbf{Constraints}\newline
+\noindent Each migration $k \in \{0, 1, ..., m - 1\}$ must take place in exactly one round. $x^{r}_{k}$ is 1 precisely when migration $k$ occurs in round $r \in \{0, 1, ..., R-1\}$ and 0 otherwise. Thus, we have
+
+\begin{equation}\label{eq:single-migration}
+    \sum_{r=0}^{R-1} x^{r}_{k} = 1 \hspace{1cm} \forall \, k \in \{0, 1, ..., m - 1\}
+\end{equation}
+
+\noindent For a controller $c_{i}$, $i \in \{0, 1, ..., n - 1\}$, let 
+
+$$\delta^{in}_{i} = \{k \, | \, k \in \{0, 1, ..., m-1\}, \, c_{i} \text{ is the destination for migration } k\}$$
+
+That is, $\delta^{in}_{i}$ is the set of migrations that have $c_{i}$ as the destination controller. In any round, the total load on controller $c_{i}$ from migrations cannot exceed $\alpha_{i}$ and if migration $k$ happens in round $r$ it contributes $w_{k}$ towards this load and 0 otherwise. Thus, it contributes $w_{k}x^{r}_{k}$ in round $r$. This gives the following constraint
+
+\begin{equation}\label{eq:controller-simple}
+    \sum_{k \, \in \, \delta^{in}_{i}} w_{k}x^{r}_{k} \leq \alpha_{i} \hspace{1cm} \forall \, r \in \{0, ..., R-1\}, \, i \in \{0, ..., n-1\}
+\end{equation}
+
+If we want to add failure resiliency, we can also ensure that the load on the source controllers never exceeds their capacity. So we similarly define
+
+$$\delta^{out}_{i} = \{k \, | \, k \in \{0, 1, ..., m-1\}, \, c_{i} \text{ is the source for migration } k\}$$
+
+So $\delta^{out}_{i}$ is the set of migrations that have $c_{i}$ as the source controller. Using the same logic, and updating equation (\ref{eq:controller-simple}) we get
+
+\begin{equation}\label{eq:controller-extended}
+    \sum_{k \, \in \, \delta^{out}_{i}} w_{k}x^{r}_{k} + \sum_{k \, \in \, \delta^{in}_{i}} w_{k}x^{r}_{k} \leq \alpha_{i} \hspace{1cm} \forall \, r \in \{0, ..., R-1\}, \, i \in \{0, ..., n-1\}
+\end{equation}
+
+Note that for a particular controller $c_{i}$, for any migration $k \in \{0, 1, ..., m-1\}$, $k$ is an element of at most one of $\delta^{out}_{i}$ and $\delta^{in}_{i}$. Thus, the term $w_{k}x^{r}_{k}$ appears at most once in equation (\ref{eq:controller-extended}).
+
+\noindent For a QoS group $g_{l}$, $l \in \{0, 1, ..., q-1\}$, at most $\beta_{l}$ of the migrations in this group can occur in a single round. Using the definition of the $x$ variables we have
+
+\begin{equation}\label{eq:qos-constraint}
+    \sum_{k \, \in \, g_{l}} x^{r}_{k} \leq \beta_{l} \hspace{1cm} \forall \, r \in \{0, ..., R - 1\}, \, l \in \{0, ..., q-1\}
+\end{equation}
+
+\noindent\textbf{Objective}\newline
+We want to minimize the maximum number of rounds to complete all migrations. So consider the quantity $r(x^{r}_{k})$ for any $r \in \{0, ..., R - 1\}$ and $k \in \{0, ..., m - 1\}$. This takes value $r$ when migration $k$ occurs in round $r$ and 0 otherwise. Thus, the quantity we want to minimize is
+
+$$\max_{\substack{0 \leq k \leq m - 1 \\ 0 \leq r \leq R - 1}} r(x^{r}_{k})$$
+
+Unfortunately, this quantity is not linear. In order to linearize it, we introduce a new variable $\lambda$ and introduce the constraints
+
+\begin{equation}\label{eq:max-constraint}
+    r(x^{r}_{k}) \leq \lambda \hspace{1cm} \forall \, k \in \{0, ..., m-1\}, \, r \in \{0, ..., R - 1\}
+\end{equation}
+
+With these new constraints, our objective simply becomes to minimize $\lambda$.\newline
+
+\noindent\textbf{Model}\newline
+\noindent Combining our objective function with the constraints given by (\ref{eq:single-migration}), (\ref{eq:controller-simple}), (\ref{eq:qos-constraint}), (\ref{eq:max-constraint}), and the binary constraints for our variables gives us our ILP model (P).\newline
+\newpage
+
 \begin{minipage}{0.8\textwidth}
 \begin{center}
     $\min$ $\lambda$
@@ -164,16 +239,15 @@
     ($P$)
 \end{center}
 \end{minipage}
-\vskip 0.5cm
 s.t.
 \begin{center}
-    \begin{align*}
-        &\sum_{r=1}^{R} x_{i, r} = 1 \hspace{4.5cm} \forall i \in \{1, ..., k\} \\
-        &\sum_{i=1}^{k} \Big(x_{i, r}(m_{i}^{w})(P_{ij} + Q_{ij})\Big) \leq a_{j} \hspace{1cm} \forall r \in \{1, ..., R\}, j \in \{1, ..., n\}\\
-        &\sum_{i=1 : i \in g_{l}}^{k} x_{i, r} \leq \alpha_{l} \hspace{4cm} \forall r \in \{1, ..., R\}, l \in \{1, ..., m\}\\
-        &r(x_{i, r}) \leq \lambda \hspace{5cm} \forall i \in \{1, ..., k\}, r \in \{1, ..., R\}\\
-        &x_{i, r} \in \{0, 1\} \hspace{4.9cm} \forall i \in \{1, ..., k\}, r \in \{1, ..., R\}
-    \end{align*}
+    \begin{alignat*}{2}
+        &\sum_{r=1}^{R} x^{r}_{k} = 1 \hspace{2cm} &&\forall \, k \in \{0, ..., m-1\} \\
+        &\sum_{k \, \in \, \delta^{in}_{i}} w_{k}x^{r}_{k} \leq \alpha_{i} &&\forall \, r \in \{0, ..., R-1\}, \, i \in \{0, ..., n-1\}\\
+        &\sum_{k \, \in \, g_{l}} x^{r}_{k} \leq \beta_{l} &&\forall \, r \in \{0, ..., R-1\}, l\,  \in \{0, ..., q-1\}\\
+        &r(x^{r}_{k}) \leq \lambda &&\forall \, k \in \{0, ..., m - 1\}, \, r \in \{0, ..., R - 1\}\\
+        &x^{r}_{k} \in \{0, 1\} &&\forall \, k \in \{0, ..., m - 1\}, \, r \in \{0, ..., R - 1\}
+    \end{alignat*}
 \end{center}
 
 
