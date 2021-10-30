@@ -276,6 +276,30 @@ The chromatic number of $G$, denoted $\chi(G)$ is the minimum $k$ such that $G$ 
     Thus, we have shown a complete reduction from finding the chromatic number of a graph $G$ to our problem. As determining $\chi(G)$ is NP-complete we have that the migration scheduling problem is NP-hard. 
 \end{proof}
 
+\section{Feasibility and Bounds}
+\noindent We next consider the feasibility of the migration scheduling problem. For $k \in \{0, 1, ..., m-1\}$, migration $k$ migrates switch $s_{k}$ from controller $c_{a_{k}}$ to controller $c_{b_{k}}$ and incurs a load of $w_{k}$ on the destination controller (and possibly source controller). If $w_{k} > \alpha_{b_{k}}$ (or $w_{k} > \alpha_{a_{k}}$ when considering failure resiliency) then migration $k$ cannot happen in any round and thus the instance is infeasible. So we will assume $w_{k} \leq \alpha_{b_{k}}$ (and $w_{k} \leq alpha_{a_{k}}$ in the case of failure resiliency).
+
+For a QoS group $g_{l}$, $l \in \{0, 1, ..., q - 1\}$, if $g_{l}$ is the empty set we can simply remove it. Otherwise, $g_{l}$ contains at least one migration. If $\beta_{l} = 0$ then none of the migrations in $g_{l}$ can happen in any round and thus again we have an infeasible instance. Thus, we can assume $\beta_{l} \geq 1$ for each $l \in \{0, 1, ..., q - 1\}$.
+
+These requirements are enough to ensure feasibility. To see this, consider the schedule that performs migration $k$ in round $k$ for $k \in \{0, ..., m - 1\}$. Then we let $R = m$ and $x^{r}_{k} = 1$ if $r = k$ and 0 otherwise. So we have
+
+$$\sum_{r=0}^{R} x^{r}_{k} = x^{k}_{k} = 1$$
+
+For a round $r \in \{0, 1, ..., m - 1\}$, migration $r$ happens in this round. If $c_{b_{r}}$ is the destination controller for this migration then this is the only switch being migrated to this controller in this round and
+so
+
+$$\sum_{k \in \delta^{in}_{b_{r}}} w_{k}x^{r}_{k} = w_{r}x^{r}_{r} = w_{r} \leq \alpha_{b_{r}}$$
+
+where the last inequality follows from our assumption on the $\alpha$ values. Note that for each migration, the source and destination controllers are distinct. Thus, our solution also satisfies constraint (\ref{eq:controller-extended}) if we are considering failure resiliency. Also, for any controllers other than the source and destination, the sum in the constraint evaluates to 0 as migration $r$ is the only migration in round $r$ and so the constraint is trivially satisfied.
+
+Similarly, for any group $g_{l}$ such that $r \in g_{l}$ then we have that
+
+$$\sum_{k \in g_{l}} x^{r}_{k} = x^{r}_{r} = 1 \leq \beta_{l}$$
+
+where the last inequality follows from our assumption on the $\beta$ values. If $r \notin g_{l}$, then the summation equates to 0 and the constraint is satisfied. 
+
+Thus, this represents a feasible schedule. Moreover, observe that if $r \neq k$ then $r(x^{r}_{k}) = 0$. Otherwise, $r(x^{r}_{k}) = r$. Thus we have constraints $r \leq \lambda$ for each $r \in \{0, 1, ..., R - 1\}$ so our objective value is $R - 1 = m - 1$. So this solution requires $m$ rounds, the number of migrations.
+ 
 \newpage
 
 \bibliographystyle{abbrv}

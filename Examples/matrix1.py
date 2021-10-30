@@ -22,10 +22,15 @@ if __name__ == "__main__":
         x = m.addMVar(shape=3, vtype=GRB.BINARY, name="x")
 
         # set objective
+        # @ operator is for dot product
         obj = np.array([1.0, 1.0, 2.0])
         m.setObjective(obj @ x, GRB.MAXIMIZE)
 
         # build (sparse) constraint matrix
+        # val contains the 5 non-zero values (the second constraint)
+        # is multiplied by -1 to make it a less than constraint
+        # row and col give the row and column indices of the 5 non-zero
+        # values
         val = np.array([1.0, 2.0, 3.0, -1.0, -1.0])
         row = np.array([0, 0, 0, 1, 1])
         col = np.array([0, 1, 2, 0, 1])
