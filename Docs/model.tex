@@ -299,6 +299,12 @@ $$\sum_{k \in g_{l}} x^{r}_{k} = x^{r}_{r} = 1 \leq \beta_{l}$$
 where the last inequality follows from our assumption on the $\beta$ values. If $r \notin g_{l}$, then the summation equates to 0 and the constraint is satisfied. 
 
 Thus, this represents a feasible schedule. Moreover, observe that if $r \neq k$ then $r(x^{r}_{k}) = 0$. Otherwise, $r(x^{r}_{k}) = r$. Thus we have constraints $r \leq \lambda$ for each $r \in \{0, 1, ..., R - 1\}$ so our objective value is $R - 1 = m - 1$. So this solution requires $m$ rounds, the number of migrations.
+
+Note that this solution can be quite far from optimal. To see why, consider an instance with $m$ switches $s_{0}, ..., s_{m-1}$ and $2m$ controllers $c_{0}, ..., c_{2m - 1}$. There are $m$ migrations where migration $k$ migrates switch $s_{k}$ from controller $c_{2k}$ to $c_{2k + 1}$ and incurs a load of $w_{k} = 1$. Moreover, $\alpha_{i} = 1$ $\forall \, i \in \{0, ..., 2m - 1\}$. There are no QoS groups.
+
+In this setting, it is not hard to see that we can schedule all migrations in a single round (the migrations are independent due to the absence of QoS constraints and the fact that each migration is associated with its own source and destination controllers). In contrast, our first solution that schedules each migration in its own round requires $m$ rounds.
+
+Obviously, this is a contrived example to illustrate that there can be a large gap between the simple solution of scheduling each migration in its own round and the optimal solution. In realistic scenarios, it is expected that the migration would not be independent and their interactions may prevent all migrations from being scheduled in a single round. In order to develop a better lower bound, we will instead consider the LP relaxation. That is for each $r \in \{0, 1, ..., R - 1\}$ and $k \in \{0, 1, ..., m - 1\}$, instead of $x^{r}_{k} \in \{0, 1\}$, we let the $x$ values be real-valued with $0 \leq x^{r}_{k} \leq 1$. Clearly, any solution to the original ILP is also a solution to the LP relaxation and thus the optimal value to this LP gives a valid lower bound.
  
 \newpage
 
