@@ -26,6 +26,44 @@ class Parser:
         self._controller_constraints = set()
         self._qos_constraints = set()
 
+    def get_migrations(self):
+        """The migrations built by the parser.
+
+        Returns
+        -------
+        dict
+            A dictionary of the migrations built by the parser. The keys are
+            strings representing the names of the switches and the
+            corresponding value is a `Migration` object representing the
+            migration.
+
+        """
+        return self._migrations
+
+    def get_controller_constraints(self):
+        """The controller constraints built by the parser.
+
+        Returns
+        -------
+        set
+            A set of `ControllerConstraint` objects representing the
+            controller constraints built by the parser.
+
+        """
+        return self._controller_constraints
+
+    def get_qos_constraints(self):
+        """The QoS constraints built by the parser.
+
+        Returns
+        -------
+        set
+            A set of `QoSContraint` objects representing the constraints for
+            the QoS groups built by the parser.
+
+        """
+        return self._qos_constraints
+
     def parse_migrations(self, migration_file):
         """Parses `migration_file` for the data of a migration instance.
 

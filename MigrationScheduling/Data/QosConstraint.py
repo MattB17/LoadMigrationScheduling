@@ -77,3 +77,16 @@ class QosConstraint:
 
         """
         self._switches.add(switch_name)
+
+    def __str__(self):
+        """A string representation of the QoS constraint.
+
+        Returns
+        -------
+        str
+            A string representing the QoS constraint.
+
+        """
+        return ("QoS Group {0} allowing {1} concurrent migrations.\n" +
+                "Switches in QoS group: {2}").format(
+                self._group, self._capacity, " ".join(self._switches))

@@ -75,3 +75,16 @@ class ControllerConstraint:
 
         """
         self._switches.add(switch_name)
+
+    def __str__(self):
+        """A string representation of the controller constraint.
+
+        Returns
+        -------
+        str
+            A string representing the constraint for the controller.
+
+        """
+        return ("Constraint for controller {0} with a capacity of {1}.\n" +
+                "Destination for switches: {2}").format(
+                self._controller, self._capacity, " ".join(self._switches))

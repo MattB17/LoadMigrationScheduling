@@ -110,6 +110,20 @@ class Migration:
         bool
             True if the switch is in the QoS group `group_name`. Otherwise,
             False.
-        
+
         """
         return group_name in self._groups
+
+    def __str__(self):
+        """A string representation of the migration.
+
+        Returns
+        -------
+        str
+            A string representing the migration.
+
+        """
+        return ("Migrate switch {0} to controller {1} with load of {2}.\n" +
+                "QoS groups: {3}").format(
+                    self._switch, self._dst_controller,
+                    self._load, " ".join(self._groups))
