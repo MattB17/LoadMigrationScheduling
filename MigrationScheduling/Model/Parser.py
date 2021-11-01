@@ -2,6 +2,9 @@
 migration instance.
 
 """
+from MigrationScheduling.Data import (Migration,
+                                      ControllerConstraint,
+                                      QosConstraint)
 
 class Parser:
     """Used to parse files containing a migration instance.
@@ -97,7 +100,7 @@ class Parser:
         """
         constraint = ControllerConstraint(
             controller_data[0], float(controller_data[1]))
-        for migration in self._migrations:
+        for migration in self._migrations.values():
             if migration.get_dst_controller() == controller_data[0]:
                 constraint.add_switch(migration.get_switch())
         self._controller_constraints.add(constraint)
@@ -118,10 +121,10 @@ class Parser:
         Returns
         -------
         None
-        
+
         """
         constraint = QosConstraint(qos_data[0], int(qos_data[1]))
-        for migration in self._migrations:
+        for migration in self._migrations.values():
             if migration.is_in_group(qos_data[0]):
                 constraint.add_switch(migration.get_switch())
         self._qos_constraints.add(constraint)
