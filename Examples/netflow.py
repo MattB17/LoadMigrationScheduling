@@ -56,9 +56,18 @@ m = gp.Model('netflow')
 flow = m.addVars(commodities, arcs, obj=cost, name='flow')
 
 # arc-capacity constraints
+# the sum of flows on an arc must be less than the capacity of that arc
 m.addConstrs((flow.sum('*', i, j) <= capacity[i, j] for i, j in arcs), 'cap')
 
+# could also do
+# for i, j in arcs:
+#   m.addConstr(sum(flow[h, i, j] for h in commodities) <= capacity[i, j],
+#               "cap[{0}, {1}]".format(i, j))
+#
+# ie. loop over every arc and sum all commodities on arc
+
 # flow-conservation constraints
+# sum of flow in plus demand equals sum of flow out
 m.addConstrs((flow.sum(h, '*', j) + inflow[h, j] == flow.sum(h, j, '*')
                 for h in commodities for j in nodes), 'node')
 
