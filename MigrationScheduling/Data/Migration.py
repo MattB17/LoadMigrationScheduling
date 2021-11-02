@@ -44,6 +44,21 @@ class Migration:
         """
         return self._switch
 
+    def get_switch_idx(self):
+        """The index of the switch involved in the migration.
+
+        Returns
+        -------
+        int
+            An integer representing the index of the switch being migrated.
+
+        """
+        try:
+            return int(self._switch[1:])
+        except:
+            print("Switch names should be in the form " +
+                  "'sx' where 'x' is the switch ID")
+
     def get_dst_controller(self):
         """The controller to which the switch should be migrated.
 
