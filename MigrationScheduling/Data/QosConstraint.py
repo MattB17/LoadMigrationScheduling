@@ -63,6 +63,22 @@ class QosConstraint:
         """
         return self._switches
 
+    def get_group_idx(self):
+        """The index of the QoS group.
+
+        Returns
+        -------
+        int
+            An integer representing the index of the QoS group to which the
+            constraint applies.
+
+        """
+        try:
+            return int(self._group[1:])
+        except:
+            print("Group names should be in the form 'gx' " +
+                  "where 'x' is the group ID")
+
     def add_switch(self, switch_name):
         """Adds `switch_name` to the QoS group.
 

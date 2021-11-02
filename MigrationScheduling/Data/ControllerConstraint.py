@@ -61,6 +61,22 @@ class ControllerConstraint:
         """
         return self._switches
 
+    def get_controller_idx(self):
+        """The index of the controller corresponding to the constraint.
+
+        Returns
+        -------
+        int
+            An integer representing the index of the controller used in
+            the constraint.
+
+        """
+        try:
+            return int(self._controller[1:])
+        except:
+            print("Controller names should be in the form " +
+                  "'cx' where 'x' is the controller ID")
+
     def add_switch(self, switch_name):
         """Adds `switch_name` as a switch to be migrated to the controller.
 
