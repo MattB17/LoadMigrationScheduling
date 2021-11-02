@@ -2,6 +2,7 @@
 constraint for a QoS group.
 
 """
+from MigrationScheduling import exceptions as exc
 
 class QosConstraint:
     """The information relating to the constraint for a QoS group.
@@ -76,8 +77,8 @@ class QosConstraint:
         try:
             return int(self._group[1:])
         except:
-            print("Group names should be in the form 'gx' " +
-                  "where 'x' is the group ID")
+            raise exc.InvalidName("Group names should be in the form 'gx' " +
+                                  "where 'x' is the group ID")
 
     def add_switch(self, switch_name):
         """Adds `switch_name` to the QoS group.

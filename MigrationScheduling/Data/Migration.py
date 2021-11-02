@@ -2,6 +2,7 @@
 migration of a switch in an SDN.
 
 """
+from MigrationScheduling import exceptions as exc
 
 class Migration:
     """Stores the details of a switch migration.
@@ -56,8 +57,9 @@ class Migration:
         try:
             return int(self._switch[1:])
         except:
-            print("Switch names should be in the form " +
-                  "'sx' where 'x' is the switch ID")
+
+            raise exc.InvalidName("Switch names should be in the form " +
+                                  "'sx' where 'x' is the switch ID")
 
     def get_dst_controller(self):
         """The controller to which the switch should be migrated.
