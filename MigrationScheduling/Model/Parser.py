@@ -64,6 +64,50 @@ class Parser:
         """
         return self._qos_constraints
 
+    def get_switch_ids(self):
+        """The collection of switch IDs for the migrations.
+
+        Returns
+        -------
+        list
+            A list of integers representing the IDs of the switches involved
+            in the migrations.
+
+        """
+        ids = [migration.get_switch_idx()
+               for migration in self._migrations.values()]
+        ids.sort()
+        return ids
+
+    def get_controller_ids(self):
+        """The collection of controller IDs for controller constraints.
+
+        Returns
+        -------
+        list
+            A list of integers representing the IDs of the controllers that
+            are destinations of the migrations.
+
+        """
+        ids = [controller_const.get_controller_idx()
+               for controller_const in self._controller_constraints]
+        ids.sort()
+        return ids
+
+    def get_group_ids(self):
+        """The collection of IDs of the QoS groups.
+
+        Returns
+        -------
+        list
+            A list of integers representing the IDs of the QoS groups.
+
+        """
+        ids = [group_const.get_group_idx()
+               for group_const in self._qos_constraints]
+        ids.sort()
+        return ids
+
     def parse_migrations(self, migration_file):
         """Parses `migration_file` for the data of a migration instance.
 

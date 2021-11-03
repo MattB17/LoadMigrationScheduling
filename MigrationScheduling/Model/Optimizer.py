@@ -3,6 +3,7 @@ migration schedule.
 
 """
 from MigrationScheduling.Model import Parser
+from MigrationScheduling import utils
 
 class Optimizer:
     """Builds an optimization model for a migration scheduling instance.
@@ -51,7 +52,12 @@ class Optimizer:
         Returns
         -------
         None
-        
+
         """
         self._parser = Parser()
         self._parser.parse_migrations(migration_file)
+        self._switch_ids = parser.get_switch_ids()
+        self._round_ids = list(range(utils.upper_bound_rounds(
+            len(self._switch_ids))))
+        self._controller_ids = parser.get_controller_ids()
+        self._group_ids = parser.get_group_ids()
