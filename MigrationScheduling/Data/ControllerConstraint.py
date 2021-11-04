@@ -40,7 +40,7 @@ class ControllerConstraint:
         """
         return self._controller
 
-    def get_capacity(self):
+    def get_cap(self):
         """The controller's capacity value for the constraint.
 
         Returns

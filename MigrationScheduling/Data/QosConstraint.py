@@ -41,7 +41,7 @@ class QosConstraint:
         """
         return self._group
 
-    def get_capacity(self):
+    def get_cap(self):
         """The QoS group capacity.
 
         Returns

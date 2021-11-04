@@ -47,6 +47,17 @@ class Optimizer:
         parser.parse_migrations(migration_file)
         self._data = parser.to_data()
 
+    def build_model(self, migration_file):
+        self.get_model_data(migration_file)
+        self._model = gp.Model("migration")
+        lambda_var, x_vars = self._initialize_variables()
+        self._model.setObjective(lambda_var, gp.GRB.MINIMIZE)
+        self._add_migrate_constraints(x_vars)
+        self._add_bound_constraints(lambda_var, x_vars)
+        self._add_controller_constraints(x_vars)
+        self._add_qos_constraints(x_vars)
+        self._model.optimize()
+
     def _initialize_variables(self, is_ip=True):
         """Initializes the variables for the optimization model.
 
@@ -134,15 +145,11 @@ class Optimizer:
         None
 
         """
-        for controller_const in self._data.get_control_consts():
-            for r in self._data.get_round_ids():
-                self._model.addConstr(sum(
-                    self._data.get_load(s) *
-                    x_vars[self._data.get_switch_id(s), r]
-                    for s in controller_const.get_switches()) <=
-                    controller_const.get_capacity(),
-                    "controller[{0}, {1}]".format(
-                        controller_const.get_controller_idx(), r))
+        self._model.addConstrs((sum(
+            self._data.get_load(s) * x_vars[self._data.get_switch_id(s), r]
+            for s in control_const.get_switches()) <= control_const.get_cap()
+            for control_const in self._data.get_control_consts()
+            for r in self._data.get_round_ids), "controller")
 
     def _add_qos_constraints(self, x_vars):
         """Adds the set of QoS constraints to the model using `x_vars`.
@@ -157,21 +164,8 @@ class Optimizer:
         None
 
         """
-        for qos_const in self._data.get_qos_consts():
-            for r in self._data.get_round_ids():
-                self._model.addConstr(sum(
-                    x_vars[self._data.get_switch_id(s), r]
-                    for s in qos_const.get_switches()) <=
-                    qos_const.get_capacity(),
-                    "qos[{0}, {1}]".format(qos_const.get_group_idx(), r))
-
-    def build_model(self, migration_file):
-        self.get_model_data(migration_file)
-        self._model = gp.Model("migration")
-        lambda_var, x_vars = self._initialize_variables()
-        self._model.setObjective(lambda_var, gp.GRB.MINIMIZE)
-        self._add_migrate_constraints(x_vars)
-        self._add_bound_constraints(lambda_var, x_vars)
-        self._add_controller_constraints(x_vars)
-        self._add_qos_constraints(x_vars)
-        self._model.optimize()
+        self._model.addConstrs((sum(
+            x_vars[self._data.get_switch_id(s), r]
+            for s in qos_const.get_switches()) <= qos_const.get_cap()
+            for qos_const in self._data.get_qos_consts()
+            for r in self._data.get_round_ids()), "QoS")
