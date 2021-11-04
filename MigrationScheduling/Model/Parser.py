@@ -5,6 +5,8 @@ migration instance.
 from MigrationScheduling.Data import (Migration,
                                       ControllerConstraint,
                                       QosConstraint)
+from MigrationScheduling.Model import InstanceData
+from MigrationScheduling import utils
 
 class Parser:
     """Used to parse files containing a migration instance.

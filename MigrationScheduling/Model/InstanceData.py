@@ -53,3 +53,124 @@ class InstanceData:
         self._round_ids = round_ids
         self._controller_ids = controller_ids
         self._qos_ids = qos_ids
+
+    def get_migrations(self):
+        """The migrations for the scheduling instance.
+
+        Returns
+        -------
+        dict
+            A dictionary of the migrations for the scheduling instance. The
+            keys are strings representing the names of the switches being
+            migrated and the corresponding value is a `Migration` object
+            for the corresponding migration.
+
+        """
+        return self._migrations
+
+    def get_control_consts(self):
+        """The controller constraints for the scheduling instance.
+
+        Returns
+        -------
+        set
+            A set of `ControllerConstraint` objects representing the
+            controller constraints of the load migration scheduling instance.
+
+        """
+        return self._controller_consts
+
+    def get_qos_consts(self):
+        """The QoS constraints for the scheduling instance.
+
+        Returns
+        -------
+        set
+            A set of `QosConstraint` objects representing the QoS constraints
+            of the load migration scheduling instance.
+
+        """
+        return self._qos_consts
+
+    def get_switch_ids(self):
+        """The IDs of the switches being migrated.
+
+        Returns
+        -------
+        list
+            A list of integers representing the IDs of switches being
+            migrated in the scheduling instance.
+
+        """
+        return self._switch_ids
+
+    def get_round_ids(self):
+        """The IDs of the scheduling rounds.
+
+        Returns
+        -------
+        list
+            A list of integers indicating the IDs of the rounds in which
+            migrations can be scheduled.
+
+        """
+        return self._round_ids
+
+    def get_controller_ids(self):
+        """The IDs of the destination controllers of migrations.
+
+        Returns
+        -------
+        list
+            A list of integers representing the IDs of controllers which are
+            destinations for migrations.
+
+        """
+        return self._controller_ids
+
+    def get_qos_ids(self):
+        """The IDs of the QoS groups for the migrations.
+
+        Returns
+        -------
+        list
+            A list of integers representing the IDs of the QoS groups in the
+            migration scheduling instance.
+
+        """
+        return self._qos_ids
+
+    def get_load(self, switch_name):
+        """The load incurred by the migration of `switch_name`.
+
+        Parameters
+        ----------
+        switch_name: str
+            A string representing the name of the switch for which the
+            migration load is retrieved.
+
+        Returns
+        -------
+        float
+            A float representing the load incurred during the migration of
+            `switch_name`.
+
+        """
+        return self._migrations[switch_name].get_load()
+
+    def get_switch_id(self, switch_name):
+        """The switch ID corresponding to `switch_name`.
+
+        Parameters
+        ----------
+        switch_name: str
+            A string representing the name of the switch for which the ID
+            is retrieved.
+
+        Returns
+        -------
+        int
+            An integer representing the ID for the switch `switch_name`.
+
+        """
+        return self._migrations[switch_name].get_switch_idx()
