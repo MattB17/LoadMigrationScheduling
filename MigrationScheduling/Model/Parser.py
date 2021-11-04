@@ -133,6 +133,25 @@ class Parser:
                     self._add_qos_constraint(line.strip().split(" "))
         return
 
+    def to_data(self):
+        """Creates a `InstanceData` object from the parsed data.
+
+        Returns
+        -------
+        InstanceData
+            An `InstanceData` object containing the data parsed for the
+            migration instance.
+
+        """
+        return InstanceData(
+            self._migrations,
+            self._controller_constraints,
+            self._qos_constraints,
+            self.get_switch_ids(),
+            list(range(utils.upper_bound_rounds(len(self._migrations)))),
+            self.get_controller_ids(),
+            self.get_group_ids())
+
     def _add_migration(self, migration_data):
         """Adds a migration to the parser based on `migration_data`.
 
