@@ -47,16 +47,41 @@ class Optimizer:
         parser.parse_migrations(migration_file)
         self._data = parser.to_data()
 
-    def build_model(self, migration_file):
-        self.get_model_data(migration_file)
-        self._model = gp.Model("migration")
-        lambda_var, x_vars = self._initialize_variables()
-        self._model.setObjective(lambda_var, gp.GRB.MINIMIZE)
-        self._add_migrate_constraints(x_vars)
-        self._add_bound_constraints(lambda_var, x_vars)
-        self._add_controller_constraints(x_vars)
-        self._add_qos_constraints(x_vars)
-        self._model.optimize()
+    def build_ip_model(self):
+        """Builds an Integer Programming model for the migration instance.
+
+        The model is instantiated and solved based on the pre-loaded instance
+        of the load migration scheduling problem.
+
+        Raises
+        ------
+        InstanceNotSpecified
+            If a migration scheduling instance has not yet been specified.
+
+        Returns
+        -------
+        None
+
+        """
+        self._build_model(is_ip=True)
+
+    def build_lp_model(self):
+        """Builds a Linear Programming model for the migration instance.
+
+        The model is instantiated and solved based on the pre-loaded instance
+        of the load migration scheduling problem.
+
+        Raises
+        ------
+        InstanceNotSpecified
+            If a migration scheduling instance has not yet been specified.
+
+        Returns
+        -------
+        None
+
+        """
+        self._build_model(is_ip=False)
 
     def _initialize_variables(self, is_ip=True):
         """Initializes the variables for the optimization model.
@@ -66,6 +91,11 @@ class Optimizer:
         is_ip: bool
             A boolean flag indicating whether it is an IP model. If true
             the variables will be integer, otherwise, they will be continuous.
+
+        Raises
+        ------
+        UninitializedModel
+            If the optimization model has not yet been initialized
 
         Returns
         -------
@@ -149,7 +179,7 @@ class Optimizer:
             self._data.get_load(s) * x_vars[self._data.get_switch_id(s), r]
             for s in control_const.get_switches()) <= control_const.get_cap()
             for control_const in self._data.get_control_consts()
-            for r in self._data.get_round_ids), "controller")
+            for r in self._data.get_round_ids()), "controller")
 
     def _add_qos_constraints(self, x_vars):
         """Adds the set of QoS constraints to the model using `x_vars`.
@@ -169,3 +199,65 @@ class Optimizer:
             for s in qos_const.get_switches()) <= qos_const.get_cap()
             for qos_const in self._data.get_qos_consts()
             for r in self._data.get_round_ids()), "QoS")
+
+    def _add_constraints(self, lambda_var, x_vars):
+        """Adds all constraints to the model using `lambda_var` and `x_vars`.
+
+        Parameters
+        ----------
+        lambda_var: gp.Var
+            The variable to be minimized, representing the maximum number
+            of rounds required.
+        x_vars: gp.Vars
+            A collection of boolean variables for each migration and round
+            pair, indicating if the migration is scheduled in that round.
+
+        Raises
+        ------
+        UninitializedModel
+            If the optimization model has not yet been initialized.
+
+        Returns
+        -------
+        None
+
+        """
+        if self._model:
+            self._add_migrate_constraints(x_vars)
+            self._add_bound_constraints(lambda_var, x_vars)
+            self._add_controller_constraints(x_vars)
+            self._add_qos_constraints(x_vars)
+        else:
+            raise exc.UninitializedModel()
+
+    def _build_model(self, is_ip=True):
+        """Builds the optimization album for `migration_file`.
+
+        The data is loaded from `migration_file` and an optimization model
+        is built and solved for the specified instance. The model is an
+        integer program is `is_ip` is True. Otherwise, it is a linear program.
+
+        Parameters
+        ----------
+        is_ip: bool
+            A boolean flag indicating whether it is an IP model. If true
+            the variables will be integer, otherwise, they will be continuous.
+
+        Raises
+        ------
+        InstanceNotSpecified
+            If a migration scheduling instance has not yet been specified.
+
+        Returns
+        -------
+        None
+
+        """
+        if self._data:
+            self._model = gp.Model("migration")
+            lambda_var, x_vars = self._initialize_variables(is_ip)
+            self._model.setObjective(lambda_var, gp.GRB.MINIMIZE)
+            self._add_constraints(lambda_var, x_vars)
+            self._model.optimize()
+        else:
+            raise exc.InstanceNotSpecified()
