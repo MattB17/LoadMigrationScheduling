@@ -24,7 +24,7 @@ class UninitializedModel(Exception):
     """
     def __init__(self):
         super().__init__("Must initialize model before adding variables, " +
-                         "an objective function, and constraints")
+                         "an objective function, and constraints.")
 
 class InstanceNotSpecified(Exception):
     """Exception raised when a load migration instance has not been specified.
@@ -33,4 +33,12 @@ class InstanceNotSpecified(Exception):
     def __init__(self):
         super().__init__("Load migration instance not specified. " +
                          "Must specify instance before building model or " +
-                          "running an algorithm")
+                          "running an algorithm.")
+
+class ModelNotOptimized(Exception):
+    """Generated when accessing details of model that has not been optimized.
+
+    """
+    def __init__(self):
+        super().__init__("Model has not been optimized. Must solve " +
+                         "model before looking at results.")

@@ -247,6 +247,8 @@ class Optimizer:
         ------
         InstanceNotSpecified
             If a migration scheduling instance has not yet been specified.
+        ModelNotOptimized
+            If the optimization model cannot be optimized.
 
         Returns
         -------
@@ -259,5 +261,65 @@ class Optimizer:
             self._model.setObjective(lambda_var, gp.GRB.MINIMIZE)
             self._add_constraints(lambda_var, x_vars)
             self._model.optimize()
+            self._print_output(x_vars, is_ip)
         else:
             raise exc.InstanceNotSpecified()
+
+    def _print_solution(self, solution, is_binary=True):
+        """Prints the model solution given by `solution`.
+
+        The values of `solution` are printed specifying which round(s) each
+        migration is scheduled in. If `is_binary` is True, each migration
+        is scheduled in exactly one round, otherwise, the solution has
+        fractional values.
+
+        Parameters
+        ----------
+        solution: list
+            An array containing the value of the x variables for each
+            migration and round combination.
+        is_binary: bool
+            A boolean value indicating whether `solution` is a binary
+            solution.
+
+        Returns
+        -------
+        None
+
+        """
+        for r in self._data.get_round_ids():
+            for i in self._data.get_switch_ids():
+                if solution[i, r] > 0:
+                    if is_binary:
+                        print("Migration {0} in round {1}".format(i, r))
+                    else:
+                        print("x[{0}, {1}]: {2}".format(i, r, solution[i, r]))
+
+    def _print_output(self, x_vars, is_ip=True):
+        """Print the results of fitting the model.
+
+        Parameters
+        ----------
+        x_vars: gp.Vars
+            The set of model variables indicating in which round each
+            migration is scheduled.
+        is_ip: bool
+            A boolean value indicating whether or not the model is an
+            integer program.
+
+        Raises
+        ------
+        ModelNotOptimized
+            If the optimization model has not yet been solved.
+
+        Returns
+        -------
+        None
+
+        """
+        if self._model.status == gp.GRB.OPTIMAL:
+            solution = self._model.getAttr("x", x_vars)
+            self._print_solution(solution, is_ip)
+            print("Objective value: {0}".format(self._model.objVal))
+        else:
+            raise exc.ModelNotOptimized()
