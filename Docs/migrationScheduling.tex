@@ -110,7 +110,7 @@
 \begin{document}
 \title{Switch Migration Scheduling in Distributed SDN Controllers}
 
-\author{Some Guys!}
+\author{Mohammad Amin Beiruti, Sepehr Abbasi-Zadeh, Matthew Buckley, Soheil Abbasloo, Yashar Ganjali}
 % \author{\IEEEauthorblockN{1\textsuperscript{st} Given Name Surname}
 % \IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
 % \textit{name of organization (of Aff.)}\\
@@ -165,9 +165,9 @@ There are also a set of $q$ groups $\mathcal{G} = \{g_{0}, ..., g_{q-1}\}$. For 
         \hline
         $\alpha_{j}$ & maximum per-round load on controller $c_{j} \in \mathcal{C}$ \\
         \hline
-        $\delta^{src}_{j}$ & the set of migrations having $c_{j} \in \mathcal{C}$ as source controller \\
+        $\delta^{src}_{j}$ & set of migrations having $c_{j} \in \mathcal{C}$ as source controller \\
         \hline
-        $\delta^{dst}_{j}$ & the set of migrations having $c_{j} \in \mathcal{C}$ as destination controller \\
+        $\delta^{dst}_{j}$ & set of migrations having $c_{j} \in \mathcal{C}$ as destination controller \\
         \hline
         $\mathcal{S}$ & set of switches \\
         \hline
@@ -188,7 +188,7 @@ There are also a set of $q$ groups $\mathcal{G} = \{g_{0}, ..., g_{q-1}\}$. For 
     \label{tbl:defs}
 \end{table}
 
-The set of parameters are specified in Table \ref{tbl:defs}.
+The set of parameters are listed in Table \ref{tbl:defs}.
 
 \noindent\textbf{Variables}
 \noindent As mentioned previously, we assume we have an upper bound $R$ on the number of rounds required for all migrations. Thus we introduce binary variables $x^{r}_{i}$ for $i \in \{0, 1, ..., n - 1\}$ and $r \in \{0, 1, ..., R - 1\}$ where
@@ -214,12 +214,15 @@ $$\delta^{dst}_{j} = \{i \, | \, i \in \{0, 1, ..., n-1\}, \, j = dst_{i}\}$$
 That is, $\delta^{dst}_{j}$ is the set of migrations that have $c_{j}$ as the destination controller. In any round, the total load on controller $c_{j}$ from migrations cannot exceed $\alpha_{j}$ and if migration $i$ happens in round $r$ it contributes $w_{i}$ towards this load and 0 otherwise. Thus, it contributes $w_{i}x^{r}_{i}$ in round $r$. This gives the following constraint
 
 \begin{equation}\label{eq:controller-simple}
-    \sum_{i \, \in \, \delta^{in}_{j}} w_{i}x^{r}_{i} \leq \alpha_{j} \forall \, r \in \{0, ..., R-1\}, \, j \in \{0, ..., k-1\}
+\begin{split}
+    &\sum_{i \, \in \, \delta^{in}_{j}} w_{i}x^{r}_{i} \leq \alpha_{j} \\ 
+    &\forall \, r \in \{0, ..., R-1\}, \, j \in \{0, ..., k-1\}
+\end{split}
 \end{equation}
 
 If we want to add failure resiliency, we can also ensure that the load on the source controllers never exceeds their capacity. So we similarly define
 
-$$\delta^{src}_{j} = \{i \, | \, i \in \{0, 1, ..., n-1\}, \, c_{j} = src_{i} i\}$$
+$$\delta^{src}_{j} = \{i \, | \, i \in \{0, 1, ..., n-1\}, \, c_{j} = src_{i}\}$$
 
 So $\delta^{src}_{j}$ is the set of migrations that have $c_{j}$ as the source controller. Using the same logic, and updating equation (\ref{eq:controller-simple}) we get
 
@@ -280,7 +283,7 @@ s.t.
 \section{Complexity}
 In this section we show the hardness of the migration scheduling problem. Towards that end, consider a graph\newline $G=(V, E)$ where $V$ is the set of vertices and $E$ is the set of edges. 
 
-For any $p \in \mathbb{Z}$, the set $\mathbb{Z}_{p}$ represents the set of integers modulo $p$. That is, $\mathbb{Z}_{p} = \{0, 1, ..., p - 1\}$. A valid $p$-colouring of $G$ is a function $f: V \rightarrow \mathbb{Z}_{p}$ such that for any $u, v \in V$ such that $uv \in E$, $f(u) \neq f(v)$. This corresponds to assigning colours to vertices such that no edge has its two endpoints assigned the same colour. Karp \cite{karp1972reducibility} showed that it is NP-complete to decide whether a given graph $G$ has a $p$-colouring for any $p \geq 3$ (note that graphs with a 1-colouring are an independent set and graphs with a 2-colouring are bipartite).
+For any $p \in \mathbb{N}_{\geq 1}$, the set $\mathbb{Z}_{p}$ represents the set of integers modulo $p$. That is, $\mathbb{Z}_{p} = \{0, 1, ..., p - 1\}$. A valid $p$-colouring of $G$ is a function $f: V \rightarrow \mathbb{Z}_{p}$ such that for any $u, v \in V$ such that $uv \in E$, $f(u) \neq f(v)$. This corresponds to assigning colours to vertices such that no edge has its two endpoints assigned the same colour. Karp \cite{karp1972reducibility} showed that it is NP-complete to decide whether a given graph $G$ has a $p$-colouring for any $p \geq 3$ (note that graphs with a 1-colouring are an independent set and graphs with a 2-colouring are bipartite).
 
 The chromatic number of $G$, denoted $\chi(G)$ is the minimum $p$ such that $G$ has a $p$-colouring. Note that finding $\chi(G)$ is also NP-complete because if we know $\chi(G)$ then we can answer whether or not $G$ has a $p$-colouring in constant time for any $p \in \mathbb{N}$. Given this, we now prove the following.
 
@@ -296,7 +299,7 @@ The chromatic number of $G$, denoted $\chi(G)$ is the minimum $p$ such that $G$ 
     
     Now suppose we solve this instance to get an optimal solution $r*$ and define a function $f: V \rightarrow \mathbb{Z}_{r* + 1}$ such that for $i \in V$, $f(i) = r$ if migration $i$ happens in round $r$ with $0 \leq r \leq r*$. Consider any edge $ij \in E$. Then QoS group $g_{ij}$ ensures that migrations $i$ and $j$ complete in different rounds, say rounds $r_{1}$ and $r_{2}$ with $r_{1} \neq r_{2}$. Then by the definition of $f$ we have $f(i) = r_{1} \neq r_{2} = f(j)$. Thus, the ends of $ij$ receive different colours. As this is true for every edge of $G$, this gives a valid $(r* + 1)$-colouring of $G$.
     
-    Thus, $\chi(G) \leq r* + 1$. We claim that $\chi(G) = r* + 1$. To see this, suppose as a contradiction that $\chi(G) < r* + 1$. Then $\exists p \in \mathbb{Z}$ with $p \leq r*$ such that $G$ has a $p$-colouring. Choose such a $p$ colouring $h: V \rightarrow \mathbb{Z}_{p}$. Then consider the following migration schedule: for each migration $i \in \{0, 1, ..., n-1\}$ if $h(i) = r \in \mathbb{Z}_{p}$ then we schedule migration $i$ in round $r$. Then note that all migrations are scheduled within the rounds 0 to $\max_{0 \leq i \leq n-1} h(i) \leq p - 1$. Also, there are $n$ nodes, so there are at most $n$ migrations in a single round, meaning the controller capacity constraints are trivially satisfied. Next consider the QoS constraints for a QoS group $g_{ij}$. Then $ij \in E$ and because $h$ is a valid colouring we have that $h(i) \neq h(j)$. So migrations $i$ and $j$ are scheduled in different rounds. That is, at most one migration of $g_{ij}$ is scheduled in each round. As $\beta_{ij} = 1$, the QoS constraints are valid. Thus, we have constructed a valid schedule that completes in at most $k - 1 < r*$ rounds, contradicting the optimality of $r*$.
+    Thus, $\chi(G) \leq r* + 1$. We claim that $\chi(G) = r* + 1$. To see this, suppose as a contradiction that $\chi(G) < r* + 1$. Then $\exists \, p \in \mathbb{N}_{\geq 1}$ with $p \leq r*$ such that $G$ has a $p$-colouring. Choose such a $p$ colouring $h: V \rightarrow \mathbb{Z}_{p}$. Then consider the following migration schedule: for each migration $i \in \{0, 1, ..., n-1\}$ if $h(i) = r \in \mathbb{Z}_{p}$ then we schedule migration $i$ in round $r$. Then note that all migrations are scheduled within the rounds 0 to $\max_{0 \leq i \leq n-1} h(i) \leq p - 1$. Also, there are $n$ nodes, so there are at most $n$ migrations in a single round, meaning the controller capacity constraints are trivially satisfied. Next consider the QoS constraints for a QoS group $g_{ij}$. Then $ij \in E$ and because $h$ is a valid colouring we have that $h(i) \neq h(j)$. So migrations $i$ and $j$ are scheduled in different rounds. That is, at most one migration of $g_{ij}$ is scheduled in each round. As $\beta_{ij} = 1$, the QoS constraints are valid. Thus, we have constructed a valid schedule that completes in at most $p - 1 < r*$ rounds, contradicting the optimality of $r*$.
     
     Thus, we have shown a complete reduction from finding the chromatic number of a graph $G$ to our problem. As determining $\chi(G)$ is NP-complete we have that the migration scheduling problem is NP-hard. 
 \end{proof}
@@ -312,7 +315,7 @@ $$\sum_{r=0}^{R-1} x^{r}_{i} = x^{i}_{i} = 1$$
 
 For a round $r \in \{0, 1, ..., n - 1\}$, migration $r$ happens in this round. If $c_{dst_{r}}$ is the destination controller for this migration, then this is the only switch being migrated to this controller in this round and so
 
-$$\sum_{i \in \delta^{in}_{b_{r}}} w_{i}x^{r}_{i} = w_{r}x^{r}_{r} = w_{r} \leq \alpha_{src_{r}}$$
+$$\sum_{i \in \delta^{dst}_{dst_{r}}} w_{i}x^{r}_{i} = w_{r}x^{r}_{r} = w_{r} \leq \alpha_{dst_{r}}$$
 
 where the last inequality follows from our assumption on the $\alpha$ values. Note that for each migration, the source and destination controllers are distinct. Thus, our solution also satisfies constraint (\ref{eq:controller-extended}) if we are considering failure resiliency. Also, for any controllers other than the source and destination, the sum in the constraint evaluates to 0 as migration $r$ is the only migration in round $r$ and so the constraint is trivially satisfied.
 
@@ -324,7 +327,7 @@ where the last inequality follows from our assumption on the $\beta$ values. If 
 
 Thus, this represents a feasible schedule. Moreover, observe that if $r \neq i$ then $r \cdot x^{r}_{i} = 0$. Otherwise, $r \cdot x^{r}_{i} = r$. Thus we have constraints $r \leq \lambda$ for each $r \in \{0, 1, ..., R - 1\}$ so our objective value is $R - 1 = n - 1$. So this solution requires $n$ rounds, the number of migrations.
 
-Note that this solution can be quite far from optimal. To see why, consider an instance with $n$ switches $s_{0}, ..., s_{n-1}$ and $2n$ controllers $c_{0}, ..., c_{2n - 1}$. There are $n$ migrations where migration $i$ migrates switch $s_{i}$ from controller $c_{2i}$ to $c_{2i + 1}$ and incurs a load of $w_{i} = 1$. Moreover, $\alpha_{j} = 1$ $\forall \, j \in \{0, ..., 2n - 1\}$. There are no QoS groups.
+Note that this solution can be quite far from optimal. To see why, consider an instance with $n$ switches $s_{0}, ..., s_{n-1}$ and $2n$ controllers $c_{0}, ..., c_{2n - 1}$. There are $n$ migrations where migration $i$ migrates switch $s_{i}$ from controller $c_{2i}$ to $c_{2i + 1}$ and incurs a load of $w_{i} = 1$. Moreover, $\alpha_{j} = 1$, \newline $\forall \, j \in \{0, ..., 2n - 1\}$. There are no QoS groups.
 
 In this setting, it is not hard to see that we can schedule all migrations in a single round (the migrations are independent due to the absence of QoS constraints and the fact that each migration is associated with its own source and destination controllers). In contrast, our first solution that schedules each migration in its own round requires $n$ rounds.
 
