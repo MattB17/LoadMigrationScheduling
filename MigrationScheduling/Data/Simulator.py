@@ -77,7 +77,7 @@ class Simulator:
         None
 
         """
-        self._num_controllers = random.randint(1, num_migrations)
+        self._num_controllers = random.randint(1, int(1.5 *num_migrations))
         self._controllers = [[0, 0.0] for _ in range(self._num_controllers)]
         self._num_qos_groups = random.randint(1, int(1.3 * num_migrations))
         self._qos_groups = [0 for _ in range(self._num_qos_groups)]
