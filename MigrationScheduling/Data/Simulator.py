@@ -53,6 +53,7 @@ class Simulator:
         None
 
         """
+        self._num_migrations = num_migrations
         self._initialize(num_migrations)
         self._migrations = [self._create_migration(migration_idx)
                             for migration_idx in range(self._num_migrations)]
@@ -77,7 +78,7 @@ class Simulator:
 
         """
         self._num_controllers = random.randint(1, num_migrations)
-        self._controllers = [(0, 0.0) for _ in range(self._num_controllers)]
+        self._controllers = [[0, 0.0] for _ in range(self._num_controllers)]
         self._num_qos_groups = random.randint(1, int(1.3 * num_migrations))
         self._qos_groups = [0 for _ in range(self._num_qos_groups)]
 
@@ -133,7 +134,6 @@ class Simulator:
             A string representing the migration line.
 
         """
-        migration = self._migrations[migration_idx]
         return "{0} {1} {2} {3}\n".format(
             migration.get_switch(), migration.get_dst_controller(),
             migration.get_load(), " ".join(migration.get_groups()))
