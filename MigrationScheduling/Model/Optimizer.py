@@ -6,6 +6,7 @@ from MigrationScheduling.Model import InstanceData, Parser
 from MigrationScheduling import exceptions as exc
 from MigrationScheduling import utils
 import gurobipy as gp
+import numpy as np
 
 class Optimizer:
     """Builds an optimization model for a migration scheduling instance.
@@ -82,6 +83,27 @@ class Optimizer:
 
         """
         self._build_model(is_ip=False)
+
+    def get_model_bounds(self):
+        """Computes upper and lower bounds for the model.
+
+        The upper bound is computed by taking one round per migration. The
+        lower bound is the solution to the linear program.
+
+        Returns
+        -------
+        int, int
+            An integer representing a lower bound on the number of rounds to
+            complete all migrations and an integer representing an upper
+            bound on the number of rounds to complete all migrations.
+
+        """
+        if self._data:
+            ub = len(self._data.get_round_ids())
+            self._build_model(is_ip=False, verbose=False)
+            lb = int(np.ceil(self._model.objVal)) + 1
+            return lb, ub
+        raise exc.InstanceNotSpecified()
 
     def _initialize_variables(self, is_ip=True):
         """Initializes the variables for the optimization model.
@@ -194,11 +216,12 @@ class Optimizer:
         None
 
         """
-        self._model.addConstrs((sum(
-            x_vars[self._data.get_switch_id(s), r]
-            for s in qos_const.get_switches()) <= qos_const.get_cap()
-            for qos_const in self._data.get_qos_consts()
-            for r in self._data.get_round_ids()), "QoS")
+        for qos_const in self._data.get_qos_consts():
+            for r in self._data.get_round_ids():
+                self._model.addConstr(sum(
+                    x_vars[self._data.get_switch_id(s), r]
+                    for s in qos_const.get_switches()) <= qos_const.get_cap(),
+                    "QoS[{0}, {1}]".format(qos_const.get_group_idx(), r))
 
     def _add_constraints(self, lambda_var, x_vars):
         """Adds all constraints to the model using `lambda_var` and `x_vars`.
@@ -230,7 +253,7 @@ class Optimizer:
         else:
             raise exc.UninitializedModel()
 
-    def _build_model(self, is_ip=True):
+    def _build_model(self, is_ip=True, verbose=True):
         """Builds the optimization album for `migration_file`.
 
         The data is loaded from `migration_file` and an optimization model
@@ -242,6 +265,10 @@ class Optimizer:
         is_ip: bool
             A boolean flag indicating whether it is an IP model. If true
             the variables will be integer, otherwise, they will be continuous.
+        verbose: bool
+            A boolean indicating whether verbose mode is used. If used the
+            entire solution will be printed, otherwise, only gurobi messages
+            will be printed.
 
         Raises
         ------
@@ -261,7 +288,8 @@ class Optimizer:
             self._model.setObjective(lambda_var, gp.GRB.MINIMIZE)
             self._add_constraints(lambda_var, x_vars)
             self._model.optimize()
-            self._print_output(x_vars, is_ip)
+            if verbose:
+                self._print_output(x_vars, is_ip)
         else:
             raise exc.InstanceNotSpecified()
 
@@ -320,6 +348,6 @@ class Optimizer:
         if self._model.status == gp.GRB.OPTIMAL:
             solution = self._model.getAttr("x", x_vars)
             self._print_solution(solution, is_ip)
-            print("Objective value: {0}".format(self._model.objVal))
+            print("Number of Rounds: {0}".format(self._model.objVal + 1))
         else:
             raise exc.ModelNotOptimized()

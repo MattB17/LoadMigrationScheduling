@@ -9,10 +9,7 @@ if __name__ == "__main__":
     file_path = sys.argv[1]
     optimizer = Optimizer()
     optimizer.get_model_data(file_path)
-    print("Solving IP instance")
-    print("-------------------")
+    lb, ub = optimizer.get_model_bounds()
     optimizer.build_ip_model()
-    print()
-    print("Solving LP instance")
-    print("-------------------")
-    optimizer.build_lp_model()
+    print("Lower Bound: {}".format(lb))
+    print("Upper Bound: {}".format(ub))
