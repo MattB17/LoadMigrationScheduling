@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instance Data &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Parser" href="parser.html" />
+    <link rel="prev" title="Model" href="model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="model.html">Model</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Instance Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser.html">Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizer.html">Optimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="model.html">Model</a> &raquo;</li>
+      <li>Instance Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Model/instance_data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-MigrationScheduling.Model.InstanceData">
+<span id="instance-data"></span><h1>Instance Data<a class="headerlink" href="#module-MigrationScheduling.Model.InstanceData" title="Permalink to this headline"></a></h1>
+<p>The <cite>InstanceData</cite> class contains all the data of a migration scheduling
+instance used to construct an optimization model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MigrationScheduling.Model.</span></span><span class="sig-name descname"><span class="pre">InstanceData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData" title="Permalink to this definition"></a></dt>
+<dd><p>Stores the data of a migration scheduling instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migrations: dict</strong></dt><dd><p>A dictionary specifying the migrations. The keys are strings denoting
+the name of the switch involved in the migration and the
+corresponding value is a <cite>Migration</cite> object specifying the migration.</p>
+</dd>
+<dt><strong>controller_consts: set</strong></dt><dd><p>A set of <cite>ControllerConstraint</cite> objects specifying the controller
+constraints for the migrations.</p>
+</dd>
+<dt><strong>qos_consts: set</strong></dt><dd><p>A set of <cite>QosConstraint</cite> objects specifying the QoS constraints.</p>
+</dd>
+<dt><strong>switch_ids: list</strong></dt><dd><p>A list of IDs of the switches involved in the migrations.</p>
+</dd>
+<dt><strong>round_ids: list</strong></dt><dd><p>A list of rounds in which migrations can be scheduled.</p>
+</dd>
+<dt><strong>controller_ids: list</strong></dt><dd><p>A list of IDs of the controllers in the controller constraints.</p>
+</dd>
+<dt><strong>qos_ids: list</strong></dt><dd><p>A list of IDs of the QoS groups.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>_migrations: dict</strong></dt><dd><p>The migrations to be scheduled</p>
+</dd>
+<dt><strong>_controller_consts: set</strong></dt><dd><p>The controller constraints.</p>
+</dd>
+<dt><strong>_qos_consts: set</strong></dt><dd><p>The constraints for QoS groups.</p>
+</dd>
+<dt><strong>_switch_ids: list</strong></dt><dd><p>The IDs of the switches involved in the migrations.</p>
+</dd>
+<dt><strong>_round_ids: list</strong></dt><dd><p>The IDs of rounds in which migrations can be scheduled.</p>
+</dd>
+<dt><strong>_controller_ids: list</strong></dt><dd><p>The IDs of the destination controllers for migrations.</p>
+</dd>
+<dt><strong>_qos_ids: list</strong></dt><dd><p>The IDs of the QoS groups.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_control_consts">
+<span class="sig-name descname"><span class="pre">get_control_consts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_control_consts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_control_consts" title="Permalink to this definition"></a></dt>
+<dd><p>The controller constraints for the scheduling instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>set</dt><dd><p>A set of <cite>ControllerConstraint</cite> objects representing the
+controller constraints of the load migration scheduling instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_controller_ids">
+<span class="sig-name descname"><span class="pre">get_controller_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_controller_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_controller_ids" title="Permalink to this definition"></a></dt>
+<dd><p>The IDs of the destination controllers of migrations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list</dt><dd><p>A list of integers representing the IDs of controllers which are
+destinations for migrations.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_load">
+<span class="sig-name descname"><span class="pre">get_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_load" title="Permalink to this definition"></a></dt>
+<dd><p>The load incurred by the migration of <cite>switch_name</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>switch_name: str</strong></dt><dd><p>A string representing the name of the switch for which the
+migration load is retrieved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the load incurred during the migration of
+<cite>switch_name</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_migrations">
+<span class="sig-name descname"><span class="pre">get_migrations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_migrations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_migrations" title="Permalink to this definition"></a></dt>
+<dd><p>The migrations for the scheduling instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary of the migrations for the scheduling instance. The
+keys are strings representing the names of the switches being
+migrated and the corresponding value is a <cite>Migration</cite> object
+for the corresponding migration.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_qos_consts">
+<span class="sig-name descname"><span class="pre">get_qos_consts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_qos_consts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_qos_consts" title="Permalink to this definition"></a></dt>
+<dd><p>The QoS constraints for the scheduling instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>set</dt><dd><p>A set of <cite>QosConstraint</cite> objects representing the QoS constraints
+of the load migration scheduling instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_qos_ids">
+<span class="sig-name descname"><span class="pre">get_qos_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_qos_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_qos_ids" title="Permalink to this definition"></a></dt>
+<dd><p>The IDs of the QoS groups for the migrations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list</dt><dd><p>A list of integers representing the IDs of the QoS groups in the
+migration scheduling instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_round_ids">
+<span class="sig-name descname"><span class="pre">get_round_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_round_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_round_ids" title="Permalink to this definition"></a></dt>
+<dd><p>The IDs of the scheduling rounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list</dt><dd><p>A list of integers indicating the IDs of the rounds in which
+migrations can be scheduled.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_switch_id">
+<span class="sig-name descname"><span class="pre">get_switch_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_switch_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_switch_id" title="Permalink to this definition"></a></dt>
+<dd><p>The switch ID corresponding to <cite>switch_name</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>switch_name: str</strong></dt><dd><p>A string representing the name of the switch for which the ID
+is retrieved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>An integer representing the ID for the switch <cite>switch_name</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.InstanceData.get_switch_ids">
+<span class="sig-name descname"><span class="pre">get_switch_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/InstanceData.html#InstanceData.get_switch_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.InstanceData.get_switch_ids" title="Permalink to this definition"></a></dt>
+<dd><p>The IDs of the switches being migrated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list</dt><dd><p>A list of integers representing the IDs of switches being
+migrated in the scheduling instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="model.html" class="btn btn-neutral float-left" title="Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parser.html" class="btn btn-neutral float-right" title="Parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

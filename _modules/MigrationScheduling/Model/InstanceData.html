@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MigrationScheduling.Model.InstanceData &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>MigrationScheduling.Model.InstanceData</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MigrationScheduling.Model.InstanceData</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The `InstanceData` class contains all the data of a migration scheduling</span>
+<span class="sd">instance used to construct an optimization model.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InstanceData"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData">[docs]</a><span class="k">class</span> <span class="nc">InstanceData</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stores the data of a migration scheduling instance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    migrations: dict</span>
+<span class="sd">        A dictionary specifying the migrations. The keys are strings denoting</span>
+<span class="sd">        the name of the switch involved in the migration and the</span>
+<span class="sd">        corresponding value is a `Migration` object specifying the migration.</span>
+<span class="sd">    controller_consts: set</span>
+<span class="sd">        A set of `ControllerConstraint` objects specifying the controller</span>
+<span class="sd">        constraints for the migrations.</span>
+<span class="sd">    qos_consts: set</span>
+<span class="sd">        A set of `QosConstraint` objects specifying the QoS constraints.</span>
+<span class="sd">    switch_ids: list</span>
+<span class="sd">        A list of IDs of the switches involved in the migrations.</span>
+<span class="sd">    round_ids: list</span>
+<span class="sd">        A list of rounds in which migrations can be scheduled.</span>
+<span class="sd">    controller_ids: list</span>
+<span class="sd">        A list of IDs of the controllers in the controller constraints.</span>
+<span class="sd">    qos_ids: list</span>
+<span class="sd">        A list of IDs of the QoS groups.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _migrations: dict</span>
+<span class="sd">        The migrations to be scheduled</span>
+<span class="sd">    _controller_consts: set</span>
+<span class="sd">        The controller constraints.</span>
+<span class="sd">    _qos_consts: set</span>
+<span class="sd">        The constraints for QoS groups.</span>
+<span class="sd">    _switch_ids: list</span>
+<span class="sd">        The IDs of the switches involved in the migrations.</span>
+<span class="sd">    _round_ids: list</span>
+<span class="sd">        The IDs of rounds in which migrations can be scheduled.</span>
+<span class="sd">    _controller_ids: list</span>
+<span class="sd">        The IDs of the destination controllers for migrations.</span>
+<span class="sd">    _qos_ids: list</span>
+<span class="sd">        The IDs of the QoS groups.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migrations</span><span class="p">,</span> <span class="n">controller_consts</span><span class="p">,</span> <span class="n">qos_consts</span><span class="p">,</span>
+                 <span class="n">switch_ids</span><span class="p">,</span> <span class="n">round_ids</span><span class="p">,</span> <span class="n">controller_ids</span><span class="p">,</span> <span class="n">qos_ids</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span> <span class="o">=</span> <span class="n">migrations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controller_consts</span> <span class="o">=</span> <span class="n">controller_consts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qos_consts</span> <span class="o">=</span> <span class="n">qos_consts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switch_ids</span> <span class="o">=</span> <span class="n">switch_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_ids</span> <span class="o">=</span> <span class="n">round_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controller_ids</span> <span class="o">=</span> <span class="n">controller_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qos_ids</span> <span class="o">=</span> <span class="n">qos_ids</span>
+
+<div class="viewcode-block" id="InstanceData.get_migrations"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_migrations">[docs]</a>    <span class="k">def</span> <span class="nf">get_migrations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The migrations for the scheduling instance.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            A dictionary of the migrations for the scheduling instance. The</span>
+<span class="sd">            keys are strings representing the names of the switches being</span>
+<span class="sd">            migrated and the corresponding value is a `Migration` object</span>
+<span class="sd">            for the corresponding migration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_control_consts"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_control_consts">[docs]</a>    <span class="k">def</span> <span class="nf">get_control_consts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The controller constraints for the scheduling instance.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set of `ControllerConstraint` objects representing the</span>
+<span class="sd">            controller constraints of the load migration scheduling instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_consts</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_qos_consts"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_qos_consts">[docs]</a>    <span class="k">def</span> <span class="nf">get_qos_consts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The QoS constraints for the scheduling instance.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set of `QosConstraint` objects representing the QoS constraints</span>
+<span class="sd">            of the load migration scheduling instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qos_consts</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_switch_ids"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_switch_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_switch_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The IDs of the switches being migrated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            A list of integers representing the IDs of switches being</span>
+<span class="sd">            migrated in the scheduling instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_ids</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_round_ids"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_round_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_round_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The IDs of the scheduling rounds.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            A list of integers indicating the IDs of the rounds in which</span>
+<span class="sd">            migrations can be scheduled.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_round_ids</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_controller_ids"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_controller_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The IDs of the destination controllers of migrations.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            A list of integers representing the IDs of controllers which are</span>
+<span class="sd">            destinations for migrations.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_ids</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_qos_ids"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_qos_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_qos_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The IDs of the QoS groups for the migrations.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            A list of integers representing the IDs of the QoS groups in the</span>
+<span class="sd">            migration scheduling instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qos_ids</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_load"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_load">[docs]</a>    <span class="k">def</span> <span class="nf">get_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The load incurred by the migration of `switch_name`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        switch_name: str</span>
+<span class="sd">            A string representing the name of the switch for which the</span>
+<span class="sd">            migration load is retrieved.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the load incurred during the migration of</span>
+<span class="sd">            `switch_name`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="p">[</span><span class="n">switch_name</span><span class="p">]</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="InstanceData.get_switch_id"><a class="viewcode-back" href="../../../Model/instance_data.html#MigrationScheduling.Model.InstanceData.get_switch_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_switch_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The switch ID corresponding to `switch_name`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        switch_name: str</span>
+<span class="sd">            A string representing the name of the switch for which the ID</span>
+<span class="sd">            is retrieved.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            An integer representing the ID for the switch `switch_name`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="p">[</span><span class="n">switch_name</span><span class="p">]</span><span class="o">.</span><span class="n">get_switch_idx</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

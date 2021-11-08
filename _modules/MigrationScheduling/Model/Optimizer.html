@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MigrationScheduling.Model.Optimizer &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>MigrationScheduling.Model.Optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MigrationScheduling.Model.Optimizer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The `Optimizer` class is used to construct a model to optimize the load</span>
+<span class="sd">migration schedule.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling.Model</span> <span class="kn">import</span> <span class="n">InstanceData</span><span class="p">,</span> <span class="n">Parser</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span> <span class="nn">gurobipy</span> <span class="k">as</span> <span class="nn">gp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Builds an optimization model for a migration scheduling instance.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _model: gurobipy.Model</span>
+<span class="sd">        A `Model` object representing the optimization model. A value of</span>
+<span class="sd">        None indicates a model that has not been initialized.</span>
+<span class="sd">    _data: InstanceData</span>
+<span class="sd">        An `InstanceData` object containing the data for the migration</span>
+<span class="sd">        scheduling instance being modeled. A value of None indicates</span>
+<span class="sd">        that the instance has not yet been specified.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Optimizer.get_model_data"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.get_model_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the data for the migration scheduling instance.</span>
+
+<span class="sd">        A `Parser` is constructed and used to parse `migration_file` to</span>
+<span class="sd">        retrieve the data of a migration scheduling instance to be</span>
+<span class="sd">        optimized.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        migration_file: str</span>
+<span class="sd">            A string representing the path to the file specifying the load</span>
+<span class="sd">            migration scheduling instance.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">()</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">parse_migrations</span><span class="p">(</span><span class="n">migration_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">to_data</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Optimizer.build_ip_model"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.build_ip_model">[docs]</a>    <span class="k">def</span> <span class="nf">build_ip_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds an Integer Programming model for the migration instance.</span>
+
+<span class="sd">        The model is instantiated and solved based on the pre-loaded instance</span>
+<span class="sd">        of the load migration scheduling problem.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        InstanceNotSpecified</span>
+<span class="sd">            If a migration scheduling instance has not yet been specified.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">is_ip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Optimizer.build_lp_model"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.build_lp_model">[docs]</a>    <span class="k">def</span> <span class="nf">build_lp_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds a Linear Programming model for the migration instance.</span>
+
+<span class="sd">        The model is instantiated and solved based on the pre-loaded instance</span>
+<span class="sd">        of the load migration scheduling problem.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        InstanceNotSpecified</span>
+<span class="sd">            If a migration scheduling instance has not yet been specified.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">is_ip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Optimizer.get_model_bounds"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.get_model_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes upper and lower bounds for the model.</span>
+
+<span class="sd">        The upper bound is computed by taking one round per migration. The</span>
+<span class="sd">        lower bound is the solution to the linear program.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int, int</span>
+<span class="sd">            An integer representing a lower bound on the number of rounds to</span>
+<span class="sd">            complete all migrations and an integer representing an upper</span>
+<span class="sd">            bound on the number of rounds to complete all migrations.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="n">ub</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">is_ip</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">lb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">objVal</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span>
+        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InstanceNotSpecified</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_initialize_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_ip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the variables for the optimization model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        is_ip: bool</span>
+<span class="sd">            A boolean flag indicating whether it is an IP model. If true</span>
+<span class="sd">            the variables will be integer, otherwise, they will be continuous.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        UninitializedModel</span>
+<span class="sd">            If the optimization model has not yet been initialized</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        gp.Var, gp.Vars</span>
+<span class="sd">            A variable representing the parameter to be optimized and a</span>
+<span class="sd">            collection of variables representing which round each migration</span>
+<span class="sd">            is scheduled in.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">:</span>
+            <span class="n">lambda_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addVar</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;lambda&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_ip</span><span class="p">:</span>
+                <span class="n">x_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addVars</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">(),</span>
+                    <span class="n">vtype</span><span class="o">=</span><span class="n">gp</span><span class="o">.</span><span class="n">GRB</span><span class="o">.</span><span class="n">BINARY</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addVars</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">(),</span>
+                    <span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">vtype</span><span class="o">=</span><span class="n">gp</span><span class="o">.</span><span class="n">GRB</span><span class="o">.</span><span class="n">CONTINUOUS</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">lambda_var</span><span class="p">,</span> <span class="n">x_vars</span>
+        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">UninitializedModel</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_add_migrate_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds the migrate constraints using `x_vars`.</span>
+
+<span class="sd">        The migrate constraints enforces that each migration takes place</span>
+<span class="sd">        in exactly one round.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_vars: gp.Vars</span>
+<span class="sd">            The set of model variables used in the migrate constraints.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">x_vars</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">()),</span> <span class="s2">&quot;migrate&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_bound_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lambda_var</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds the constraints bounding `lambda_var`.</span>
+
+<span class="sd">        A constraint is introduced for each round and migration, enforcing</span>
+<span class="sd">        the constraint that if migration i is scheduled in round r then</span>
+<span class="sd">        `lambda_var` must be at least r.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lambda_var: gp.Var</span>
+<span class="sd">            The variable that is being bounded.</span>
+<span class="sd">        x_vars: gp.Vars</span>
+<span class="sd">            The collection of variables used to bound `lambda_var`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">x_vars</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lambda_var</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">()</span>
+             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">()),</span> <span class="s2">&quot;bound&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_controller_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds the set of controller constraints to the model using `x_vars`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_vars: gp.Vars</span>
+<span class="sd">            The set of model variables used in the controller constraints.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">((</span><span class="nb">sum</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_load</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_vars</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_id</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">r</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">control_const</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_control_consts</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">()),</span> <span class="s2">&quot;controller&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_qos_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds the set of QoS constraints to the model using `x_vars`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_vars: gp.Vars</span>
+<span class="sd">            The set of model variables used in the controller constraints.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">qos_const</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span>
+                    <span class="n">x_vars</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_id</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">r</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">qos_const</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="n">qos_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">(),</span>
+                    <span class="s2">&quot;QoS[</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qos_const</span><span class="o">.</span><span class="n">get_group_idx</span><span class="p">(),</span> <span class="n">r</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_add_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lambda_var</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds all constraints to the model using `lambda_var` and `x_vars`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lambda_var: gp.Var</span>
+<span class="sd">            The variable to be minimized, representing the maximum number</span>
+<span class="sd">            of rounds required.</span>
+<span class="sd">        x_vars: gp.Vars</span>
+<span class="sd">            A collection of boolean variables for each migration and round</span>
+<span class="sd">            pair, indicating if the migration is scheduled in that round.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        UninitializedModel</span>
+<span class="sd">            If the optimization model has not yet been initialized.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_migrate_constraints</span><span class="p">(</span><span class="n">x_vars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_bound_constraints</span><span class="p">(</span><span class="n">lambda_var</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_controller_constraints</span><span class="p">(</span><span class="n">x_vars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_qos_constraints</span><span class="p">(</span><span class="n">x_vars</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">UninitializedModel</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_build_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_ip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds the optimization album for `migration_file`.</span>
+
+<span class="sd">        The data is loaded from `migration_file` and an optimization model</span>
+<span class="sd">        is built and solved for the specified instance. The model is an</span>
+<span class="sd">        integer program is `is_ip` is True. Otherwise, it is a linear program.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        is_ip: bool</span>
+<span class="sd">            A boolean flag indicating whether it is an IP model. If true</span>
+<span class="sd">            the variables will be integer, otherwise, they will be continuous.</span>
+<span class="sd">        verbose: bool</span>
+<span class="sd">            A boolean indicating whether verbose mode is used. If used the</span>
+<span class="sd">            entire solution will be printed, otherwise, only gurobi messages</span>
+<span class="sd">            will be printed.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        InstanceNotSpecified</span>
+<span class="sd">            If a migration scheduling instance has not yet been specified.</span>
+<span class="sd">        ModelNotOptimized</span>
+<span class="sd">            If the optimization model cannot be optimized.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="s2">&quot;migration&quot;</span><span class="p">)</span>
+            <span class="n">lambda_var</span><span class="p">,</span> <span class="n">x_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_variables</span><span class="p">(</span><span class="n">is_ip</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">setObjective</span><span class="p">(</span><span class="n">lambda_var</span><span class="p">,</span> <span class="n">gp</span><span class="o">.</span><span class="n">GRB</span><span class="o">.</span><span class="n">MINIMIZE</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_constraints</span><span class="p">(</span><span class="n">lambda_var</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_print_output</span><span class="p">(</span><span class="n">x_vars</span><span class="p">,</span> <span class="n">is_ip</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InstanceNotSpecified</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_print_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">is_binary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints the model solution given by `solution`.</span>
+
+<span class="sd">        The values of `solution` are printed specifying which round(s) each</span>
+<span class="sd">        migration is scheduled in. If `is_binary` is True, each migration</span>
+<span class="sd">        is scheduled in exactly one round, otherwise, the solution has</span>
+<span class="sd">        fractional values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        solution: list</span>
+<span class="sd">            An array containing the value of the x variables for each</span>
+<span class="sd">            migration and round combination.</span>
+<span class="sd">        is_binary: bool</span>
+<span class="sd">            A boolean value indicating whether `solution` is a binary</span>
+<span class="sd">            solution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">solution</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_binary</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Migration </span><span class="si">{0}</span><span class="s2"> in round </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;x[</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">]: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">solution</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">_print_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">,</span> <span class="n">is_ip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print the results of fitting the model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_vars: gp.Vars</span>
+<span class="sd">            The set of model variables indicating in which round each</span>
+<span class="sd">            migration is scheduled.</span>
+<span class="sd">        is_ip: bool</span>
+<span class="sd">            A boolean value indicating whether or not the model is an</span>
+<span class="sd">            integer program.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ModelNotOptimized</span>
+<span class="sd">            If the optimization model has not yet been solved.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">gp</span><span class="o">.</span><span class="n">GRB</span><span class="o">.</span><span class="n">OPTIMAL</span><span class="p">:</span>
+            <span class="n">solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">is_ip</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of Rounds: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">objVal</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">ModelNotOptimized</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
