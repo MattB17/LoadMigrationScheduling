@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MigrationScheduling.Data.Migration &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>MigrationScheduling.Data.Migration</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MigrationScheduling.Data.Migration</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The `Migration` class is used to store the information relating to the</span>
+<span class="sd">migration of a switch in an SDN.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
+
+<div class="viewcode-block" id="Migration"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration">[docs]</a><span class="k">class</span> <span class="nc">Migration</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stores the details of a switch migration.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    switch: str</span>
+<span class="sd">        A string identifying the switch to be migrated.</span>
+<span class="sd">    dst_controller: str</span>
+<span class="sd">        A string identifying the destination controller.</span>
+<span class="sd">    load: float</span>
+<span class="sd">        A float identifying the load used during the migration.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _switch: str</span>
+<span class="sd">        The name of the switch.</span>
+<span class="sd">    _dst_controller: str</span>
+<span class="sd">        The name of the destination controller.</span>
+<span class="sd">    _load: float</span>
+<span class="sd">        The load used during the migration</span>
+<span class="sd">    _groups: set</span>
+<span class="sd">        The collection of QoS groups to which the switch belongs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch</span><span class="p">,</span> <span class="n">dst_controller</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switch</span> <span class="o">=</span> <span class="n">switch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span> <span class="o">=</span> <span class="n">dst_controller</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span> <span class="o">=</span> <span class="n">load</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Migration.get_switch"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_switch">[docs]</a>    <span class="k">def</span> <span class="nf">get_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The switch being migrated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A string representing the name of the switch being migrated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch</span></div>
+
+<div class="viewcode-block" id="Migration.get_switch_idx"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_switch_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_switch_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The index of the switch involved in the migration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            An integer representing the index of the switch being migrated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switch</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">except</span><span class="p">:</span>
+
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InvalidName</span><span class="p">(</span><span class="s2">&quot;Switch names should be in the form &quot;</span> <span class="o">+</span>
+                                  <span class="s2">&quot;&#39;sx&#39; where &#39;x&#39; is the switch ID&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Migration.get_dst_controller"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_dst_controller">[docs]</a>    <span class="k">def</span> <span class="nf">get_dst_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The controller to which the switch should be migrated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A string representing the name of the destination controller for</span>
+<span class="sd">            the migration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span></div>
+
+<div class="viewcode-block" id="Migration.get_load"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_load">[docs]</a>    <span class="k">def</span> <span class="nf">get_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The load incurred when performing the migration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the load incurred on the destination</span>
+<span class="sd">            controller when performing the migration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span></div>
+
+<div class="viewcode-block" id="Migration.add_qos_group"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.add_qos_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_qos_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds `group_name` to the collection of QoS groups for the switch.</span>
+
+<span class="sd">        This signifies that the switch is part of the QoS group `group_name`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_name: str</span>
+<span class="sd">            The name of the QoS group being added.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Migration.get_groups"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The collection of QoS groups to which the switch belongs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set of strings representing the names of the QoS groups of which</span>
+<span class="sd">            the switch is a member.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span></div>
+
+<div class="viewcode-block" id="Migration.is_in_group"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.is_in_group">[docs]</a>    <span class="k">def</span> <span class="nf">is_in_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Identifies if the switch belongs to the QoS group `group_name`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_name: str</span>
+<span class="sd">            A string representing the name of the QoS group being checked.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the switch is in the QoS group `group_name`. Otherwise,</span>
+<span class="sd">            False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A string representation of the migration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A string representing the migration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;Migrate switch </span><span class="si">{0}</span><span class="s2"> to controller </span><span class="si">{1}</span><span class="s2"> with load of </span><span class="si">{2}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;QoS groups: </span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_switch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MigrationScheduling.Data.QosConstraint &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>MigrationScheduling.Data.QosConstraint</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MigrationScheduling.Data.QosConstraint</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The `QosConstraint` class stores the information relating to the</span>
+<span class="sd">constraint for a QoS group.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
+
+<div class="viewcode-block" id="QosConstraint"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint">[docs]</a><span class="k">class</span> <span class="nc">QosConstraint</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The information relating to the constraint for a QoS group.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    group: str</span>
+<span class="sd">        A string representing the name of the QoS group.</span>
+<span class="sd">    capacity: int</span>
+<span class="sd">        An integer representing the maximum number of migrations from the QoS</span>
+<span class="sd">        group that can take place simultaneously.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _group: str</span>
+<span class="sd">        The name of the QoS group to which the constraint applies.</span>
+<span class="sd">    _capacity: int</span>
+<span class="sd">        The maximum number of concurrent migrations allowed from the group.</span>
+<span class="sd">    _switches: set</span>
+<span class="sd">        The collection of switches in the QoS group.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="QosConstraint.get_group"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_group">[docs]</a>    <span class="k">def</span> <span class="nf">get_group</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The QoS group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A string representing the name of the QoS group.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group</span></div>
+
+<div class="viewcode-block" id="QosConstraint.get_cap"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_cap">[docs]</a>    <span class="k">def</span> <span class="nf">get_cap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The QoS group capacity.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            An integer representing the maximum number of concurrent</span>
+<span class="sd">            migrations that can take place within the QoS group.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span></div>
+
+<div class="viewcode-block" id="QosConstraint.get_switches"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The switches in the QoS group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set representing the name of the switches in the QoS group.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span></div>
+
+<div class="viewcode-block" id="QosConstraint.get_group_idx"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_group_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The index of the QoS group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            An integer representing the index of the QoS group to which the</span>
+<span class="sd">            constraint applies.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InvalidName</span><span class="p">(</span><span class="s2">&quot;Group names should be in the form &#39;gx&#39; &quot;</span> <span class="o">+</span>
+                                  <span class="s2">&quot;where &#39;x&#39; is the group ID&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QosConstraint.add_switch"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.add_switch">[docs]</a>    <span class="k">def</span> <span class="nf">add_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds `switch_name` to the QoS group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        switch_name: str</span>
+<span class="sd">            The name of the string to be added to the QoS group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A string representation of the QoS constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A string representing the QoS constraint.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;QoS Group </span><span class="si">{0}</span><span class="s2"> allowing </span><span class="si">{1}</span><span class="s2"> concurrent migrations.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;Switches in QoS group: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
