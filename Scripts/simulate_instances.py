@@ -3,18 +3,18 @@
 """
 import os
 import sys
+from MigrationScheduling import specs
 from MigrationScheduling.Data import Simulator
 
-SMALL_INSTANCES = [5, 10, 20, 50, 100, 250, 500, 1000, 5000, 10000]
-FILE_IDX = 1
+NUM_MIGRATIONS_LIST = [5, 10, 20, 50, 100, 250, 500, 1000, 5000, 10000]
 
 if __name__ == "__main__":
     output_path = sys.argv[1]
     simulator = Simulator()
-    curr_idx_small = FILE_IDX
-    curr_idx_large = 0
+    curr_idx_small = specs.SMALL_IDX
+    curr_idx_large = specs.LARGE_IDX
     for num_migrations in NUM_MIGRATIONS_LIST:
-        if num_migrations <= 250:
+        if num_migrations <= specs.SMALL_CUTOFF:
             output_file = os.path.join(
                 output_path, "migrations{}.txt".format(curr_idx_small))
             curr_idx_small += 1

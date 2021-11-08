@@ -216,11 +216,12 @@ class Optimizer:
         None
 
         """
-        self._model.addConstrs((sum(
-            x_vars[self._data.get_switch_id(s), r]
-            for s in qos_const.get_switches()) <= qos_const.get_cap()
-            for qos_const in self._data.get_qos_consts()
-            for r in self._data.get_round_ids()), "QoS")
+        for qos_const in self._data.get_qos_consts():
+            for r in self._data.get_round_ids():
+                self._model.addConstr(sum(
+                    x_vars[self._data.get_switch_id(s), r]
+                    for s in qos_const.get_switches()) <= qos_const.get_cap(),
+                    "QoS[{0}, {1}]".format(qos_const.get_group_idx(), r))
 
     def _add_constraints(self, lambda_var, x_vars):
         """Adds all constraints to the model using `lambda_var` and `x_vars`.
