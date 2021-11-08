@@ -6,6 +6,7 @@ Welcome to Load Migration Scheduling's documentation!
 .. toctree::
    :maxdepth: 2
 
+   Data/data
    exceptions
    utils
 
