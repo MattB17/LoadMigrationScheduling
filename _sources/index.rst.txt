@@ -5,7 +5,9 @@ Welcome to Load Migration Scheduling's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+
+   exceptions
+   utils
 
 
 Indices and tables
