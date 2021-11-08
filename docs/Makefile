@@ -16,10 +16,13 @@ help:
 
 latexpdf:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(PDFBUILDDIR)/latex
-        @echo "Running LaTeX files through pdflatex..."
-        make -C $(PDFBUILDDIR)/latex all-pdf
+	@echo "Running LaTeX files through pdflatex..."
+	make -C $(PDFBUILDDIR)/latex all-pdf
 	cp $(PDFBUILDDIR)/latex/*.pdf $(PDF)
 	@echo "pdflatex finished; see $(PDF)"
+
+buildandcommit: html
+	cd $(BUILDDIR)/html; git add -A; git commit -m "Rebuilt docs"; git push origin gh-pages
 
 .PHONY: help Makefile
 
