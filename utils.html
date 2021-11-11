@@ -37,6 +37,8 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utility Functions</a></li>
 </ul>
@@ -69,6 +71,54 @@
 <span id="utility-functions"></span><h1>Utility Functions<a class="headerlink" href="#module-MigrationScheduling.utils" title="Permalink to this headline"></a></h1>
 <p>A module consisting of utility functions used in modeling and heuristic
 algorithms.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_controller_cap_dict">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_controller_cap_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_constraints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_controller_cap_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_controller_cap_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a dictionary of controller capacities.</p>
+<p>The keys are strings representing the names of the controllers and the
+corresponding value is a float representing the amount of migration load
+the controller can handle in a single round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>controller_constraints: collection</strong></dt><dd><p>A collection of <cite>ControllerConstraint</cite> objects from which the
+dictionary is built.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary of the controller capacities.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_qos_group_cap_dict">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_qos_group_cap_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qos_constraints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_qos_group_cap_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_qos_group_cap_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a dictionary of QoS Group capacities.</p>
+<p>The keys are strings representing the names of the QoS groups and the
+corresponding value is an integer representing the maximum amount of
+migrations from the group that can complete in one round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>qos_constraints: collection</strong></dt><dd><p>A collection of <cite>QosConstraint</cite> objects from which the dictionary is
+built.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary of the QoS Group capacities.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.upper_bound_rounds">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">upper_bound_rounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_migrations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#upper_bound_rounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.upper_bound_rounds" title="Permalink to this definition"></a></dt>

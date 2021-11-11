@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MigrationScheduling.Model.Round &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>MigrationScheduling.Model.Round</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MigrationScheduling.Model.Round</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The `Round` class is a container class used to represent information</span>
+<span class="sd">about a round for the load migration scheduling problem.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<div class="viewcode-block" id="Round"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round">[docs]</a><span class="k">class</span> <span class="nc">Round</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stores the information related to a scheduling round.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    round_num: int</span>
+<span class="sd">        An integer representing the round number.</span>
+<span class="sd">    controller_caps: dict</span>
+<span class="sd">        A dictionary of controller capacities. The keys are strings</span>
+<span class="sd">        representing the names of the destination controllers and the</span>
+<span class="sd">        corresponding value is a float representing the amount of migration</span>
+<span class="sd">        load that the destination controller can handle in a single round.</span>
+<span class="sd">    qos_caps: dict</span>
+<span class="sd">        A dictionary of QoS group capacities. The keys are strings</span>
+<span class="sd">        representing the names of the QoS groups and the corresponding value</span>
+<span class="sd">        is an integer representing the maximum amount of migrations from the</span>
+<span class="sd">        group that can be scheduled in a single round.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _round_num: int</span>
+<span class="sd">        The round number.</span>
+<span class="sd">    _rem_controller_caps: dict</span>
+<span class="sd">        A dictionary representing the remaining capacity of the destination</span>
+<span class="sd">        controllers in the round, after accounting for the current migrations.</span>
+<span class="sd">    _rem_qos_caps: dict</span>
+<span class="sd">        A dictionary representing the remaining capcity of the QoS groups in</span>
+<span class="sd">        the round, after accounting for the current migrations.</span>
+<span class="sd">    _migrations: set</span>
+<span class="sd">        A set of strings representing the name of the migrations completed</span>
+<span class="sd">        in the round.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">round_num</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_num</span> <span class="o">=</span> <span class="n">round_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">controller_caps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">qos_caps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Round.can_schedule_migration"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.can_schedule_migration">[docs]</a>    <span class="k">def</span> <span class="nf">can_schedule_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Indicates if `migration` can be scheduled in the round.</span>
+
+<span class="sd">        Determines whether `migration` can be scheduled in the round given</span>
+<span class="sd">        the remaining capacity of the controllers and QoS groups.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        migration: Migration</span>
+<span class="sd">            A `Migration` object representing the migration to be scheduled.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if `migration` can be scheduled in the round without</span>
+<span class="sd">            exceeding the remaining capacities of the controllers and QoS</span>
+<span class="sd">            groups. Otherwise, False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">within_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_controller_cap</span><span class="p">(</span>
+            <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+        <span class="n">within_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_qos_caps</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">within_controller</span> <span class="ow">and</span> <span class="n">within_groups</span></div>
+
+<div class="viewcode-block" id="Round.schedule_migration"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.schedule_migration">[docs]</a>    <span class="k">def</span> <span class="nf">schedule_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Schedules `migration` in the round.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        migration: Migration</span>
+<span class="sd">            A `Migration` object representing the migration being scheduled</span>
+<span class="sd">            in the round.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_controller_cap</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span>
+                                    <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_qos_caps</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">_within_controller_cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">migration_load</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Whether `migration_load` is within the capacity of `controller`.</span>
+
+<span class="sd">        Determines if a migration with load `migration_load` can be scheduled</span>
+<span class="sd">        in the round without exceeding the remaining capacity of</span>
+<span class="sd">        `controller`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        controller: str</span>
+<span class="sd">            A string representing the name of the controller to which the</span>
+<span class="sd">            migration is destined.</span>
+<span class="sd">        migration_load: float</span>
+<span class="sd">            A float representing the load incurred on `controller_name` to</span>
+<span class="sd">            complete the migration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the migration can be scheduled in the round without</span>
+<span class="sd">            exceeding the controller capacity.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">migration_load</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_within_qos_caps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qos_groups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Whether another migration in `qos_groups` can be scheduled.</span>
+
+<span class="sd">        Determines if a migration that belongs to each QoS group in</span>
+<span class="sd">        `qos_groups` can be scheduled without exceeding the capacity of any</span>
+<span class="sd">        QoS group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        qos_groups: collection</span>
+<span class="sd">            A collection of strings representing the names of the QoS groups</span>
+<span class="sd">            to which the migration belongs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if a migration belonging to the groups of `qos_groups` can</span>
+<span class="sd">            be scheduled without exceeding the capacity of any QoS group.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">qos_group</span> <span class="ow">in</span> <span class="n">qos_groups</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">qos_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span> <span class="ow">or</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span><span class="p">[</span><span class="n">qos_group</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_reduce_controller_cap</span><span class="p">(</span><span class="n">controller</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reduces the controller capacity for `controller` by `load`.</span>
+
+<span class="sd">        The remaining capacity of `controller` is reduced by `load` to</span>
+<span class="sd">        reflect the scheduling of a migration requiring `load` controller</span>
+<span class="sd">        resources.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        controller: str</span>
+<span class="sd">            The name of the controller for which the capacity is reduced.</span>
+<span class="sd">        load: float</span>
+<span class="sd">            A float representing the additional load assigned to the</span>
+<span class="sd">            controller in the round.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cap</span>
+
+    <span class="k">def</span> <span class="nf">_reduce_qos_caps</span><span class="p">(</span><span class="n">qos_groups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reduces the QoS group capacities for `qos_groups` by 1.</span>
+
+<span class="sd">        The remaining capacity for each QoS group in `qos_groups` is reduced</span>
+<span class="sd">        by 1 to accomodate a migration belonging to all the QoS groups in</span>
+<span class="sd">        `qos_groups`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        qos_groups: collection</span>
+<span class="sd">            A collection of strings representing the QoS groups for which</span>
+<span class="sd">            the capacities are reduced.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">qos_group</span> <span class="ow">in</span> <span class="n">qos_groups</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span><span class="p">[</span><span class="n">qos_group</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="Round.print_migrations"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.print_migrations">[docs]</a>    <span class="k">def</span> <span class="nf">print_migrations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints the migrations completed in the round.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Migrations completed in round </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_round_num</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="p">)))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

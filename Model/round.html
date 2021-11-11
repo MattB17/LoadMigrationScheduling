@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migration Round &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Optimizer" href="optimizer.html" />
+    <link rel="prev" title="Parser" href="parser.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="model.html">Model</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="instance_data.html">Instance Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser.html">Parser</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Migration Round</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizer.html">Optimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="model.html">Model</a> &raquo;</li>
+      <li>Migration Round</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Model/round.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-MigrationScheduling.Model.Round">
+<span id="migration-round"></span><h1>Migration Round<a class="headerlink" href="#module-MigrationScheduling.Model.Round" title="Permalink to this headline"></a></h1>
+<p>The <cite>Round</cite> class is a container class used to represent information
+about a round for the load migration scheduling problem.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.Round">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MigrationScheduling.Model.</span></span><span class="sig-name descname"><span class="pre">Round</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">round_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller_caps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_caps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Round.html#Round"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Round" title="Permalink to this definition"></a></dt>
+<dd><p>Stores the information related to a scheduling round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>round_num: int</strong></dt><dd><p>An integer representing the round number.</p>
+</dd>
+<dt><strong>controller_caps: dict</strong></dt><dd><p>A dictionary of controller capacities. The keys are strings
+representing the names of the destination controllers and the
+corresponding value is a float representing the amount of migration
+load that the destination controller can handle in a single round.</p>
+</dd>
+<dt><strong>qos_caps: dict</strong></dt><dd><p>A dictionary of QoS group capacities. The keys are strings
+representing the names of the QoS groups and the corresponding value
+is an integer representing the maximum amount of migrations from the
+group that can be scheduled in a single round.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>_round_num: int</strong></dt><dd><p>The round number.</p>
+</dd>
+<dt><strong>_rem_controller_caps: dict</strong></dt><dd><p>A dictionary representing the remaining capacity of the destination
+controllers in the round, after accounting for the current migrations.</p>
+</dd>
+<dt><strong>_rem_qos_caps: dict</strong></dt><dd><p>A dictionary representing the remaining capcity of the QoS groups in
+the round, after accounting for the current migrations.</p>
+</dd>
+<dt><strong>_migrations: set</strong></dt><dd><p>A set of strings representing the name of the migrations completed
+in the round.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.Round.can_schedule_migration">
+<span class="sig-name descname"><span class="pre">can_schedule_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Round.html#Round.can_schedule_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Round.can_schedule_migration" title="Permalink to this definition"></a></dt>
+<dd><p>Indicates if <cite>migration</cite> can be scheduled in the round.</p>
+<p>Determines whether <cite>migration</cite> can be scheduled in the round given
+the remaining capacity of the controllers and QoS groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migration: Migration</strong></dt><dd><p>A <cite>Migration</cite> object representing the migration to be scheduled.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p>True if <cite>migration</cite> can be scheduled in the round without
+exceeding the remaining capacities of the controllers and QoS
+groups. Otherwise, False.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.Round.print_migrations">
+<span class="sig-name descname"><span class="pre">print_migrations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Round.html#Round.print_migrations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Round.print_migrations" title="Permalink to this definition"></a></dt>
+<dd><p>Prints the migrations completed in the round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Model.Round.schedule_migration">
+<span class="sig-name descname"><span class="pre">schedule_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Round.html#Round.schedule_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Round.schedule_migration" title="Permalink to this definition"></a></dt>
+<dd><p>Schedules <cite>migration</cite> in the round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migration: Migration</strong></dt><dd><p>A <cite>Migration</cite> object representing the migration being scheduled
+in the round.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="parser.html" class="btn btn-neutral float-left" title="Parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="optimizer.html" class="btn btn-neutral float-right" title="Optimizer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
