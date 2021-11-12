@@ -64,3 +64,9 @@ def get_qos_group_cap_dict(qos_constraints):
     """
     return {constraint.get_group(): constraint.get_cap()
             for constraint in qos_constraints}
+
+def get_cap_dicts(instance_data):
+    controller_caps = get_controller_cap_dict(
+        instance_data.get_control_consts())
+    qos_caps = get_controller_cap_dict(instance_data.get_qos_consts())
+    return controller_caps, qos_caps
