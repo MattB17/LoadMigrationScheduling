@@ -2,7 +2,6 @@
 migration scheduling instance.
 
 """
-from MigrationScheduling.Model.InstanceData import InstanceData
 from MigrationScheduling.Model.Parser import Parser
 from MigrationScheduling.Model.Round import Round
 from MigrationScheduling.Model.Optimizer import Optimizer

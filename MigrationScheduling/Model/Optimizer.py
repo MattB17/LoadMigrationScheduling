@@ -2,7 +2,8 @@
 migration schedule.
 
 """
-from MigrationScheduling.Model import InstanceData, Parser
+from MigrationScheduling.Data import InstanceData
+from MigrationScheduling.Model import Parser
 from MigrationScheduling import exceptions as exc
 from MigrationScheduling import utils
 import gurobipy as gp

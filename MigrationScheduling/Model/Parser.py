@@ -4,8 +4,8 @@ migration instance.
 """
 from MigrationScheduling.Data import (Migration,
                                       ControllerConstraint,
-                                      QosConstraint)
-from MigrationScheduling.Model import InstanceData
+                                      QosConstraint,
+                                      InstanceData)
 from MigrationScheduling import utils
 
 class Parser:
