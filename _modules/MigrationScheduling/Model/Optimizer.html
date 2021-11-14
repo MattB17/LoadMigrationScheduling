@@ -70,7 +70,8 @@
 <span class="sd">migration schedule.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">MigrationScheduling.Model</span> <span class="kn">import</span> <span class="n">InstanceData</span><span class="p">,</span> <span class="n">Parser</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">InstanceData</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling.Model</span> <span class="kn">import</span> <span class="n">Parser</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">import</span> <span class="nn">gurobipy</span> <span class="k">as</span> <span class="nn">gp</span>
@@ -93,6 +94,18 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Optimizer.instance_data"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.instance_data">[docs]</a>    <span class="k">def</span> <span class="nf">instance_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The data for the load migration scheduling instance being modeled.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        InstanceData</span>
+<span class="sd">            An `InstanceData` object specifying the data for a load migration</span>
+<span class="sd">            scheduling instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div>
 
 <div class="viewcode-block" id="Optimizer.get_model_data"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.get_model_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves the data for the migration scheduling instance.</span>

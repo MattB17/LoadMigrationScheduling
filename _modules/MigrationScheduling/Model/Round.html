@@ -207,7 +207,7 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_reduce_controller_cap</span><span class="p">(</span><span class="n">controller</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_reduce_controller_cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reduces the controller capacity for `controller` by `load`.</span>
 
 <span class="sd">        The remaining capacity of `controller` is reduced by `load` to</span>
@@ -227,9 +227,9 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span> <span class="o">-=</span> <span class="n">load</span>
 
-    <span class="k">def</span> <span class="nf">_reduce_qos_caps</span><span class="p">(</span><span class="n">qos_groups</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_reduce_qos_caps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qos_groups</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reduces the QoS group capacities for `qos_groups` by 1.</span>
 
 <span class="sd">        The remaining capacity for each QoS group in `qos_groups` is reduced</span>

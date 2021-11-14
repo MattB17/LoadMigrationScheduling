@@ -107,7 +107,7 @@
 <span class="sd">        A dictionary of the controller capacities.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">constraint</span><span class="o">.</span><span class="n">get_controller</span><span class="p">():</span> <span class="n">constraint</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">constraint</span><span class="o">.</span><span class="n">get_controller</span><span class="p">():</span> <span class="n">constraint</span><span class="o">.</span><span class="n">get_cap</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">controller_constraints</span><span class="p">}</span></div>
 
 
@@ -132,6 +132,35 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">constraint</span><span class="o">.</span><span class="n">get_group</span><span class="p">():</span> <span class="n">constraint</span><span class="o">.</span><span class="n">get_cap</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">qos_constraints</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_cap_dicts"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_cap_dicts">[docs]</a><span class="k">def</span> <span class="nf">get_cap_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The dictionaries of controller and QoS group capacities.</span>
+
+<span class="sd">    Constructs two dictionaries of controller capacities and QoS group</span>
+<span class="sd">    capacities for the constraints specified in `instance_data`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_data: InstanceData</span>
+<span class="sd">        An `InstanceData` object representing the data for a load migration</span>
+<span class="sd">        scheduling instance, from which the dictionaries are generated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict, dict</span>
+<span class="sd">        The first dictionary specifies the controller capacities. The keys</span>
+<span class="sd">        are strings representing the controller names and the corresponding</span>
+<span class="sd">        value is a float, representing the load that the controller can</span>
+<span class="sd">        accommodate in each round. The second dictionary specifies QoS</span>
+<span class="sd">        group capacities. The keys are strings representing the QoS group</span>
+<span class="sd">        names and the corresponding value is an integer representing the</span>
+<span class="sd">        number of migrations from that group allowed within a single round.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">controller_caps</span> <span class="o">=</span> <span class="n">get_controller_cap_dict</span><span class="p">(</span>
+        <span class="n">instance_data</span><span class="o">.</span><span class="n">get_control_consts</span><span class="p">())</span>
+    <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">get_qos_group_cap_dict</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span></div>
 </pre></div>
 
            </div>

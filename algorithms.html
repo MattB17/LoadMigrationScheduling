@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Load Migration Scheduling’s documentation! &mdash; Load Migration Scheduling  documentation</title>
+  <title>Scheduling Algorithms &mdash; Load Migration Scheduling  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,8 +17,7 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Migration Scheduling Data" href="Data/data.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -26,7 +25,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> Load Migration Scheduling
+            <a href="index.html" class="icon icon-home"> Load Migration Scheduling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -49,17 +48,17 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Load Migration Scheduling</a>
+          <a href="index.html">Load Migration Scheduling</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to Load Migration Scheduling’s documentation!</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Scheduling Algorithms</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/algorithms.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -67,44 +66,51 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-load-migration-scheduling-s-documentation">
-<h1>Welcome to Load Migration Scheduling’s documentation!<a class="headerlink" href="#welcome-to-load-migration-scheduling-s-documentation" title="Permalink to this headline"></a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Data/migration.html">Switch Migration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Data/controller_constraint.html">Controller Constraint</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Data/qos_constraint.html">QoS Constraint</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Data/instance_data.html">Instance Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Data/simulator.html">Migration Simulator</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Model/parser.html">Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Model/round.html">Migration Round</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Model/optimizer.html">Optimizer</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
-</ul>
-</div>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
+  <section id="module-MigrationScheduling.algorithms">
+<span id="scheduling-algorithms"></span><h1>Scheduling Algorithms<a class="headerlink" href="#module-MigrationScheduling.algorithms" title="Permalink to this headline"></a></h1>
+<p>This module implements the heuristic algorithms used to solve the
+load migration scheduling problem.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.algorithms.vector_first_fit">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">vector_first_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#vector_first_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.vector_first_fit" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the vectorized version of the first fit algorithm.</p>
+<p>The vectorized first fit algorithm is inspired by the algorithm of the
+same name for vector bin-packing. In this algorithm, we maintain a
+collection of rounds in which migrations are scheduled. For each new
+migration, the migration is scheduled in the first round in which it
+fits.</p>
+<p>A migration fits in a round if the migration’s destination controller
+has enough capacity to accomodate the load of the new migration and all
+migrations already scheduled in the round. In addition, for each QoS
+group g containing the migration, g has enough capacity to accomodate
+the new migration and the other migrations of g already scheduled in the
+round.</p>
+<p>If none of the current rounds can handle the new migration, another round
+is added and the migration is added to this new round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object representing the data for a load migration
+scheduling instance, on which the algorithm is run.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>An integer representing the number of rounds used by the algorithm
+to schedule the load migration instance specified by <cite>instance_data</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Data/data.html" class="btn btn-neutral float-right" title="Migration Scheduling Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
