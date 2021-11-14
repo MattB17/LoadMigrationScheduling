@@ -7,6 +7,7 @@ Migration Scheduling Data
    :maxdepth: 2
 
    migration
+   constraint_dict
    controller_constraint
    qos_constraint
    instance_data
