@@ -9,4 +9,5 @@ Migration Scheduling Data
    migration
    controller_constraint
    qos_constraint
+   instance_data
    simulator
