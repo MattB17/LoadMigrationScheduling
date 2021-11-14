@@ -2,6 +2,7 @@
 build the capacity constraints for a controller.
 
 """
+import copy
 from MigrationScheduling import exceptions as exc
 
 class ControllerConstraint:
@@ -92,6 +93,59 @@ class ControllerConstraint:
 
         """
         self._switches.add(switch_name)
+
+    def get_total_load(self, migrations):
+        """The total load on the controller based on `migrations`.
+
+        The total load is the cumulative load of all migrations in
+        `migrations` that are destined for the controller. It represents the
+        total load incurred on the controller across all rounds.
+
+        Parameters
+        ----------
+        migrations: collection
+            A collection of `Migration` objects representing the migrations
+            to be completed. Used to calculate the load on the controller
+            for the given migrations.
+
+        Returns
+        -------
+        float
+            A float representing the total cumulative load that will be
+            incurred on the controller based on `migrations`.
+
+        """
+        total_load = 0
+        for migration in migrations:
+            if migration.get_dst_controller() == self._controller:
+                total_load += migration.get_load()
+        return total_load
+
+    def get_scheduling_dict(self, migrations):
+        """A dict representing the scheduling information for the controller.
+
+        The dictionary is a compact representation of the information needed
+        for scheduling while accommodating the controller constraint.
+
+        Parameters
+        ----------
+        migrations: collection
+            A collection of `Migration` object representing all migrations,
+            used to calculate the cumulative load on the controller across
+            all rounds.
+
+        Returns
+        -------
+        dict
+            The dictionary used for scheduling according to the controller
+            constraint. There is a key-value pair representing the capacity
+            of the controller. Another representing the cumulative load of
+            the migrations destined to the controller and a third
+            representing the names of the switches destined to the controller.
+
+        """
+        return {'cap': self.get_cap, 'size': self.get_total_load(migrations),
+                'switches': copy.deepcopy(self._switches)}
 
     def __str__(self):
         """A string representation of the controller constraint.
