@@ -26,6 +26,18 @@ class Optimizer:
         self._model = None
         self._data = None
 
+    def instance_data(self):
+        """The data for the load migration scheduling instance being modeled.
+
+        Returns
+        -------
+        InstanceData
+            An `InstanceData` object specifying the data for a load migration
+            scheduling instance.
+
+        """
+        return self._data
+
     def get_model_data(self, migration_file):
         """Retrieves the data for the migration scheduling instance.
 

@@ -139,7 +139,7 @@ class Round:
                 return False
         return True
 
-    def _reduce_controller_cap(controller, load):
+    def _reduce_controller_cap(self, controller, load):
         """Reduces the controller capacity for `controller` by `load`.
 
         The remaining capacity of `controller` is reduced by `load` to
@@ -159,9 +159,9 @@ class Round:
         None
 
         """
-        self._rem_controller_caps[controller] -= cap
+        self._rem_controller_caps[controller] -= load
 
-    def _reduce_qos_caps(qos_groups):
+    def _reduce_qos_caps(self, qos_groups):
         """Reduces the QoS group capacities for `qos_groups` by 1.
 
         The remaining capacity for each QoS group in `qos_groups` is reduced

@@ -39,7 +39,7 @@ def get_controller_cap_dict(controller_constraints):
         A dictionary of the controller capacities.
 
     """
-    return {constraint.get_controller(): constraint.get_load()
+    return {constraint.get_controller(): constraint.get_cap()
             for constraint in controller_constraints}
 
 
@@ -66,7 +66,30 @@ def get_qos_group_cap_dict(qos_constraints):
             for constraint in qos_constraints}
 
 def get_cap_dicts(instance_data):
+    """The dictionaries of controller and QoS group capacities.
+
+    Constructs two dictionaries of controller capacities and QoS group
+    capacities for the constraints specified in `instance_data`.
+
+    Parameters
+    ----------
+    instance_data: InstanceData
+        An `InstanceData` object representing the data for a load migration
+        scheduling instance, from which the dictionaries are generated.
+
+    Returns
+    -------
+    dict, dict
+        The first dictionary specifies the controller capacities. The keys
+        are strings representing the controller names and the corresponding
+        value is a float, representing the load that the controller can
+        accommodate in each round. The second dictionary specifies QoS
+        group capacities. The keys are strings representing the QoS group
+        names and the corresponding value is an integer representing the
+        number of migrations from that group allowed within a single round.
+
+    """
     controller_caps = get_controller_cap_dict(
         instance_data.get_control_consts())
-    qos_caps = get_controller_cap_dict(instance_data.get_qos_consts())
+    qos_caps = get_qos_group_cap_dict(instance_data.get_qos_consts())
     return controller_caps, qos_caps
