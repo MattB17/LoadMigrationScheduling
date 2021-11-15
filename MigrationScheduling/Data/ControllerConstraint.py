@@ -2,8 +2,8 @@
 build the capacity constraints for a controller.
 
 """
-import copy
 from MigrationScheduling import exceptions as exc
+from MigrationScheduling.Data import ConstraintDict
 
 class ControllerConstraint:
     """Stores the information of the constraints for a controller.
@@ -121,8 +121,8 @@ class ControllerConstraint:
                 total_load += migration.get_load()
         return total_load
 
-    def get_scheduling_dict(self, migrations):
-        """A dict representing the scheduling information for the controller.
+    def get_constraint_dict(self, migrations):
+        """A dict representing the constraint information for the controller.
 
         The dictionary is a compact representation of the information needed
         for scheduling while accommodating the controller constraint.
@@ -136,16 +136,13 @@ class ControllerConstraint:
 
         Returns
         -------
-        dict
-            The dictionary used for scheduling according to the controller
-            constraint. There is a key-value pair representing the capacity
-            of the controller. Another representing the cumulative load of
-            the migrations destined to the controller and a third
-            representing the names of the switches destined to the controller.
+        ConstraintDict
+            A `ConstraintDict` object representing the constraint information
+            for the controller.
 
         """
-        return {'cap': self.get_cap, 'size': self.get_total_load(migrations),
-                'switches': copy.deepcopy(self._switches)}
+        return ConstraintDict(
+            self.get_cap, self.get_total_load(migrations), self._switches)
 
     def __str__(self):
         """A string representation of the controller constraint.

@@ -2,8 +2,8 @@
 constraint for a QoS group.
 
 """
-import copy
 from MigrationScheduling import exceptions as exc
+from MigrationScheduling.Data import ConstraintDict
 
 class QosConstraint:
     """The information relating to the constraint for a QoS group.
@@ -96,23 +96,21 @@ class QosConstraint:
         """
         self._switches.add(switch_name)
 
-    def get_scheduling_dict(self):
-        """A dict representing the scheduling information for the QoS group.
+    def get_constraint_dict(self):
+        """A dict representing the constraint information for the QoS group.
 
         The dictionary is a compact representation of the information needed
         for scheduling while accommodating the QoS constraint.
 
         Returns
         -------
-        dict
-            The dictionary used for scheduling according to the QoS
-            constraint. There is a key-value pair representing the capacity
-            of the QoS group. Another representing the number of migrations
-            and a third representing the names of the migrations.
+        ConstraintDict
+            A `ConstraintDict` object representing the constraint information
+            for the QoS group.
 
         """
-        return {'cap': self.get_cap(), 'size': len(self._switches),
-                'switches': copy.deepcopy(self._switches)}
+        return ConstraintDict(
+            self.get_cap(), len(self._switches), self._switches)
 
     def __str__(self):
         """A string representation of the QoS constraint.
