@@ -37,8 +37,9 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 </ul>
 
         </div>
@@ -71,6 +72,7 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -119,7 +121,17 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict">ConstraintDict (class in MigrationScheduling.Data)</a>
+</li>
       <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint">ControllerConstraint (class in MigrationScheduling.Data)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="algorithms.html#MigrationScheduling.algorithms.find_scheduling_round">find_scheduling_round() (in module MigrationScheduling.algorithms)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -135,6 +147,14 @@
       </ul></li>
       <li><a href="utils.html#MigrationScheduling.utils.get_cap_dicts">get_cap_dicts() (in module MigrationScheduling.utils)</a>
 </li>
+      <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_capacity">get_capacity() (MigrationScheduling.Data.ConstraintDict method)</a>
+</li>
+      <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_constraint_dict">get_constraint_dict() (MigrationScheduling.Data.ControllerConstraint method)</a>
+
+      <ul>
+        <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_constraint_dict">(MigrationScheduling.Data.QosConstraint method)</a>
+</li>
+      </ul></li>
       <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_controller">get_controller() (MigrationScheduling.Data.ControllerConstraint method)</a>
 </li>
       <li><a href="utils.html#MigrationScheduling.utils.get_controller_cap_dict">get_controller_cap_dict() (in module MigrationScheduling.utils)</a>
@@ -157,7 +177,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_groups">get_groups() (MigrationScheduling.Data.Migration method)</a>
 </li>
-      <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_load">get_load() (MigrationScheduling.Data.Migration method)</a>
+      <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_load">get_load() (MigrationScheduling.Data.ConstraintDict method)</a>
+
+      <ul>
+        <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_load">(MigrationScheduling.Data.Migration method)</a>
+</li>
+      </ul></li>
+      <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_load_factor">get_load_factor() (MigrationScheduling.Data.ConstraintDict method)</a>
 </li>
       <li><a href="Model/parser.html#MigrationScheduling.Model.Parser.get_migrations">get_migrations() (MigrationScheduling.Model.Parser method)</a>
 </li>
@@ -175,12 +201,16 @@
 </li>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_switch_idx">get_switch_idx() (MigrationScheduling.Data.Migration method)</a>
 </li>
-      <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_switches">get_switches() (MigrationScheduling.Data.ControllerConstraint method)</a>
+      <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_switches">get_switches() (MigrationScheduling.Data.ConstraintDict method)</a>
 
       <ul>
+        <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_switches">(MigrationScheduling.Data.ControllerConstraint method)</a>
+</li>
         <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_switches">(MigrationScheduling.Data.QosConstraint method)</a>
 </li>
       </ul></li>
+      <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_total_load">get_total_load() (MigrationScheduling.Data.ControllerConstraint method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -217,6 +247,13 @@
 
       <ul>
         <li><a href="Data/data.html#module-MigrationScheduling.Data">module</a>
+</li>
+      </ul></li>
+      <li>
+    MigrationScheduling.Data.ConstraintDict
+
+      <ul>
+        <li><a href="Data/constraint_dict.html#module-MigrationScheduling.Data.ConstraintDict">module</a>
 </li>
       </ul></li>
       <li>
@@ -301,6 +338,8 @@
 </li>
         <li><a href="Data/data.html#module-MigrationScheduling.Data">MigrationScheduling.Data</a>
 </li>
+        <li><a href="Data/constraint_dict.html#module-MigrationScheduling.Data.ConstraintDict">MigrationScheduling.Data.ConstraintDict</a>
+</li>
         <li><a href="Data/controller_constraint.html#module-MigrationScheduling.Data.ControllerConstraint">MigrationScheduling.Data.ControllerConstraint</a>
 </li>
         <li><a href="Data/migration.html#module-MigrationScheduling.Data.Migration">MigrationScheduling.Data.Migration</a>
@@ -358,10 +397,12 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model/round.html#MigrationScheduling.Model.Round">Round (class in MigrationScheduling.Model)</a>
+      <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.remove_switch">remove_switch() (MigrationScheduling.Data.ConstraintDict method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model/round.html#MigrationScheduling.Model.Round">Round (class in MigrationScheduling.Model)</a>
+</li>
       <li><a href="Data/simulator.html#MigrationScheduling.Data.Simulator.run">run() (MigrationScheduling.Data.Simulator method)</a>
 </li>
   </ul></td>

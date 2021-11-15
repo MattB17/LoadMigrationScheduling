@@ -36,8 +36,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
 </ul>
 
         </div>
@@ -70,6 +72,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">ConstraintDict</span>
 
 <div class="viewcode-block" id="QosConstraint"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint">[docs]</a><span class="k">class</span> <span class="nc">QosConstraint</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;The information relating to the constraint for a QoS group.</span>
@@ -161,6 +164,22 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QosConstraint.get_constraint_dict"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_constraint_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_constraint_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A dict representing the constraint information for the QoS group.</span>
+
+<span class="sd">        The dictionary is a compact representation of the information needed</span>
+<span class="sd">        for scheduling while accommodating the QoS constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ConstraintDict</span>
+<span class="sd">            A `ConstraintDict` object representing the constraint information</span>
+<span class="sd">            for the QoS group.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ConstraintDict</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_cap</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A string representation of the QoS constraint.</span>

@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="QoS Constraint" href="qos_constraint.html" />
-    <link rel="prev" title="Switch Migration" href="migration.html" /> 
+    <link rel="prev" title="Constraint Dictionary" href="constraint_dict.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,13 +40,17 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="data.html">Migration Scheduling Data</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="migration.html">Switch Migration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraint_dict.html">Constraint Dictionary</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Controller Constraint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qos_constraint.html">QoS Constraint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instance_data.html">Instance Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulator.html">Migration Simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
 </ul>
 
         </div>
@@ -145,6 +149,31 @@ build the capacity constraints for a controller.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ControllerConstraint.get_constraint_dict">
+<span class="sig-name descname"><span class="pre">get_constraint_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ControllerConstraint.html#ControllerConstraint.get_constraint_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ControllerConstraint.get_constraint_dict" title="Permalink to this definition"></a></dt>
+<dd><p>A dict representing the constraint information for the controller.</p>
+<p>The dictionary is a compact representation of the information needed
+for scheduling while accommodating the controller constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migrations: collection</strong></dt><dd><p>A collection of <cite>Migration</cite> object representing all migrations,
+used to calculate the cumulative load on the controller across
+all rounds.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ConstraintDict</dt><dd><p>A <cite>ConstraintDict</cite> object representing the constraint information
+for the controller.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MigrationScheduling.Data.ControllerConstraint.get_controller">
 <span class="sig-name descname"><span class="pre">get_controller</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ControllerConstraint.html#ControllerConstraint.get_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ControllerConstraint.get_controller" title="Permalink to this definition"></a></dt>
 <dd><p>The name of the controller to which the constraints apply.</p>
@@ -187,6 +216,32 @@ the constraint.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ControllerConstraint.get_total_load">
+<span class="sig-name descname"><span class="pre">get_total_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ControllerConstraint.html#ControllerConstraint.get_total_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ControllerConstraint.get_total_load" title="Permalink to this definition"></a></dt>
+<dd><p>The total load on the controller based on <cite>migrations</cite>.</p>
+<p>The total load is the cumulative load of all migrations in
+<cite>migrations</cite> that are destined for the controller. It represents the
+total load incurred on the controller across all rounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migrations: collection</strong></dt><dd><p>A collection of <cite>Migration</cite> objects representing the migrations
+to be completed. Used to calculate the load on the controller
+for the given migrations.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the total cumulative load that will be
+incurred on the controller based on <cite>migrations</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -195,7 +250,7 @@ the constraint.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="migration.html" class="btn btn-neutral float-left" title="Switch Migration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="constraint_dict.html" class="btn btn-neutral float-left" title="Constraint Dictionary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="qos_constraint.html" class="btn btn-neutral float-right" title="QoS Constraint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -18,7 +18,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Migration Simulator" href="simulator.html" />
+    <link rel="next" title="Instance Data" href="instance_data.html" />
     <link rel="prev" title="Controller Constraint" href="controller_constraint.html" /> 
 </head>
 
@@ -40,13 +40,17 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="data.html">Migration Scheduling Data</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="migration.html">Switch Migration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraint_dict.html">Constraint Dictionary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="controller_constraint.html">Controller Constraint</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">QoS Constraint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instance_data.html">Instance Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulator.html">Migration Simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
 </ul>
 
         </div>
@@ -147,6 +151,23 @@ migrations that can take place within the QoS group.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.QosConstraint.get_constraint_dict">
+<span class="sig-name descname"><span class="pre">get_constraint_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/QosConstraint.html#QosConstraint.get_constraint_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.QosConstraint.get_constraint_dict" title="Permalink to this definition"></a></dt>
+<dd><p>A dict representing the constraint information for the QoS group.</p>
+<p>The dictionary is a compact representation of the information needed
+for scheduling while accommodating the QoS constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ConstraintDict</dt><dd><p>A <cite>ConstraintDict</cite> object representing the constraint information
+for the QoS group.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MigrationScheduling.Data.QosConstraint.get_group">
 <span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/QosConstraint.html#QosConstraint.get_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.QosConstraint.get_group" title="Permalink to this definition"></a></dt>
 <dd><p>The QoS group.</p>
@@ -198,7 +219,7 @@ constraint applies.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="controller_constraint.html" class="btn btn-neutral float-left" title="Controller Constraint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="simulator.html" class="btn btn-neutral float-right" title="Migration Simulator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="instance_data.html" class="btn btn-neutral float-right" title="Instance Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

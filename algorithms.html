@@ -17,7 +17,9 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Utility Functions" href="utils.html" />
+    <link rel="prev" title="Optimizer" href="Model/optimizer.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,11 +37,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 </ul>
 
         </div>
@@ -70,6 +73,38 @@
 <span id="scheduling-algorithms"></span><h1>Scheduling Algorithms<a class="headerlink" href="#module-MigrationScheduling.algorithms" title="Permalink to this headline"></a></h1>
 <p>This module implements the heuristic algorithms used to solve the
 load migration scheduling problem.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.algorithms.find_scheduling_round">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">find_scheduling_round</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">existing_rounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#find_scheduling_round"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.find_scheduling_round" title="Permalink to this definition"></a></dt>
+<dd><p>The round in which to schedule <cite>migration</cite> among <cite>existing_rounds</cite>.</p>
+<p>Loops through the rounds in <cite>existing_rounds</cite> to find the first round in
+which <cite>migration</cite> can be scheduled. If <cite>migration</cite> cannot be scheduled in
+any of the rounds then <cite>num_rounds</cite> is returned, signifying that it
+should be scheduled in a new round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>existing_rounds: collection</strong></dt><dd><p>A collection of <cite>Round</cite> objects representing the rounds to which
+migrations have already been scheduled.</p>
+</dd>
+<dt><strong>num_rounds: int</strong></dt><dd><p>An integer representing the number of rounds in <cite>existing_rounds</cite>.</p>
+</dd>
+<dt><strong>migration: Migration</strong></dt><dd><p>A <cite>Migration</cite> object representing the migration to be scheduled.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>An integer representing the index of the round in <cite>existing_rounds</cite>
+to which <cite>migration</cite> can be scheduled. If this value equals
+<cite>num_rounds</cite> then <cite>migration</cite> cannot be scheduled in any of the
+rounds in <cite>existing_rounds</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.vector_first_fit">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">vector_first_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#vector_first_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.vector_first_fit" title="Permalink to this definition"></a></dt>
@@ -110,7 +145,10 @@ to schedule the load migration instance specified by <cite>instance_data</cite>.
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Model/optimizer.html" class="btn btn-neutral float-left" title="Optimizer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utility Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

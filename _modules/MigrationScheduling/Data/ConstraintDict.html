@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MigrationScheduling.Data.ConstraintDict &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>MigrationScheduling.Data.ConstraintDict</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MigrationScheduling.Data.ConstraintDict</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The `ConstraintDict` class is a container class used to hold the</span>
+<span class="sd">information for a constraint of the load migration scheduling problem.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="ConstraintDict"><a class="viewcode-back" href="../../../Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict">[docs]</a><span class="k">class</span> <span class="nc">ConstraintDict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Holds the info for a constraint of the load migration problem.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    capacity: float</span>
+<span class="sd">        A float representing the constraint capacity. This is the RHS of the</span>
+<span class="sd">        constraint.</span>
+<span class="sd">    load: float</span>
+<span class="sd">        A float representing the total load on the constraint across all</span>
+<span class="sd">        rounds. That is, it would be the total load if all migrations</span>
+<span class="sd">        associated with the constraint were scheduled in a single round.</span>
+<span class="sd">    switches: collection</span>
+<span class="sd">        A collection of strings representing the names of the switches</span>
+<span class="sd">        associated with the constraint. This identifies the migrations that</span>
+<span class="sd">        appear on the LHS of the constraint.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _capacity: float</span>
+<span class="sd">        The constraint capacity.</span>
+<span class="sd">    _load: float</span>
+<span class="sd">        The load on the constraint.</span>
+<span class="sd">    _switches: set</span>
+<span class="sd">        A set of strings representing the names of switches associated with</span>
+<span class="sd">        the constraint.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">switches</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span> <span class="o">=</span> <span class="n">load</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span> <span class="o">=</span> <span class="p">{</span><span class="n">switch</span> <span class="k">for</span> <span class="n">switch</span> <span class="ow">in</span> <span class="n">switches</span><span class="p">}</span>
+
+<div class="viewcode-block" id="ConstraintDict.get_capacity"><a class="viewcode-back" href="../../../Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_capacity">[docs]</a>    <span class="k">def</span> <span class="nf">get_capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The capacity of the constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the capacity of the constraint.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span></div>
+
+<div class="viewcode-block" id="ConstraintDict.get_load"><a class="viewcode-back" href="../../../Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_load">[docs]</a>    <span class="k">def</span> <span class="nf">get_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The load on the constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the load on the constraint.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span></div>
+
+<div class="viewcode-block" id="ConstraintDict.get_switches"><a class="viewcode-back" href="../../../Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The switches associated with the constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set of strings representing the names of the switches</span>
+<span class="sd">            associated with the constraint.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span></div>
+
+<div class="viewcode-block" id="ConstraintDict.remove_switch"><a class="viewcode-back" href="../../../Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.remove_switch">[docs]</a>    <span class="k">def</span> <span class="nf">remove_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">,</span> <span class="n">switch_load</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes `switch_name` from the constraint.</span>
+
+<span class="sd">        The switch with name `switch_name` is removed and the load on the</span>
+<span class="sd">        constraint is reduced by `switch_load`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        switch_name: str</span>
+<span class="sd">            A string representing the name of the switch being removed.</span>
+<span class="sd">        switch_load: float</span>
+<span class="sd">            A float representing the load incurred by the constraint for</span>
+<span class="sd">            `switch_name`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span> <span class="o">-=</span> <span class="n">switch_load</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConstraintDict.get_load_factor"><a class="viewcode-back" href="../../../Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_load_factor">[docs]</a>    <span class="k">def</span> <span class="nf">get_load_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The load factor on the constraint.</span>
+
+<span class="sd">        The load factor is defined as the load on the constraint divided by</span>
+<span class="sd">        the capacity of the constraint. It represents the degree to which the</span>
+<span class="sd">        constraint is overloaded.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the load factor on the constraint.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cap</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constraint Dictionary &mdash; Load Migration Scheduling  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Controller Constraint" href="controller_constraint.html" />
+    <link rel="prev" title="Switch Migration" href="migration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Load Migration Scheduling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="data.html">Migration Scheduling Data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="migration.html">Switch Migration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Constraint Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller_constraint.html">Controller Constraint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qos_constraint.html">QoS Constraint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instance_data.html">Instance Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulator.html">Migration Simulator</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Scheduling Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Load Migration Scheduling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="data.html">Migration Scheduling Data</a> &raquo;</li>
+      <li>Constraint Dictionary</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Data/constraint_dict.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-MigrationScheduling.Data.ConstraintDict">
+<span id="constraint-dictionary"></span><h1>Constraint Dictionary<a class="headerlink" href="#module-MigrationScheduling.Data.ConstraintDict" title="Permalink to this headline"></a></h1>
+<p>The <cite>ConstraintDict</cite> class is a container class used to hold the
+information for a constraint of the load migration scheduling problem.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ConstraintDict">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MigrationScheduling.Data.</span></span><span class="sig-name descname"><span class="pre">ConstraintDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capacity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switches</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ConstraintDict.html#ConstraintDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ConstraintDict" title="Permalink to this definition"></a></dt>
+<dd><p>Holds the info for a constraint of the load migration problem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>capacity: float</strong></dt><dd><p>A float representing the constraint capacity. This is the RHS of the
+constraint.</p>
+</dd>
+<dt><strong>load: float</strong></dt><dd><p>A float representing the total load on the constraint across all
+rounds. That is, it would be the total load if all migrations
+associated with the constraint were scheduled in a single round.</p>
+</dd>
+<dt><strong>switches: collection</strong></dt><dd><p>A collection of strings representing the names of the switches
+associated with the constraint. This identifies the migrations that
+appear on the LHS of the constraint.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>_capacity: float</strong></dt><dd><p>The constraint capacity.</p>
+</dd>
+<dt><strong>_load: float</strong></dt><dd><p>The load on the constraint.</p>
+</dd>
+<dt><strong>_switches: set</strong></dt><dd><p>A set of strings representing the names of switches associated with
+the constraint.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ConstraintDict.get_capacity">
+<span class="sig-name descname"><span class="pre">get_capacity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ConstraintDict.html#ConstraintDict.get_capacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ConstraintDict.get_capacity" title="Permalink to this definition"></a></dt>
+<dd><p>The capacity of the constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the capacity of the constraint.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ConstraintDict.get_load">
+<span class="sig-name descname"><span class="pre">get_load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ConstraintDict.html#ConstraintDict.get_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ConstraintDict.get_load" title="Permalink to this definition"></a></dt>
+<dd><p>The load on the constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the load on the constraint.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ConstraintDict.get_load_factor">
+<span class="sig-name descname"><span class="pre">get_load_factor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ConstraintDict.html#ConstraintDict.get_load_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ConstraintDict.get_load_factor" title="Permalink to this definition"></a></dt>
+<dd><p>The load factor on the constraint.</p>
+<p>The load factor is defined as the load on the constraint divided by
+the capacity of the constraint. It represents the degree to which the
+constraint is overloaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the load factor on the constraint.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ConstraintDict.get_switches">
+<span class="sig-name descname"><span class="pre">get_switches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ConstraintDict.html#ConstraintDict.get_switches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ConstraintDict.get_switches" title="Permalink to this definition"></a></dt>
+<dd><p>The switches associated with the constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>set</dt><dd><p>A set of strings representing the names of the switches
+associated with the constraint.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MigrationScheduling.Data.ConstraintDict.remove_switch">
+<span class="sig-name descname"><span class="pre">remove_switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_load</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/ConstraintDict.html#ConstraintDict.remove_switch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.ConstraintDict.remove_switch" title="Permalink to this definition"></a></dt>
+<dd><p>Removes <cite>switch_name</cite> from the constraint.</p>
+<p>The switch with name <cite>switch_name</cite> is removed and the load on the
+constraint is reduced by <cite>switch_load</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>switch_name: str</strong></dt><dd><p>A string representing the name of the switch being removed.</p>
+</dd>
+<dt><strong>switch_load: float</strong></dt><dd><p>A float representing the load incurred by the constraint for
+<cite>switch_name</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="migration.html" class="btn btn-neutral float-left" title="Switch Migration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="controller_constraint.html" class="btn btn-neutral float-right" title="Controller Constraint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Matt Buckley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

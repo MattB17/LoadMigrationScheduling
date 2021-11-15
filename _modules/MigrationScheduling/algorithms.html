@@ -37,8 +37,9 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Model/model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
 </ul>
 
         </div>
@@ -72,6 +73,41 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Model</span> <span class="kn">import</span> <span class="n">Round</span>
+
+
+<div class="viewcode-block" id="find_scheduling_round"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.find_scheduling_round">[docs]</a><span class="k">def</span> <span class="nf">find_scheduling_round</span><span class="p">(</span><span class="n">existing_rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The round in which to schedule `migration` among `existing_rounds`.</span>
+
+<span class="sd">    Loops through the rounds in `existing_rounds` to find the first round in</span>
+<span class="sd">    which `migration` can be scheduled. If `migration` cannot be scheduled in</span>
+<span class="sd">    any of the rounds then `num_rounds` is returned, signifying that it</span>
+<span class="sd">    should be scheduled in a new round.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    existing_rounds: collection</span>
+<span class="sd">        A collection of `Round` objects representing the rounds to which</span>
+<span class="sd">        migrations have already been scheduled.</span>
+<span class="sd">    num_rounds: int</span>
+<span class="sd">        An integer representing the number of rounds in `existing_rounds`.</span>
+<span class="sd">    migration: Migration</span>
+<span class="sd">        A `Migration` object representing the migration to be scheduled.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        An integer representing the index of the round in `existing_rounds`</span>
+<span class="sd">        to which `migration` can be scheduled. If this value equals</span>
+<span class="sd">        `num_rounds` then `migration` cannot be scheduled in any of the</span>
+<span class="sd">        rounds in `existing_rounds`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">curr_round</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">curr_round</span> <span class="o">&lt;</span> <span class="n">num_rounds</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">existing_rounds</span><span class="p">[</span><span class="n">curr_round</span><span class="p">]</span><span class="o">.</span><span class="n">can_schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">curr_round</span>
+        <span class="n">curr_round</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">curr_round</span></div>
 
 
 <div class="viewcode-block" id="vector_first_fit"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.vector_first_fit">[docs]</a><span class="k">def</span> <span class="nf">vector_first_fit</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>
@@ -110,16 +146,11 @@
     <span class="n">num_rounds</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_cap_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">migration</span> <span class="ow">in</span> <span class="n">instance_data</span><span class="o">.</span><span class="n">get_migrations</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">schedule_round</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">schedule_round</span> <span class="o">&lt;</span> <span class="n">num_rounds</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">can_schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">):</span>
-                <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
-                <span class="k">break</span>
-            <span class="n">schedule_round</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">schedule_round</span> <span class="o">=</span> <span class="n">find_scheduling_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">schedule_round</span> <span class="o">==</span> <span class="n">num_rounds</span><span class="p">:</span>
             <span class="n">rounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Round</span><span class="p">(</span><span class="n">num_rounds</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">))</span>
             <span class="n">num_rounds</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
+        <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">num_rounds</span></div>
 </pre></div>
 
