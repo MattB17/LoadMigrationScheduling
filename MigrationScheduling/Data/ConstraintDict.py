@@ -2,6 +2,7 @@
 information for a constraint of the load migration scheduling problem.
 
 """
+from MigrationScheduling import exceptions as exc
 
 
 class ConstraintDict:
@@ -85,11 +86,19 @@ class ConstraintDict:
             A float representing the load incurred by the constraint for
             `switch_name`.
 
+        Raises
+        ------
+        SwitchNotFound
+            If there is no switch named `switch_name` in the set of switches
+            for the constraint.
+
         Returns
         -------
         None
 
         """
+        if switch_name not in self._switches:
+            raise exc.SwitchNotFound(switch_name)
         self._load -= switch_load
         self._switches.remove(switch_name)
 

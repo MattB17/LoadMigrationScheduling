@@ -150,7 +150,7 @@ class Parser:
             self._controller_constraints,
             self._qos_constraints,
             self.get_switch_ids(),
-            list(range(utils.upper_bound_rounds(len(self._migrations)))),
+            list(range(len(self._migrations))),
             self.get_controller_ids(),
             self.get_group_ids())
 

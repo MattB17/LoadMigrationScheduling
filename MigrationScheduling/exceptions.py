@@ -42,3 +42,15 @@ class ModelNotOptimized(Exception):
     def __init__(self):
         super().__init__("Model has not been optimized. Must solve " +
                          "model before looking at results.")
+
+class SwitchNotFound(Exception):
+    """Generate when `switch_name` is not found in a queried object.
+
+    Parameters
+    ----------
+    switch_name: str
+        A string representing the name of the switch being searched for.
+
+    """
+    def __init__(self, switch_name):
+        super().__init__("Switch {} not found.".format(switch_name))
