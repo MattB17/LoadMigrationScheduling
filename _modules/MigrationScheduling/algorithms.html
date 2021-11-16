@@ -199,6 +199,81 @@
     <span class="k">return</span> <span class="n">control_consts</span><span class="p">,</span> <span class="n">qos_consts</span></div>
 
 
+<div class="viewcode-block" id="schedule_migration_in_earliest_round"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.schedule_migration_in_earliest_round">[docs]</a><span class="k">def</span> <span class="nf">schedule_migration_in_earliest_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span>
+                                         <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Schedules `migration` in the earliest round possible given `rounds`.</span>
+
+<span class="sd">    `migration` is scheduled in the earliest round in `rounds` in which the</span>
+<span class="sd">    migration fits. If it does not fit in any of the rounds, a new round is</span>
+<span class="sd">    created and migration is scheduled in that round.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rounds: collection</span>
+<span class="sd">        A collection of `Round` objects representing the rounds to which</span>
+<span class="sd">        migrations have already been scheduled.</span>
+<span class="sd">    num_rounds: int</span>
+<span class="sd">        An integer representing the number of rounds in `existing_rounds`.</span>
+<span class="sd">    migration: Migration</span>
+<span class="sd">        A `Migration` object representing the migration to be scheduled.</span>
+<span class="sd">    controller_caps: dict</span>
+<span class="sd">        A dictionary of controller capacities. The keys are strings</span>
+<span class="sd">        representing the names of the controllers and the corresponding value</span>
+<span class="sd">        is a float representing the capacity for that controller.</span>
+<span class="sd">    qos_caps: dict</span>
+<span class="sd">        A dictionary of QoS group capacities. The keys are strings</span>
+<span class="sd">        representing the names of the controllers and the corresponding value</span>
+<span class="sd">        is an integer representing the capacity for that QoS group.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list, int</span>
+<span class="sd">        A list obtained from `rounds` after scheduling migration in the</span>
+<span class="sd">        first available round and an integer representing the number of</span>
+<span class="sd">        active rounds.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">round_count</span> <span class="o">=</span> <span class="n">num_rounds</span>
+    <span class="n">schedule_round</span> <span class="o">=</span> <span class="n">find_scheduling_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">round_count</span><span class="p">,</span> <span class="n">migration</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">schedule_round</span> <span class="o">==</span> <span class="n">round_count</span><span class="p">:</span>
+        <span class="n">rounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Round</span><span class="p">(</span><span class="n">round_count</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">))</span>
+        <span class="n">round_count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rounds</span><span class="p">,</span> <span class="n">round_count</span></div>
+
+
+<div class="viewcode-block" id="select_bottleneck_migration"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.select_bottleneck_migration">[docs]</a><span class="k">def</span> <span class="nf">select_bottleneck_migration</span><span class="p">(</span><span class="n">instance_data</span><span class="p">,</span> <span class="n">control_consts</span><span class="p">,</span> <span class="n">qos_consts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selects a bottleneck migration using `control_consts` and `qos_consts`.</span>
+
+<span class="sd">    A migration is selected from a bottleneck constraint among</span>
+<span class="sd">    `control_consts` and `qos_consts`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_data: InstanceData</span>
+<span class="sd">        An `InstanceData` object specifying a load migration scheduling</span>
+<span class="sd">        instance.</span>
+<span class="sd">    control_consts: dict</span>
+<span class="sd">        A dictionary of controller constraints. The keys are strings</span>
+<span class="sd">        representing the names of the controllers and the corresponding value</span>
+<span class="sd">        is a `ConstraintDict` object representing the constraint.</span>
+<span class="sd">    qos_consts: dict</span>
+<span class="sd">        A dictionary of QoS group constraints. The keys are strings</span>
+<span class="sd">        representing the names of the QoS groups and the corresponding value</span>
+<span class="sd">        is a `ConstraintDict` object representing the constraint.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Migration</span>
+<span class="sd">        A `Migration` object representing a migration associated with a</span>
+<span class="sd">        bottleneck constraint among `control_consts` and `qos_consts`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bottleneck_constraint</span> <span class="o">=</span> <span class="n">get_bottleneck_constraint</span><span class="p">(</span>
+        <span class="n">control_consts</span><span class="p">,</span> <span class="n">qos_consts</span><span class="p">)</span>
+    <span class="n">switch_name</span> <span class="o">=</span> <span class="n">select_migration_from_constraint</span><span class="p">(</span><span class="n">bottleneck_constraint</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">instance_data</span><span class="o">.</span><span class="n">get_migration</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="vector_first_fit"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.vector_first_fit">[docs]</a><span class="k">def</span> <span class="nf">vector_first_fit</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Runs the vectorized version of the first fit algorithm.</span>
@@ -236,11 +311,8 @@
     <span class="n">num_rounds</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_cap_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">migration</span> <span class="ow">in</span> <span class="n">instance_data</span><span class="o">.</span><span class="n">get_migrations</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">schedule_round</span> <span class="o">=</span> <span class="n">find_scheduling_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">schedule_round</span> <span class="o">==</span> <span class="n">num_rounds</span><span class="p">:</span>
-            <span class="n">rounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Round</span><span class="p">(</span><span class="n">num_rounds</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">))</span>
-            <span class="n">num_rounds</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
+        <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span> <span class="o">=</span> <span class="n">schedule_migration_in_earliest_round</span><span class="p">(</span>
+            <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">num_rounds</span></div>
 
 
@@ -277,17 +349,12 @@
     <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_cap_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
     <span class="n">controller_consts</span><span class="p">,</span> <span class="n">qos_consts</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_constraint_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">controller_consts</span> <span class="ow">or</span> <span class="n">qos_consts</span><span class="p">:</span>
-        <span class="n">bottleneck_constraint</span> <span class="o">=</span> <span class="n">get_bottleneck_constraint</span><span class="p">(</span>
-            <span class="n">controller_consts</span><span class="p">,</span> <span class="n">qos_consts</span><span class="p">)</span>
-        <span class="n">switch</span> <span class="o">=</span> <span class="n">select_migration_from_constraint</span><span class="p">(</span><span class="n">bottleneck_constraint</span><span class="p">)</span>
-        <span class="n">migration</span> <span class="o">=</span> <span class="n">instance_data</span><span class="o">.</span><span class="n">get_migration</span><span class="p">(</span><span class="n">switch</span><span class="p">)</span>
-        <span class="n">schedule_round</span> <span class="o">=</span> <span class="n">find_scheduling_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">schedule_round</span> <span class="o">==</span> <span class="n">num_rounds</span><span class="p">:</span>
-            <span class="n">rounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Round</span><span class="p">(</span><span class="n">num_rounds</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">))</span>
-            <span class="n">num_rounds</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
+        <span class="n">migration</span> <span class="o">=</span> <span class="n">select_bottleneck_migration</span><span class="p">(</span>
+            <span class="n">instance_data</span><span class="p">,</span> <span class="n">controller_consts</span><span class="p">,</span> <span class="n">qos_consts</span><span class="p">)</span>
+        <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span> <span class="o">=</span> <span class="n">schedule_migration_in_earliest_round</span><span class="p">(</span>
+            <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">)</span>
         <span class="n">controller_consts</span><span class="p">,</span> <span class="n">qos_consts</span> <span class="o">=</span> <span class="n">remove_migration_from_constraints</span><span class="p">(</span>
-            <span class="n">migration</span><span class="p">)</span>
+            <span class="n">migration</span><span class="p">,</span> <span class="n">controller_consts</span><span class="p">,</span> <span class="n">qos_consts</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">num_rounds</span></div>
 </pre></div>
 

@@ -198,6 +198,76 @@ involving that migration.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.algorithms.schedule_migration_in_earliest_round">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">schedule_migration_in_earliest_round</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller_caps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_caps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#schedule_migration_in_earliest_round"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.schedule_migration_in_earliest_round" title="Permalink to this definition"></a></dt>
+<dd><p>Schedules <cite>migration</cite> in the earliest round possible given <cite>rounds</cite>.</p>
+<p><cite>migration</cite> is scheduled in the earliest round in <cite>rounds</cite> in which the
+migration fits. If it does not fit in any of the rounds, a new round is
+created and migration is scheduled in that round.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rounds: collection</strong></dt><dd><p>A collection of <cite>Round</cite> objects representing the rounds to which
+migrations have already been scheduled.</p>
+</dd>
+<dt><strong>num_rounds: int</strong></dt><dd><p>An integer representing the number of rounds in <cite>existing_rounds</cite>.</p>
+</dd>
+<dt><strong>migration: Migration</strong></dt><dd><p>A <cite>Migration</cite> object representing the migration to be scheduled.</p>
+</dd>
+<dt><strong>controller_caps: dict</strong></dt><dd><p>A dictionary of controller capacities. The keys are strings
+representing the names of the controllers and the corresponding value
+is a float representing the capacity for that controller.</p>
+</dd>
+<dt><strong>qos_caps: dict</strong></dt><dd><p>A dictionary of QoS group capacities. The keys are strings
+representing the names of the controllers and the corresponding value
+is an integer representing the capacity for that QoS group.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list, int</dt><dd><p>A list obtained from <cite>rounds</cite> after scheduling migration in the
+first available round and an integer representing the number of
+active rounds.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.algorithms.select_bottleneck_migration">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">select_bottleneck_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#select_bottleneck_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.select_bottleneck_migration" title="Permalink to this definition"></a></dt>
+<dd><p>Selects a bottleneck migration using <cite>control_consts</cite> and <cite>qos_consts</cite>.</p>
+<p>A migration is selected from a bottleneck constraint among
+<cite>control_consts</cite> and <cite>qos_consts</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object specifying a load migration scheduling
+instance.</p>
+</dd>
+<dt><strong>control_consts: dict</strong></dt><dd><p>A dictionary of controller constraints. The keys are strings
+representing the names of the controllers and the corresponding value
+is a <cite>ConstraintDict</cite> object representing the constraint.</p>
+</dd>
+<dt><strong>qos_consts: dict</strong></dt><dd><p>A dictionary of QoS group constraints. The keys are strings
+representing the names of the QoS groups and the corresponding value
+is a <cite>ConstraintDict</cite> object representing the constraint.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Migration</dt><dd><p>A <cite>Migration</cite> object representing a migration associated with a
+bottleneck constraint among <cite>control_consts</cite> and <cite>qos_consts</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.select_migration_from_constraint">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">select_migration_from_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#select_migration_from_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.select_migration_from_constraint" title="Permalink to this definition"></a></dt>
 <dd><p>Selects a migration from <cite>constraint_dict</cite>.</p>

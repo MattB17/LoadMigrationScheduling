@@ -156,24 +156,25 @@ dictionary is built.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_controller_constraint_dicts">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_controller_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_controller_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_controller_constraint_dicts" title="Permalink to this definition"></a></dt>
-<dd><p>The constraint dictionaries for the constraints in <cite>control_consts</cite>.</p>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_controller_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_controller_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_controller_constraint_dicts" title="Permalink to this definition"></a></dt>
+<dd><p>The constraint dictionaries for the constraints in <cite>instance_data</cite>.</p>
 <p>Builds a dictionary of <cite>ConstraintDict</cite> objects for the controller
-constraints specified by <cite>control_consts</cite>.</p>
+constraints specified by <cite>instance_data</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>control_consts: collection</strong></dt><dd><p>A collection of <cite>ControllerConstraint</cite> objects from which the
-<cite>ConstraintDict</cite> objects are retrieved.</p>
+<dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object specifying a load migration scheduling
+instance.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>dict</dt><dd><p>A dictionary of <cite>ConstraintDict</cite> objects from <cite>control_consts</cite>. The
-keys are strings representing the name of the controllers and the
-corresponding value is a <cite>ConstraintDict</cite> object for the constraint
-associated with that controller.</p>
+<dt>dict</dt><dd><p>A dictionary of <cite>ConstraintDict</cite> objects for the controller
+constraints of <cite>instance_data</cite>. The keys are strings representing
+the name of the controllers and the corresponding value is a
+<cite>ConstraintDict</cite> object for the constraint associated with that
+controller.</p>
 </dd>
 </dl>
 </dd>
