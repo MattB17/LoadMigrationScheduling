@@ -68,6 +68,18 @@ class InstanceData:
         """
         return self._migrations
 
+    def get_migration(self, switch_name):
+        """Retrieves the migration for `switch_name`.
+
+        Returns
+        -------
+        Migration
+            The `Migration` object representing the migration for
+            `switch_name`.
+
+        """
+        return self._migrations[switch_name]
+
     def get_control_consts(self):
         """The controller constraints for the scheduling instance.
 

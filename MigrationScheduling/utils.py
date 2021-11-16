@@ -93,3 +93,80 @@ def get_cap_dicts(instance_data):
         instance_data.get_control_consts())
     qos_caps = get_qos_group_cap_dict(instance_data.get_qos_consts())
     return controller_caps, qos_caps
+
+def get_controller_constraint_dicts(control_consts):
+    """The constraint dictionaries for the constraints in `control_consts`.
+
+    Builds a dictionary of `ConstraintDict` objects for the controller
+    constraints specified by `control_consts`.
+
+    Parameters
+    ----------
+    control_consts: collection
+        A collection of `ControllerConstraint` objects from which the
+        `ConstraintDict` objects are retrieved.
+
+    Returns
+    -------
+    dict
+        A dictionary of `ConstraintDict` objects from `control_consts`. The
+        keys are strings representing the name of the controllers and the
+        corresponding value is a `ConstraintDict` object for the constraint
+        associated with that controller.
+
+    """
+    return {
+        control_consts.get_controller(): control_const.get_constraint_dict()
+        for control_const in control_consts}
+
+def get_qos_constraint_dicts(qos_consts):
+    """The constraint dictionaries for the constraints in `qos_consts`.
+
+    Builds a dictionary of `ConstraintDict` objects for the QoS group
+    constraints specified by `qos_consts`.
+
+    Parameters
+    ----------
+    qos_consts: collection
+        A collection of `QosConstraint` objects from which the
+        `ConstraintDict` objects are retrieved.
+
+    Returns
+    -------
+    dict
+        A dictionary of `ConstraintDict` objects from `qos_consts`. The
+        keys are strings representing the name of the QoS groups and the
+        corresponding value is a `ConstraintDict` object for the constraint
+        associated with that QoS group.
+
+    """
+    return {qos_const.get_group(): qos_const.get_constraint_dict()
+            for qos_const in qos_consts}
+
+def get_constraint_dicts(instance_data):
+    """Dictionaries of the constraints from `instance_data`.
+
+    Dictionaries of the `ConstraintDict` object for the controller
+    constraints and QoS constraints are built from `instance_data`.
+
+    Parameters
+    ----------
+    instance_data: InstanceData
+        An `InstanceData` object used to build the dictionaries of
+        constraints.
+
+    Returns
+    -------
+    dict
+        Two dictionaries of the constraints from `instance_data`. The first
+        is the constraints for the controllers and the second is the
+        constraints for the QoS groups. The keys for both are strings
+        representing the name of the controller and QoS group, respectively.
+        The corresponding value is a `ConstraintDict` object representing the
+        constraint.
+
+    """
+    control_dict = get_controller_constraint_dicts(
+        instance_data.get_control_consts())
+    qos_dict = get_qos_constraint_dicts(instance_data.get_qos_consts())
+    return control_dict, qos_dict
