@@ -142,7 +142,7 @@ class ControllerConstraint:
 
         """
         return ConstraintDict(
-            self.get_cap, self.get_total_load(migrations), self._switches)
+            self._capacity, self.get_total_load(migrations), self._switches)
 
     def __str__(self):
         """A string representation of the controller constraint.

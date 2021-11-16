@@ -130,6 +130,81 @@ def remove_migration_from_constraints(migration, control_consts, qos_consts):
     return control_consts, qos_consts
 
 
+def schedule_migration_in_earliest_round(rounds, num_rounds, migration,
+                                         controller_caps, qos_caps):
+    """Schedules `migration` in the earliest round possible given `rounds`.
+
+    `migration` is scheduled in the earliest round in `rounds` in which the
+    migration fits. If it does not fit in any of the rounds, a new round is
+    created and migration is scheduled in that round.
+
+    Parameters
+    ----------
+    rounds: collection
+        A collection of `Round` objects representing the rounds to which
+        migrations have already been scheduled.
+    num_rounds: int
+        An integer representing the number of rounds in `existing_rounds`.
+    migration: Migration
+        A `Migration` object representing the migration to be scheduled.
+    controller_caps: dict
+        A dictionary of controller capacities. The keys are strings
+        representing the names of the controllers and the corresponding value
+        is a float representing the capacity for that controller.
+    qos_caps: dict
+        A dictionary of QoS group capacities. The keys are strings
+        representing the names of the controllers and the corresponding value
+        is an integer representing the capacity for that QoS group.
+
+    Returns
+    -------
+    list, int
+        A list obtained from `rounds` after scheduling migration in the
+        first available round and an integer representing the number of
+        active rounds.
+
+    """
+    round_count = num_rounds
+    schedule_round = find_scheduling_round(rounds, round_count, migration)
+    if schedule_round == round_count:
+        rounds.append(Round(round_count, controller_caps, qos_caps))
+        round_count += 1
+    rounds[schedule_round].schedule_migration(migration)
+    return rounds, round_count
+
+
+def select_bottleneck_migration(instance_data, control_consts, qos_consts):
+    """Selects a bottleneck migration using `control_consts` and `qos_consts`.
+
+    A migration is selected from a bottleneck constraint among
+    `control_consts` and `qos_consts`.
+
+    Parameters
+    ----------
+    instance_data: InstanceData
+        An `InstanceData` object specifying a load migration scheduling
+        instance.
+    control_consts: dict
+        A dictionary of controller constraints. The keys are strings
+        representing the names of the controllers and the corresponding value
+        is a `ConstraintDict` object representing the constraint.
+    qos_consts: dict
+        A dictionary of QoS group constraints. The keys are strings
+        representing the names of the QoS groups and the corresponding value
+        is a `ConstraintDict` object representing the constraint.
+
+    Returns
+    -------
+    Migration
+        A `Migration` object representing a migration associated with a
+        bottleneck constraint among `control_consts` and `qos_consts`.
+
+    """
+    bottleneck_constraint = get_bottleneck_constraint(
+        control_consts, qos_consts)
+    switch_name = select_migration_from_constraint(bottleneck_constraint)
+    return instance_data.get_migration(switch_name)
+
 
 def vector_first_fit(instance_data):
     """Runs the vectorized version of the first fit algorithm.
@@ -167,11 +242,8 @@ def vector_first_fit(instance_data):
     num_rounds = 0
     controller_caps, qos_caps = utils.get_cap_dicts(instance_data)
     for migration in instance_data.get_migrations().values():
-        schedule_round = find_scheduling_round(rounds, num_rounds, migration)
-        if schedule_round == num_rounds:
-            rounds.append(Round(num_rounds, controller_caps, qos_caps))
-            num_rounds += 1
-        rounds[schedule_round].schedule_migration(migration)
+        rounds, num_rounds = schedule_migration_in_earliest_round(
+            rounds, num_rounds, migration, controller_caps, qos_caps)
     return num_rounds
 
 
@@ -208,15 +280,10 @@ def current_bottleneck_first(instance_data):
     controller_caps, qos_caps = utils.get_cap_dicts(instance_data)
     controller_consts, qos_consts = utils.get_constraint_dicts(instance_data)
     while controller_consts or qos_consts:
-        bottleneck_constraint = get_bottleneck_constraint(
-            controller_consts, qos_consts)
-        switch = select_migration_from_constraint(bottleneck_constraint)
-        migration = instance_data.get_migration(switch)
-        schedule_round = find_scheduling_round(rounds, num_rounds, migration)
-        if schedule_round == num_rounds:
-            rounds.append(Round(num_rounds, controller_caps, qos_caps))
-            num_rounds += 1
-        rounds[schedule_round].schedule_migration(migration)
+        migration = select_bottleneck_migration(
+            instance_data, controller_consts, qos_consts)
+        rounds, num_rounds = schedule_migration_in_earliest_round(
+            rounds, num_rounds, migration, controller_caps, qos_caps)
         controller_consts, qos_consts = remove_migration_from_constraints(
-            migration)
+            migration, controller_consts, qos_consts)
     return num_rounds

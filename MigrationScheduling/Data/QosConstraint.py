@@ -110,7 +110,7 @@ class QosConstraint:
 
         """
         return ConstraintDict(
-            self.get_cap(), len(self._switches), self._switches)
+            self._capacity, len(self._switches), self._switches)
 
     def __str__(self):
         """A string representation of the QoS constraint.

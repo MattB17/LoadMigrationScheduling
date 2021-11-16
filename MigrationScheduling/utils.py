@@ -94,30 +94,33 @@ def get_cap_dicts(instance_data):
     qos_caps = get_qos_group_cap_dict(instance_data.get_qos_consts())
     return controller_caps, qos_caps
 
-def get_controller_constraint_dicts(control_consts):
-    """The constraint dictionaries for the constraints in `control_consts`.
+def get_controller_constraint_dicts(instance_data):
+    """The constraint dictionaries for the constraints in `instance_data`.
 
     Builds a dictionary of `ConstraintDict` objects for the controller
-    constraints specified by `control_consts`.
+    constraints specified by `instance_data`.
 
     Parameters
     ----------
-    control_consts: collection
-        A collection of `ControllerConstraint` objects from which the
-        `ConstraintDict` objects are retrieved.
+    instance_data: InstanceData
+        An `InstanceData` object specifying a load migration scheduling
+        instance.
 
     Returns
     -------
     dict
-        A dictionary of `ConstraintDict` objects from `control_consts`. The
-        keys are strings representing the name of the controllers and the
-        corresponding value is a `ConstraintDict` object for the constraint
-        associated with that controller.
+        A dictionary of `ConstraintDict` objects for the controller
+        constraints of `instance_data`. The keys are strings representing
+        the name of the controllers and the corresponding value is a
+        `ConstraintDict` object for the constraint associated with that
+        controller.
 
     """
+    migrations = set(instance_data.get_migrations().values())
     return {
-        control_consts.get_controller(): control_const.get_constraint_dict()
-        for control_const in control_consts}
+        control_const.get_controller() :
+        control_const.get_constraint_dict(migrations)
+        for control_const in instance_data.get_control_consts()}
 
 def get_qos_constraint_dicts(qos_consts):
     """The constraint dictionaries for the constraints in `qos_consts`.
@@ -166,7 +169,6 @@ def get_constraint_dicts(instance_data):
         constraint.
 
     """
-    control_dict = get_controller_constraint_dicts(
-        instance_data.get_control_consts())
+    control_dict = get_controller_constraint_dicts(instance_data)
     qos_dict = get_qos_constraint_dicts(instance_data.get_qos_consts())
     return control_dict, qos_dict
