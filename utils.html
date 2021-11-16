@@ -103,6 +103,34 @@ number of migrations from that group allowed within a single round.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_constraint_dicts">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraint_dicts" title="Permalink to this definition"></a></dt>
+<dd><p>Dictionaries of the constraints from <cite>instance_data</cite>.</p>
+<p>Dictionaries of the <cite>ConstraintDict</cite> object for the controller
+constraints and QoS constraints are built from <cite>instance_data</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object used to build the dictionaries of
+constraints.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Two dictionaries of the constraints from <cite>instance_data</cite>. The first
+is the constraints for the controllers and the second is the
+constraints for the QoS groups. The keys for both are strings
+representing the name of the controller and QoS group, respectively.
+The corresponding value is a <cite>ConstraintDict</cite> object representing the
+constraint.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_controller_cap_dict">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_controller_cap_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_constraints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_controller_cap_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_controller_cap_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Creates a dictionary of controller capacities.</p>
@@ -120,6 +148,58 @@ dictionary is built.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>dict</dt><dd><p>A dictionary of the controller capacities.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_controller_constraint_dicts">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_controller_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_controller_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_controller_constraint_dicts" title="Permalink to this definition"></a></dt>
+<dd><p>The constraint dictionaries for the constraints in <cite>control_consts</cite>.</p>
+<p>Builds a dictionary of <cite>ConstraintDict</cite> objects for the controller
+constraints specified by <cite>control_consts</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>control_consts: collection</strong></dt><dd><p>A collection of <cite>ControllerConstraint</cite> objects from which the
+<cite>ConstraintDict</cite> objects are retrieved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary of <cite>ConstraintDict</cite> objects from <cite>control_consts</cite>. The
+keys are strings representing the name of the controllers and the
+corresponding value is a <cite>ConstraintDict</cite> object for the constraint
+associated with that controller.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_qos_constraint_dicts">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_qos_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_qos_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_qos_constraint_dicts" title="Permalink to this definition"></a></dt>
+<dd><p>The constraint dictionaries for the constraints in <cite>qos_consts</cite>.</p>
+<p>Builds a dictionary of <cite>ConstraintDict</cite> objects for the QoS group
+constraints specified by <cite>qos_consts</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>qos_consts: collection</strong></dt><dd><p>A collection of <cite>QosConstraint</cite> objects from which the
+<cite>ConstraintDict</cite> objects are retrieved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary of <cite>ConstraintDict</cite> objects from <cite>qos_consts</cite>. The
+keys are strings representing the name of the QoS groups and the
+corresponding value is a <cite>ConstraintDict</cite> object for the constraint
+associated with that QoS group.</p>
 </dd>
 </dl>
 </dd>

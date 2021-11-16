@@ -162,6 +162,83 @@
         <span class="n">instance_data</span><span class="o">.</span><span class="n">get_control_consts</span><span class="p">())</span>
     <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">get_qos_group_cap_dict</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span></div>
+
+<div class="viewcode-block" id="get_controller_constraint_dicts"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_controller_constraint_dicts">[docs]</a><span class="k">def</span> <span class="nf">get_controller_constraint_dicts</span><span class="p">(</span><span class="n">control_consts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The constraint dictionaries for the constraints in `control_consts`.</span>
+
+<span class="sd">    Builds a dictionary of `ConstraintDict` objects for the controller</span>
+<span class="sd">    constraints specified by `control_consts`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    control_consts: collection</span>
+<span class="sd">        A collection of `ControllerConstraint` objects from which the</span>
+<span class="sd">        `ConstraintDict` objects are retrieved.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary of `ConstraintDict` objects from `control_consts`. The</span>
+<span class="sd">        keys are strings representing the name of the controllers and the</span>
+<span class="sd">        corresponding value is a `ConstraintDict` object for the constraint</span>
+<span class="sd">        associated with that controller.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">control_consts</span><span class="o">.</span><span class="n">get_controller</span><span class="p">():</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_constraint_dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">control_const</span> <span class="ow">in</span> <span class="n">control_consts</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_qos_constraint_dicts"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_qos_constraint_dicts">[docs]</a><span class="k">def</span> <span class="nf">get_qos_constraint_dicts</span><span class="p">(</span><span class="n">qos_consts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The constraint dictionaries for the constraints in `qos_consts`.</span>
+
+<span class="sd">    Builds a dictionary of `ConstraintDict` objects for the QoS group</span>
+<span class="sd">    constraints specified by `qos_consts`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    qos_consts: collection</span>
+<span class="sd">        A collection of `QosConstraint` objects from which the</span>
+<span class="sd">        `ConstraintDict` objects are retrieved.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary of `ConstraintDict` objects from `qos_consts`. The</span>
+<span class="sd">        keys are strings representing the name of the QoS groups and the</span>
+<span class="sd">        corresponding value is a `ConstraintDict` object for the constraint</span>
+<span class="sd">        associated with that QoS group.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">qos_const</span><span class="o">.</span><span class="n">get_group</span><span class="p">():</span> <span class="n">qos_const</span><span class="o">.</span><span class="n">get_constraint_dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">qos_const</span> <span class="ow">in</span> <span class="n">qos_consts</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_constraint_dicts"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_constraint_dicts">[docs]</a><span class="k">def</span> <span class="nf">get_constraint_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dictionaries of the constraints from `instance_data`.</span>
+
+<span class="sd">    Dictionaries of the `ConstraintDict` object for the controller</span>
+<span class="sd">    constraints and QoS constraints are built from `instance_data`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_data: InstanceData</span>
+<span class="sd">        An `InstanceData` object used to build the dictionaries of</span>
+<span class="sd">        constraints.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Two dictionaries of the constraints from `instance_data`. The first</span>
+<span class="sd">        is the constraints for the controllers and the second is the</span>
+<span class="sd">        constraints for the QoS groups. The keys for both are strings</span>
+<span class="sd">        representing the name of the controller and QoS group, respectively.</span>
+<span class="sd">        The corresponding value is a `ConstraintDict` object representing the</span>
+<span class="sd">        constraint.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">control_dict</span> <span class="o">=</span> <span class="n">get_controller_constraint_dicts</span><span class="p">(</span>
+        <span class="n">instance_data</span><span class="o">.</span><span class="n">get_control_consts</span><span class="p">())</span>
+    <span class="n">qos_dict</span> <span class="o">=</span> <span class="n">get_qos_constraint_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">control_dict</span><span class="p">,</span> <span class="n">qos_dict</span></div>
 </pre></div>
 
            </div>
