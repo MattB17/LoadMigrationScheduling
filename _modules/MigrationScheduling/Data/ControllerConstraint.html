@@ -40,6 +40,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -71,6 +72,7 @@
 <span class="sd">build the capacity constraints for a controller.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">validation</span> <span class="k">as</span> <span class="n">val</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">ConstraintDict</span>
 
@@ -93,8 +95,16 @@
 <span class="sd">    _switches: set</span>
 <span class="sd">        The collection of switches to be migrated to the controller.</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    InvalidName</span>
+<span class="sd">        If `controller` is not a valid name for a controller object. A</span>
+<span class="sd">        valid name has the form `cx` where `x` is an integer representing the</span>
+<span class="sd">        controller ID.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
+        <span class="n">val</span><span class="o">.</span><span class="n">validate_name</span><span class="p">(</span><span class="n">controller</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s2">&quot;Controller&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_controller</span> <span class="o">=</span> <span class="n">controller</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -142,11 +152,7 @@
 <span class="sd">            the constraint.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controller</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InvalidName</span><span class="p">(</span><span class="s2">&quot;Controller names should be in the form &quot;</span> <span class="o">+</span>
-                                  <span class="s2">&quot;&#39;cx&#39; where &#39;x&#39; is the controller ID&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controller</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
 
 <div class="viewcode-block" id="ControllerConstraint.add_switch"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.add_switch">[docs]</a>    <span class="k">def</span> <span class="nf">add_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds `switch_name` as a switch to be migrated to the controller.</span>

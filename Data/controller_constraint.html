@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -95,8 +96,16 @@ build the capacity constraints for a controller.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Attributes</dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><dl class="simple">
+<dt>InvalidName</dt><dd><p>If <cite>controller</cite> is not a valid name for a controller object. A
+valid name has the form <cite>cx</cite> where <cite>x</cite> is an integer representing the
+controller ID.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
 <dt><strong>_controller: str</strong></dt><dd><p>The name of the controller to which the constraints apply.</p>
 </dd>
 <dt><strong>_capacity: float</strong></dt><dd><p>The capacity value used in the constraint.</p>

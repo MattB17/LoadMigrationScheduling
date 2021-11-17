@@ -11,6 +11,7 @@ Welcome to Load Migration Scheduling's documentation!
    algorithms
    utils
    exceptions
+   validation
 
 
 Indices and tables

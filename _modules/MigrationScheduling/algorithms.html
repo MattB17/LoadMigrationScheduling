@@ -40,6 +40,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -243,6 +244,35 @@
     <span class="k">return</span> <span class="n">rounds</span><span class="p">,</span> <span class="n">round_count</span></div>
 
 
+<div class="viewcode-block" id="calculate_migration_load"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.calculate_migration_load">[docs]</a><span class="k">def</span> <span class="nf">calculate_migration_load</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">exclude_const</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The load of `migration` from `consts_dict`, excluding `exclude_const`.</span>
+
+<span class="sd">    The maximum load among the constraints of `consts_dict` to which</span>
+<span class="sd">    `migration` is associated is calculated. The constraint with name</span>
+<span class="sd">    `exclude_const` is ignored in the calculation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    migration: Migration</span>
+<span class="sd">        The `Migration` object for which the load is calculated.</span>
+<span class="sd">    exclude_const: str</span>
+<span class="sd">        A string representing the name of the constraint excluded from the</span>
+<span class="sd">        load calculation.</span>
+<span class="sd">    consts_dict: dict</span>
+<span class="sd">        A dictionary of constraints. The keys are strings representing the</span>
+<span class="sd">        names of the constraints and the corresponding value is a</span>
+<span class="sd">        `ConstraintDict` object for the constraint.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">load</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">migration_consts</span> <span class="o">=</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+        <span class="p">{</span><span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()})</span>
+    <span class="k">for</span> <span class="n">const_name</span> <span class="ow">in</span> <span class="n">migration_consts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">const_name</span> <span class="o">!=</span> <span class="n">exclude_const</span><span class="p">:</span>
+            <span class="n">load</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">load</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">[</span><span class="n">const_name</span><span class="p">]</span><span class="o">.</span><span class="n">get_load_factor</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">load</span></div>
+
+
 <div class="viewcode-block" id="get_bottleneck_migration"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.get_bottleneck_migration">[docs]</a><span class="k">def</span> <span class="nf">get_bottleneck_migration</span><span class="p">(</span><span class="n">migrations</span><span class="p">,</span> <span class="n">bottleneck_const_name</span><span class="p">,</span>
                              <span class="n">instance_data</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Selects the bottleneck migration among `migrations`.</span>
@@ -280,18 +310,12 @@
     <span class="n">max_load</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">migration_name</span> <span class="ow">in</span> <span class="n">migrations</span><span class="p">:</span>
         <span class="n">curr_migration</span> <span class="o">=</span> <span class="n">instance_data</span><span class="o">.</span><span class="n">get_migration</span><span class="p">(</span><span class="n">migration_name</span><span class="p">)</span>
-        <span class="n">curr_load</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">curr_migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()</span> <span class="o">!=</span> <span class="n">bottleneck_const_name</span><span class="p">:</span>
-            <span class="n">curr_load</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">curr_load</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">[</span>
-                <span class="n">curr_migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()]</span><span class="o">.</span><span class="n">get_load_factor</span><span class="p">())</span>
-        <span class="k">for</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">curr_migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">group_name</span> <span class="o">!=</span> <span class="n">bottleneck_const_name</span><span class="p">:</span>
-                <span class="n">curr_load</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-                    <span class="n">curr_load</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span><span class="o">.</span><span class="n">get_load_factor</span><span class="p">())</span>
+        <span class="n">curr_load</span> <span class="o">=</span> <span class="n">calculate_migration_load</span><span class="p">(</span>
+            <span class="n">curr_migration</span><span class="p">,</span> <span class="n">bottleneck_const_name</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="n">bottleneck_migration</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">curr_load</span> <span class="o">&gt;</span> <span class="n">max_load</span><span class="p">)):</span>
             <span class="n">bottleneck_migration</span> <span class="o">=</span> <span class="n">curr_migration</span>
             <span class="n">max_load</span> <span class="o">=</span> <span class="n">curr_load</span>
-    <span class="k">return</span> <span class="n">curr_migration</span></div>
+    <span class="k">return</span> <span class="n">bottleneck_migration</span></div>
 
 
 <div class="viewcode-block" id="select_bottleneck_migration"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.select_bottleneck_migration">[docs]</a><span class="k">def</span> <span class="nf">select_bottleneck_migration</span><span class="p">(</span><span class="n">instance_data</span><span class="p">,</span> <span class="n">num_candidates</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">):</span>
