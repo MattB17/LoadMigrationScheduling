@@ -36,8 +36,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
 </ul>
 
         </div>
@@ -115,6 +117,12 @@
 <div class="viewcode-block" id="Migration.get_switch_idx"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_switch_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_switch_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The index of the switch involved in the migration.</span>
 
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        InvalidName</span>
+<span class="sd">            If the switch name is not in the form &#39;sx&#39; where &#39;x&#39; is an</span>
+<span class="sd">            integer.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
@@ -124,7 +132,6 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switch</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="k">except</span><span class="p">:</span>
-
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InvalidName</span><span class="p">(</span><span class="s2">&quot;Switch names should be in the form &quot;</span> <span class="o">+</span>
                                   <span class="s2">&quot;&#39;sx&#39; where &#39;x&#39; is the switch ID&quot;</span><span class="p">)</span></div>
 
@@ -207,10 +214,14 @@
 <span class="sd">            A string representing the migration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;Migrate switch </span><span class="si">{0}</span><span class="s2"> to controller </span><span class="si">{1}</span><span class="s2"> with load of </span><span class="si">{2}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-                <span class="s2">&quot;QoS groups: </span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_switch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">))</span></div>
+        <span class="n">mig_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Migrate switch </span><span class="si">{0}</span><span class="s2"> to controller </span><span class="si">{1}</span><span class="s2"> with load of &quot;</span> <span class="o">+</span>
+                  <span class="s2">&quot;</span><span class="si">{2:.2f}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
+            <span class="n">mig_str</span> <span class="o">+=</span> <span class="s2">&quot;QoS groups: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mig_str</span> <span class="o">+=</span> <span class="s2">&quot;No QoS groups.&quot;</span>
+        <span class="k">return</span> <span class="n">mig_str</span></div>
 </pre></div>
 
            </div>
