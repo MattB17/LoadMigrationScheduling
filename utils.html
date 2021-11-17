@@ -103,8 +103,8 @@ number of migrations from that group allowed within a single round.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MigrationScheduling.utils.get_constraint_dicts">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraint_dicts" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_constraints_dict">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraints_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraints_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraints_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Dictionaries of the constraints from <cite>instance_data</cite>.</p>
 <p>Dictionaries of the <cite>ConstraintDict</cite> object for the controller
 constraints and QoS constraints are built from <cite>instance_data</cite>.</p>
@@ -118,12 +118,10 @@ constraints.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>dict</dt><dd><p>Two dictionaries of the constraints from <cite>instance_data</cite>. The first
-is the constraints for the controllers and the second is the
-constraints for the QoS groups. The keys for both are strings
-representing the name of the controller and QoS group, respectively.
-The corresponding value is a <cite>ConstraintDict</cite> object representing the
-constraint.</p>
+<dt>dict</dt><dd><p>A dictionary of the constraints from <cite>instance_data</cite>. The dictionary
+contains both controller and QoS group constraints. The keys are
+strings representing the name of the constraintz and the
+corresponding values is the associated <cite>ConstraintDict</cite> object.</p>
 </dd>
 </dl>
 </dd>

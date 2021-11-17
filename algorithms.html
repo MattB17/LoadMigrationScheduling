@@ -145,20 +145,16 @@ rounds in <cite>existing_rounds</cite>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.get_bottleneck_constraint">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">get_bottleneck_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#get_bottleneck_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.get_bottleneck_constraint" title="Permalink to this definition"></a></dt>
-<dd><p>The bottleneck constraint of <cite>controller_consts</cite> and <cite>qos_consts</cite>.</p>
-<p>The bottleneck constraint is the most loaded constraint among
-<cite>controller_consts</cite> and <cite>qos_consts</cite>.</p>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">get_bottleneck_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraints_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#get_bottleneck_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.get_bottleneck_constraint" title="Permalink to this definition"></a></dt>
+<dd><p>The bottleneck constraint among the constraints of <cite>constraints_dict</cite>.</p>
+<p>The bottleneck constraint is the most loaded constraint among the
+constraints of <cite>constraints_dict</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>controller_consts: dict</strong></dt><dd><p>A dictionary of controller constraints. The keys are strings
-representing the names of the controllers and the corresponding value
-is a <cite>ConstraintDict</cite> object representing the constraint.</p>
-</dd>
-<dt><strong>qos_consts: dict</strong></dt><dd><p>A dictionary of QoS group constraints. The keys are strings
-representing the names of the QoS groups and the corresponding value
-is a <cite>ConstraintDict</cite> object representing the constraint.</p>
+<dt><strong>constraints_dict: dict</strong></dt><dd><p>A dictionary of the constraints. The keys are strings representing
+the name of the constraint and the corresponding value is a
+<cite>ConstraintDict</cite> object representing the constraint.</p>
 </dd>
 </dl>
 </dd>
@@ -174,11 +170,11 @@ associated <cite>ConstraintDict</cite> object.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.get_bottleneck_migration">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">get_bottleneck_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottleneck_const_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#get_bottleneck_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.get_bottleneck_migration" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">get_bottleneck_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottleneck_const_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consts_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#get_bottleneck_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.get_bottleneck_migration" title="Permalink to this definition"></a></dt>
 <dd><p>Selects the bottleneck migration among <cite>migrations</cite>.</p>
 <p>The bottleneck migration among <cite>migrations</cite> is the migration belonging
-to the constraint with the highest load among <cite>control_consts</cite> and
-<cite>qos_consts</cite>, excluding <cite>bottleneck_const_name</cite>.</p>
+to the constraint with the highest load among <cite>consts_dict</cite>, excluding
+the constraint for <cite>bottleneck_const_name</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -191,13 +187,9 @@ the set of migrations from which the bottleneck migration is chosen.</p>
 <dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object specifying the data for a load migration
 scheduling instance.</p>
 </dd>
-<dt><strong>control_consts: dict</strong></dt><dd><p>A dictionary of <cite>ConstraintDict</cite> objects for controller constraints.
-The keys are strings representing the names of the controllers and
-the corresponding value is a <cite>ConstraintDict</cite> object.</p>
-</dd>
-<dt><strong>qos_consts: dict</strong></dt><dd><p>A dictionary of <cite>ConstraintDict</cite> objects for QoS group constraints.
-The keys are strings representing the names of the QoS groups and the
-corresponding value is a <cite>ConstraintDict</cite> object.</p>
+<dt><strong>consts_dict: dict</strong></dt><dd><p>A dictionary of the constraints. The keys are strings representing
+the names of the constraints and the corresponding value is a
+<cite>ConstraintDict</cite> object for that constraint.</p>
 </dd>
 </dl>
 </dd>
@@ -213,28 +205,23 @@ from <cite>migrations</cite>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.remove_migration_from_constraints">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">remove_migration_from_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#remove_migration_from_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.remove_migration_from_constraints" title="Permalink to this definition"></a></dt>
-<dd><p>Removes <cite>migration</cite> from <cite>control_consts</cite> and <cite>qos_consts</cite>.</p>
-<p><cite>control_consts</cite> and <cite>qos_consts</cite> are updated to reflect the removal of
-<cite>migration</cite>, signalling that the migration has been scheduled.</p>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">remove_migration_from_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consts_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#remove_migration_from_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.remove_migration_from_constraints" title="Permalink to this definition"></a></dt>
+<dd><p>Removes <cite>migration</cite> from <cite>consts_dict</cite>.</p>
+<p><cite>consts_dict</cite> is updated to reflect the removal of <cite>migration</cite>,
+signalling that the migration has been scheduled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>control_consts: dict</strong></dt><dd><p>A dictionary of controller constraints. The keys are strings
-representing the names of the controllers and the corresponding value
-is a <cite>ConstraintDict</cite> object representing the constraint.</p>
-</dd>
-<dt><strong>qos_consts: dict</strong></dt><dd><p>A dictionary of QoS group constraints. The keys are strings
-representing the names of the QoS groups and the corresponding value
-is a <cite>ConstraintDict</cite> object representing the constraint.</p>
+<dt><strong>consts_dict: dict</strong></dt><dd><p>A dictionary of constraints. The keys are strings representing the
+names of the constraints and the corresponding value is a
+<cite>ConstraintDict</cite> object representing the constraint.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>dict, dict</dt><dd><p>The dictionaries obtained from <cite>control_consts</cite> and <cite>qos_consts</cite>,
-respectively, after removing <cite>migration</cite> from the constraints
-involving that migration.</p>
+<dt>dict</dt><dd><p>The dictionary obtained from <cite>consts_dict</cite> after removing
+<cite>migration</cite> from all the constraints involving the migration.</p>
 </dd>
 </dl>
 </dd>
@@ -281,10 +268,10 @@ active rounds.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.select_bottleneck_migration">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">select_bottleneck_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_candidates</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#select_bottleneck_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.select_bottleneck_migration" title="Permalink to this definition"></a></dt>
-<dd><p>Selects a bottleneck migration using <cite>control_consts</cite> and <cite>qos_consts</cite>.</p>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">select_bottleneck_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_candidates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consts_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#select_bottleneck_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.select_bottleneck_migration" title="Permalink to this definition"></a></dt>
+<dd><p>Selects a bottleneck migration from <cite>consts_dict</cite>.</p>
 <p>A migration is selected from a bottleneck constraint among
-<cite>control_consts</cite> and <cite>qos_consts</cite>. <cite>num_candidates</cite> candidate migrations
+<cite>consts_dict</cite>. <cite>num_candidates</cite> candidate migrations
 are considered in the bottleneck constraint and the best is chosen.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -292,24 +279,20 @@ are considered in the bottleneck constraint and the best is chosen.</p>
 <dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object specifying a load migration scheduling
 instance.</p>
 </dd>
-<dt><strong>control_consts: dict</strong></dt><dd><p>A dictionary of controller constraints. The keys are strings
-representing the names of the controllers and the corresponding value
-is a <cite>ConstraintDict</cite> object representing the constraint.</p>
-</dd>
-<dt><strong>qos_consts: dict</strong></dt><dd><p>A dictionary of QoS group constraints. The keys are strings
-representing the names of the QoS groups and the corresponding value
-is a <cite>ConstraintDict</cite> object representing the constraint.</p>
-</dd>
 <dt><strong>num_candidates: int</strong></dt><dd><p>The number of candidate migrations to consider among the migrations
 of the bottleneck constraint. A value of -1 indicates that all
 migrations from the bottleneck constraint are considered.</p>
+</dd>
+<dt><strong>consts_dict: dict</strong></dt><dd><p>A dictionary of the constraints. The keys are strings representing
+the names of the constraints and the corresponding value is a
+<cite>ConstraintDict</cite> object for the constraint.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>Migration</dt><dd><p>A <cite>Migration</cite> object representing a migration associated with a
-bottleneck constraint among <cite>control_consts</cite> and <cite>qos_consts</cite>.</p>
+bottleneck constraint among <cite>consts_dict</cite>.</p>
 </dd>
 </dl>
 </dd>
