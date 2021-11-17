@@ -61,38 +61,53 @@ def get_bottleneck_constraint(controller_consts, qos_consts):
 
     Returns
     -------
-    ConstraintDict
-        A `ConstraintDict` representing the most loaded constraint among
-        `controller_consts` and `qos_consts`.
+    str, ConstraintDict
+        A string representing the name of a bottleneck constraint and the
+        associated `ConstraintDict` object.
 
     """
     max_load = 0
     bottleneck_const = None
-    for const_dict in controller_consts.values():
+    bottleneck_const_name = None
+    for const_name, const_dict in controller_consts.items():
         if const_dict.get_load_factor() > max_load:
             max_load = const_dict.get_load_factor()
             bottleneck_const = const_dict
-    for const_dict in qos_consts.values():
+            bottleneck_const_name = const_name
+    for const_name, const_dict in qos_consts.items():
         if const_dict.get_load_factor() > max_load:
             max_load = const_dict.get_load_factor()
             bottleneck_const = const_dict
-    return bottleneck_const
+            bottleneck_const_name = const_name
+    return bottleneck_const_name, bottleneck_const
 
-def select_migration_from_constraint(constraint_dict):
-    """Selects a migration from `constraint_dict`.
+def select_candidate_migrations(constraint_dict, num_candidates):
+    """Selects `num_candidates` from `constraint_dict`.
+
+    `num_candidates` migrations are selected from `constraint_dict` among
+    all the migrations associated with the constraint.
 
     Parameters
     ----------
     constraint_dict: ConstraintDict
         The `ConstraintDict` object from which the migration is selected.
+    num_candidates: int
+        The number of candidate migrations to sample from `constraint_dict`
+        among which a migration is chosen. A value of -1 indicates that all
+        migrations are considered as candidates.
 
     Returns
     -------
-    Migration
-        A `Migration` object selected from `ConstraintDict`.
+    collection
+        A collection of `Migration` objects representing the candidate
+        migrations.
 
     """
-    return random.sample(constraint_dict.get_switches(), 1)[0]
+    if (num_candidates == -1 or
+        num_candidates >= len(constraint_dict.get_switches())):
+        return constraint_dict.get_switches()
+    else:
+        return random.sample(constrain_dict.get_switches(), num_candidates)
 
 def remove_migration_from_constraints(migration, control_consts, qos_consts):
     """Removes `migration` from `control_consts` and `qos_consts`.
@@ -173,11 +188,68 @@ def schedule_migration_in_earliest_round(rounds, num_rounds, migration,
     return rounds, round_count
 
 
-def select_bottleneck_migration(instance_data, control_consts, qos_consts):
+def get_bottleneck_migration(migrations, bottleneck_const_name,
+                             instance_data, control_consts, qos_consts):
+    """Selects the bottleneck migration among `migrations`.
+
+    The bottleneck migration among `migrations` is the migration belonging
+    to the constraint with the highest load among `control_consts` and
+    `qos_consts`, excluding `bottleneck_const_name`.
+
+    Parameters
+    ----------
+    migrations: collection
+        A collection of strings representing the names of the switches for
+        the set of migrations from which the bottleneck migration is chosen.
+    bottleneck_const_name: str
+        A string representing the name of the bottleneck constraint to which
+        `migrations` are associated.
+    instance_data: InstanceData
+        An `InstanceData` object specifying the data for a load migration
+        scheduling instance.
+    control_consts: dict
+        A dictionary of `ConstraintDict` objects for controller constraints.
+        The keys are strings representing the names of the controllers and
+        the corresponding value is a `ConstraintDict` object.
+    qos_consts: dict
+        A dictionary of `ConstraintDict` objects for QoS group constraints.
+        The keys are strings representing the names of the QoS groups and the
+        corresponding value is a `ConstraintDict` object.
+
+    Returns
+    -------
+    Migration
+        A `Migration` object representing the bottleneck migration chosen
+        from `migrations`.
+
+    """
+    if len(migrations) == 1:
+        return instance_data.get_migration(migrations[0])
+    bottleneck_migration = None
+    max_load = 0
+    for migration_name in migrations:
+        curr_migration = instance_data.get_migration(migration_name)
+        curr_load = 0
+        if curr_migration.get_dst_controller() != bottleneck_const_name:
+            curr_load = max(curr_load, control_consts[
+                curr_migration.get_dst_controller()].get_load_factor())
+        for group_name in curr_migration.get_groups():
+            if group_name != bottleneck_const_name:
+                curr_load = max(curr_load,
+                                qos_consts[group_name].get_load_factor())
+        if ((not bottleneck_migration) or (curr_load > max_load)):
+            bottleneck_migration = curr_migration
+            max_load = curr_load
+    return curr_migration
+
+
+def select_bottleneck_migration(instance_data, control_consts,
+                                qos_consts, num_candidates):
     """Selects a bottleneck migration using `control_consts` and `qos_consts`.
 
     A migration is selected from a bottleneck constraint among
-    `control_consts` and `qos_consts`.
+    `control_consts` and `qos_consts`. `num_candidates` candidate migrations
+    are considered in the bottleneck constraint and the best is chosen.
 
     Parameters
     ----------
@@ -192,6 +264,10 @@ def select_bottleneck_migration(instance_data, control_consts, qos_consts):
         A dictionary of QoS group constraints. The keys are strings
         representing the names of the QoS groups and the corresponding value
         is a `ConstraintDict` object representing the constraint.
+    num_candidates: int
+        The number of candidate migrations to consider among the migrations
+        of the bottleneck constraint. A value of -1 indicates that all
+        migrations from the bottleneck constraint are considered.
 
     Returns
     -------
@@ -200,10 +276,13 @@ def select_bottleneck_migration(instance_data, control_consts, qos_consts):
         bottleneck constraint among `control_consts` and `qos_consts`.
 
     """
-    bottleneck_constraint = get_bottleneck_constraint(
+    bottleneck_const_name, bottleneck_const = get_bottleneck_constraint(
         control_consts, qos_consts)
-    switch_name = select_migration_from_constraint(bottleneck_constraint)
-    return instance_data.get_migration(switch_name)
+    candidate_migrations = select_candidate_migrations(
+        bottleneck_const, num_candidates)
+    return get_bottleneck_migration(
+        candidate_migrations, bottleneck_const_name,
+        instance_data, control_consts, qos_consts)
 
 
 def vector_first_fit(instance_data):
@@ -247,7 +326,7 @@ def vector_first_fit(instance_data):
     return num_rounds
 
 
-def current_bottleneck_first(instance_data):
+def current_bottleneck_first(instance_data, num_choices):
     """Runs the current bottleneck first scheduling algorithm.
 
     The current bottleneck first schedules one migration per iteration in
@@ -267,6 +346,11 @@ def current_bottleneck_first(instance_data):
     instance_data: InstanceData
         An `InstanceData` object representing the data for a load migration
         scheduling instance, on which the algorithm is run.
+    num_choices: int
+        An integer denoting the number of candidate migrations considered
+        when selecting a migration from the bottleneck constraint. The most
+        loaded migration among the candidates will be selected. A value of
+        -1 signifies to consider all migrations of the bottleneck constraint.
 
     Returns
     -------
@@ -281,7 +365,7 @@ def current_bottleneck_first(instance_data):
     controller_consts, qos_consts = utils.get_constraint_dicts(instance_data)
     while controller_consts or qos_consts:
         migration = select_bottleneck_migration(
-            instance_data, controller_consts, qos_consts)
+            instance_data, controller_consts, qos_consts, num_choices)
         rounds, num_rounds = schedule_migration_in_earliest_round(
             rounds, num_rounds, migration, controller_caps, qos_caps)
         controller_consts, qos_consts = remove_migration_from_constraints(

@@ -48,6 +48,12 @@ class Migration:
     def get_switch_idx(self):
         """The index of the switch involved in the migration.
 
+        Raises
+        ------
+        InvalidName
+            If the switch name is not in the form 'sx' where 'x' is an
+            integer.
+
         Returns
         -------
         int
@@ -57,7 +63,6 @@ class Migration:
         try:
             return int(self._switch[1:])
         except:
-
             raise exc.InvalidName("Switch names should be in the form " +
                                   "'sx' where 'x' is the switch ID")
 
@@ -140,7 +145,11 @@ class Migration:
             A string representing the migration.
 
         """
-        return ("Migrate switch {0} to controller {1} with load of {2}.\n" +
-                "QoS groups: {3}").format(
-                    self._switch, self._dst_controller,
-                    self._load, " ".join(self._groups))
+        mig_str = ("Migrate switch {0} to controller {1} with load of " +
+                  "{2:.2f}.\n").format(self._switch, self._dst_controller,
+                                       self._load)
+        if self._groups:
+            mig_str += "QoS groups: {}.".format(" ".join(self._groups))
+        else:
+            mig_str += "No QoS groups."
+        return mig_str
