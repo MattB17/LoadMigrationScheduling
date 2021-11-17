@@ -13,3 +13,8 @@ LARGE_IDX = 0
 # in terms of number of migrations. Small instances can be solved directly
 # with the optimizer, large instances require heuristic methods.
 SMALL_CUTOFF = 250
+
+# number of choices used in the current bottleneck first algorithm when
+# selecting the number of candidate migrations from the bottleneck
+# constraint.
+CBF_CHOICES = 2

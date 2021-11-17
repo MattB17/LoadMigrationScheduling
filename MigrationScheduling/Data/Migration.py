@@ -2,6 +2,7 @@
 migration of a switch in an SDN.
 
 """
+from MigrationScheduling import validation as val
 from MigrationScheduling import exceptions as exc
 
 class Migration:
@@ -27,8 +28,15 @@ class Migration:
     _groups: set
         The collection of QoS groups to which the switch belongs.
 
+    Raises
+    ------
+    InvalidName
+        If `switch` is not a valid name for a switch. A valid name has the
+        form `sx` where `x` is an integer representing the switch ID.
+
     """
     def __init__(self, switch, dst_controller, load):
+        val.validate_name(switch, 's', "Switch")
         self._switch = switch
         self._dst_controller = dst_controller
         self._load = load

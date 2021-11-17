@@ -1,5 +1,7 @@
 import pytest
+from unittest.mock import patch
 from MigrationScheduling.Data import Migration
+from MigrationScheduling import exceptions as exc
 
 
 @pytest.fixture(scope="function")
@@ -12,6 +14,12 @@ def test_instantiation(migration):
     assert migration.get_dst_controller() == 'c3'
     assert migration.get_load() == 3.5
     assert migration.get_groups() == set()
+
+@patch("MigrationScheduling.validation.validate_name",
+       side_effect=exc.InvalidName(""))
+def test_invalid_name(mock_validate):
+    with pytest.raises(exc.InvalidName):
+        Migration('sw56', 'c1', 0.1)
 
 
 def test_adding_groups(migration):

@@ -174,6 +174,35 @@ def schedule_migration_in_earliest_round(rounds, num_rounds, migration,
     return rounds, round_count
 
 
+def calculate_migration_load(migration, exclude_const, consts_dict):
+    """The load of `migration` from `consts_dict`, excluding `exclude_const`.
+
+    The maximum load among the constraints of `consts_dict` to which
+    `migration` is associated is calculated. The constraint with name
+    `exclude_const` is ignored in the calculation.
+
+    Parameters
+    ----------
+    migration: Migration
+        The `Migration` object for which the load is calculated.
+    exclude_const: str
+        A string representing the name of the constraint excluded from the
+        load calculation.
+    consts_dict: dict
+        A dictionary of constraints. The keys are strings representing the
+        names of the constraints and the corresponding value is a
+        `ConstraintDict` object for the constraint.
+
+    """
+    load = 0
+    migration_consts = migration.get_groups().union(
+        {migration.get_dst_controller()})
+    for const_name in migration_consts:
+        if const_name != exclude_const:
+            load = max(load, consts_dict[const_name].get_load_factor())
+    return load
+
+
 def get_bottleneck_migration(migrations, bottleneck_const_name,
                              instance_data, consts_dict):
     """Selects the bottleneck migration among `migrations`.
@@ -211,18 +240,12 @@ def get_bottleneck_migration(migrations, bottleneck_const_name,
     max_load = 0
     for migration_name in migrations:
         curr_migration = instance_data.get_migration(migration_name)
-        curr_load = 0
-        if curr_migration.get_dst_controller() != bottleneck_const_name:
-            curr_load = max(curr_load, consts_dict[
-                curr_migration.get_dst_controller()].get_load_factor())
-        for group_name in curr_migration.get_groups():
-            if group_name != bottleneck_const_name:
-                curr_load = max(
-                    curr_load, consts_dict[group_name].get_load_factor())
+        curr_load = calculate_migration_load(
+            curr_migration, bottleneck_const_name, consts_dict)
         if ((not bottleneck_migration) or (curr_load > max_load)):
             bottleneck_migration = curr_migration
             max_load = curr_load
-    return curr_migration
+    return bottleneck_migration
 
 
 def select_bottleneck_migration(instance_data, num_candidates, consts_dict):

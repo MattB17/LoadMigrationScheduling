@@ -2,6 +2,7 @@
 build the capacity constraints for a controller.
 
 """
+from MigrationScheduling import validation as val
 from MigrationScheduling import exceptions as exc
 from MigrationScheduling.Data import ConstraintDict
 
@@ -24,8 +25,16 @@ class ControllerConstraint:
     _switches: set
         The collection of switches to be migrated to the controller.
 
+    Raises
+    ------
+    InvalidName
+        If `controller` is not a valid name for a controller object. A
+        valid name has the form `cx` where `x` is an integer representing the
+        controller ID.
+
     """
     def __init__(self, controller, capacity):
+        val.validate_name(controller, 'c', "Controller")
         self._controller = controller
         self._capacity = capacity
         self._switches = set()
@@ -73,11 +82,7 @@ class ControllerConstraint:
             the constraint.
 
         """
-        try:
-            return int(self._controller[1:])
-        except:
-            raise exc.InvalidName("Controller names should be in the form " +
-                                  "'cx' where 'x' is the controller ID")
+        return int(self._controller[1:])
 
     def add_switch(self, switch_name):
         """Adds `switch_name` as a switch to be migrated to the controller.
