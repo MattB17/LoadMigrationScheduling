@@ -61,12 +61,19 @@ class Optimizer:
         parser.parse_migrations(migration_file)
         self._data = parser.to_data()
 
-    def build_ip_model(self):
+    def build_ip_model(self, verbose=True):
         """Builds an Integer Programming model for the migration instance.
 
         The model is instantiated and solved based on the pre-loaded instance
         of the load migration scheduling problem.
 
+        Parameters
+        ----------
+        verbose: bool
+            A boolean indicating whether verbose mode is used. If used the
+            entire solution will be printed, otherwise, only gurobi messages
+            will be printed. The default value is True.
+
         Raises
         ------
         InstanceNotSpecified
@@ -74,17 +81,26 @@ class Optimizer:
 
         Returns
         -------
-        None
+        float
+            A float representing the best objective value found during
+            optimization.
 
         """
-        self._build_model(is_ip=True)
+        return self._build_model(is_ip=True, verbose=verbose)
 
-    def build_lp_model(self):
+    def build_lp_model(self, verbose=True):
         """Builds a Linear Programming model for the migration instance.
 
         The model is instantiated and solved based on the pre-loaded instance
         of the load migration scheduling problem.
 
+        Parameters
+        ----------
+        verbose: bool
+            A boolean indicating whether verbose mode is used. If used the
+            entire solution will be printed, otherwise, only gurobi messages
+            will be printed. The default value is True.
+
         Raises
         ------
         InstanceNotSpecified
@@ -92,10 +108,12 @@ class Optimizer:
 
         Returns
         -------
-        None
+        float
+            A float representing the best objective value found during
+            optimization.
 
         """
-        self._build_model(is_ip=False)
+        return self._build_model(is_ip=False, verbose=verbose)
 
     def get_model_bounds(self):
         """Computes upper and lower bounds for the model.
@@ -292,7 +310,9 @@ class Optimizer:
 
         Returns
         -------
-        None
+        float
+            A float representing the best objective value found during
+            optimization.
 
         """
         if self._data:
@@ -303,6 +323,7 @@ class Optimizer:
             self._model.optimize()
             if verbose:
                 self._print_output(x_vars, is_ip)
+            return self._get_objective_value()
         else:
             raise exc.InstanceNotSpecified()
 
@@ -358,9 +379,28 @@ class Optimizer:
         None
 
         """
-        if self._model.status == gp.GRB.OPTIMAL:
+        if self._model and self._model.status == gp.GRB.OPTIMAL:
             solution = self._model.getAttr("x", x_vars)
             self._print_solution(solution, is_ip)
             print("Number of Rounds: {0}".format(self._model.objVal + 1))
+        else:
+            raise exc.ModelNotOptimized()
+
+    def _get_objective_value(self):
+        """The objective value of the model.
+
+        Raises
+        ------
+        ModelNotOptimized
+            If the model has not been optimized.
+
+        Returns
+        -------
+        float
+            A float representing the objective value of the model.
+
+        """
+        if self._model and self._model.status == gp.GRB.OPTIMAL:
+            return self._model.objVal
         else:
             raise exc.ModelNotOptimized()
