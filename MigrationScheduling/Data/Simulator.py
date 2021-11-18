@@ -3,6 +3,7 @@ instances.
 
 """
 import random
+import numpy as np
 from MigrationScheduling.Data import Migration
 
 class Simulator:
@@ -77,9 +78,12 @@ class Simulator:
         None
 
         """
-        self._num_controllers = random.randint(1, int(1.5 *num_migrations))
+        self._num_controllers = int(
+            np.random.normal(0.3, 0.1, 1)[0] * num_migrations)
         self._controllers = [[0, 0.0] for _ in range(self._num_controllers)]
-        self._num_qos_groups = random.randint(1, int(1.3 * num_migrations))
+
+        self._num_qos_groups = int(
+            np.random.normal(0.7, 0.1, 1)[0] * num_migrations)
         self._qos_groups = [0 for _ in range(self._num_qos_groups)]
 
     def _create_migration(self, migration_idx):
@@ -100,13 +104,15 @@ class Simulator:
             A `Migration` object representing a simulated migration.
 
         """
-        load = round(random.random() * 400, 2)
+        load = round(np.random.normal(10, 5, 1)[0], 2)
         dst = random.randint(1, self._num_controllers) - 1
         migration = Migration(
             "s{}".format(migration_idx), "c{}".format(dst), load)
         self._controllers[dst][0] += 1
         self._controllers[dst][1] = max(load, self._controllers[dst][1])
-        num_groups = random.randint(1, self._num_qos_groups) - 1
+
+        num_groups = min(self._num_qos_groups - 1,
+            int(np.random.normal(0.3, 0.4, 1)[0] * self._num_qos_groups))
         group_ids = random.sample(range(self._num_qos_groups), num_groups)
         for group_id in group_ids:
             migration.add_qos_group("g{}".format(group_id))
@@ -161,8 +167,9 @@ class Simulator:
         min_cap = self._controllers[controller_idx][1]
         max_cap = (self._controllers[controller_idx][0] *
                    self._controllers[controller_idx][1])
-        return "c{0} {1}\n".format(
-            controller_idx, min_cap + random.random() * (max_cap - min_cap))
+        capacity = min(max_cap, min_cap + max(0,
+            np.random.normal(0.5, 0.3, 1)[0] * (max_cap - min_cap)))
+        return "c{0} {1}\n".format(controller_idx, capacity)
 
     def _get_qos_line(self, qos_idx):
         """Constructs the QoS line for `qos_idx`.
@@ -184,8 +191,9 @@ class Simulator:
             A string representing the QoS line.
 
         """
-        return "g{0} {1}\n".format(
-            qos_idx, random.randint(1, self._qos_groups[qos_idx]))
+        capacity = min(1, max(self._qos_groups[qos_idx],
+            np.random.normal(0.5, 0.3, 1)[0] * self._qos_groups[qos_idx]))
+        return "g{0} {1}\n".format(qos_idx, capacity)
 
     def _output_simulated_instance(self, output_file):
         """Outputs the simulated load migration scheduling instance.

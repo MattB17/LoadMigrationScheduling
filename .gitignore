@@ -3,3 +3,5 @@
 __pycache__
 *.egg-info
 migrations_large*.txt
+input_data/
+output_data/
