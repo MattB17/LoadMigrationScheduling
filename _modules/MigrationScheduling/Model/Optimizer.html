@@ -37,8 +37,10 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -129,12 +131,19 @@
         <span class="n">parser</span><span class="o">.</span><span class="n">parse_migrations</span><span class="p">(</span><span class="n">migration_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">to_data</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Optimizer.build_ip_model"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.build_ip_model">[docs]</a>    <span class="k">def</span> <span class="nf">build_ip_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Optimizer.build_ip_model"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.build_ip_model">[docs]</a>    <span class="k">def</span> <span class="nf">build_ip_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Builds an Integer Programming model for the migration instance.</span>
 
 <span class="sd">        The model is instantiated and solved based on the pre-loaded instance</span>
 <span class="sd">        of the load migration scheduling problem.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        verbose: bool</span>
+<span class="sd">            A boolean indicating whether verbose mode is used. If used the</span>
+<span class="sd">            entire solution will be printed, otherwise, only gurobi messages</span>
+<span class="sd">            will be printed. The default value is True.</span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        InstanceNotSpecified</span>
@@ -142,17 +151,26 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        None</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the best objective value found during</span>
+<span class="sd">            optimization.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">is_ip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">is_ip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Optimizer.build_lp_model"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.build_lp_model">[docs]</a>    <span class="k">def</span> <span class="nf">build_lp_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Optimizer.build_lp_model"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.build_lp_model">[docs]</a>    <span class="k">def</span> <span class="nf">build_lp_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Builds a Linear Programming model for the migration instance.</span>
 
 <span class="sd">        The model is instantiated and solved based on the pre-loaded instance</span>
 <span class="sd">        of the load migration scheduling problem.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        verbose: bool</span>
+<span class="sd">            A boolean indicating whether verbose mode is used. If used the</span>
+<span class="sd">            entire solution will be printed, otherwise, only gurobi messages</span>
+<span class="sd">            will be printed. The default value is True.</span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        InstanceNotSpecified</span>
@@ -160,10 +178,12 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        None</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the best objective value found during</span>
+<span class="sd">            optimization.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">is_ip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">is_ip</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Optimizer.get_model_bounds"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.get_model_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Computes upper and lower bounds for the model.</span>
@@ -360,7 +380,9 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        None</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the best objective value found during</span>
+<span class="sd">            optimization.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
@@ -371,6 +393,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_print_output</span><span class="p">(</span><span class="n">x_vars</span><span class="p">,</span> <span class="n">is_ip</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_objective_value</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InstanceNotSpecified</span><span class="p">()</span>
 
@@ -426,10 +449,29 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">gp</span><span class="o">.</span><span class="n">GRB</span><span class="o">.</span><span class="n">OPTIMAL</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">gp</span><span class="o">.</span><span class="n">GRB</span><span class="o">.</span><span class="n">OPTIMAL</span><span class="p">:</span>
             <span class="n">solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_print_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">is_ip</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of Rounds: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">objVal</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">ModelNotOptimized</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_objective_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The objective value of the model.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ModelNotOptimized</span>
+<span class="sd">            If the model has not been optimized.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A float representing the objective value of the model.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">gp</span><span class="o">.</span><span class="n">GRB</span><span class="o">.</span><span class="n">OPTIMAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">objVal</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">ModelNotOptimized</span><span class="p">()</span></div>
 </pre></div>

@@ -18,7 +18,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Exceptions" href="../exceptions.html" />
+    <link rel="next" title="Scheduling Algorithms" href="../algorithms.html" />
     <link rel="prev" title="Migration Round" href="round.html" /> 
 </head>
 
@@ -45,8 +45,10 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Optimizer</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -106,18 +108,28 @@ that the instance has not yet been specified.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="MigrationScheduling.Model.Optimizer.build_ip_model">
-<span class="sig-name descname"><span class="pre">build_ip_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_ip_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_ip_model" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build_ip_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_ip_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_ip_model" title="Permalink to this definition"></a></dt>
 <dd><p>Builds an Integer Programming model for the migration instance.</p>
 <p>The model is instantiated and solved based on the pre-loaded instance
 of the load migration scheduling problem.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt>None</dt><dd></dd>
+<dt><strong>verbose: bool</strong></dt><dd><p>A boolean indicating whether verbose mode is used. If used the
+entire solution will be printed, otherwise, only gurobi messages
+will be printed. The default value is True.</p>
+</dd>
 </dl>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the best objective value found during
+optimization.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
 <dt>InstanceNotSpecified</dt><dd><p>If a migration scheduling instance has not yet been specified.</p>
 </dd>
 </dl>
@@ -127,18 +139,28 @@ of the load migration scheduling problem.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MigrationScheduling.Model.Optimizer.build_lp_model">
-<span class="sig-name descname"><span class="pre">build_lp_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_lp_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_lp_model" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build_lp_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_lp_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_lp_model" title="Permalink to this definition"></a></dt>
 <dd><p>Builds a Linear Programming model for the migration instance.</p>
 <p>The model is instantiated and solved based on the pre-loaded instance
 of the load migration scheduling problem.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt>None</dt><dd></dd>
+<dt><strong>verbose: bool</strong></dt><dd><p>A boolean indicating whether verbose mode is used. If used the
+entire solution will be printed, otherwise, only gurobi messages
+will be printed. The default value is True.</p>
+</dd>
 </dl>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the best objective value found during
+optimization.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
 <dt>InstanceNotSpecified</dt><dd><p>If a migration scheduling instance has not yet been specified.</p>
 </dd>
 </dl>
@@ -211,7 +233,7 @@ scheduling instance.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="round.html" class="btn btn-neutral float-left" title="Migration Round" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../exceptions.html" class="btn btn-neutral float-right" title="Exceptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../algorithms.html" class="btn btn-neutral float-right" title="Scheduling Algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
