@@ -3,8 +3,11 @@ migration scheduling project.
 
 """
 
+# minimum number of migrations in a simulated instance
+MIN_MIGRATIONS = 1
+
 # index for new small instances
-SMALL_IDX = 1
+SMALL_IDX = 0
 
 # index for new large instances
 LARGE_IDX = 0

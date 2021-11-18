@@ -1,4 +1,4 @@
-"""Simulates load migration scheduling instances.
+"""Simulates load migration scheduling instances of a fixed size.
 
 """
 import os

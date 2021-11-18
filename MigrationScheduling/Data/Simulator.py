@@ -86,6 +86,57 @@ class Simulator:
             np.random.normal(0.7, 0.1, 1)[0] * num_migrations)
         self._qos_groups = [0 for _ in range(self._num_qos_groups)]
 
+    def _setup_migration(self, migration_idx):
+        """Setups a migration for `migration_idx`.
+
+        The setup involves simulating a load for the migration and choosing
+        a random destination controller.
+
+        Parameters
+        ----------
+        migration_idx: int
+            An integer representing the index of the migration being set up.
+
+        Returns
+        -------
+        Migration
+            A created `Migration` object.
+
+        """
+        load = round(np.random.normal(10, 5, 1)[0], 2)
+        dst = random.randint(1, self._num_controllers) - 1
+        self._controllers[dst][0] += 1
+        self._controllers[dst][1] = max(load, self._controllers[dst][1])
+        return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
+
+    def _assign_migration_to_qos_groups(migration):
+        """Simulates the assignment of `migration` to QoS groups.
+
+        The simulator samples a random number x of QoS groups to which the
+        migration will be assigned and then the x groups are chosen from the
+        set of all groups uniformly at random.
+
+        Parameters
+        ----------
+        migration: Migration
+            The `Migration` object being assigned to QoS groups.
+
+        Returns
+        -------
+        set
+            A set of strings representing the QoS groups to which the
+            migration was assigned.
+
+        """
+        groups = {}
+        num_groups = min(self._num_qos_groups - 1,
+            int(np.random.normal(0.3, 0.4, 1)[0] * self._num_qos_groups))
+        group_ids = random.sample(range(self._num_qos_groups), num_groups)
+        for group_id in group_ids:
+            groups.add("g{}".format(group_id))
+            self._qos_groups[group_id] += 1
+        return groups
+
     def _create_migration(self, migration_idx):
         """Simulates a new migration.
 
@@ -104,19 +155,9 @@ class Simulator:
             A `Migration` object representing a simulated migration.
 
         """
-        load = round(np.random.normal(10, 5, 1)[0], 2)
-        dst = random.randint(1, self._num_controllers) - 1
-        migration = Migration(
-            "s{}".format(migration_idx), "c{}".format(dst), load)
-        self._controllers[dst][0] += 1
-        self._controllers[dst][1] = max(load, self._controllers[dst][1])
-
-        num_groups = min(self._num_qos_groups - 1,
-            int(np.random.normal(0.3, 0.4, 1)[0] * self._num_qos_groups))
-        group_ids = random.sample(range(self._num_qos_groups), num_groups)
-        for group_id in group_ids:
-            migration.add_qos_group("g{}".format(group_id))
-            self._qos_groups[group_id] += 1
+        migration = self._setup_migration(migration_idx)
+        for group in self._assign_migration_to_qos_groups(migration):
+            migration.add_qos_group(group)
         return migration
 
     def _get_migration_line(self, migration):
