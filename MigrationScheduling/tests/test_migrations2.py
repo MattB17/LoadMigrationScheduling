@@ -9,30 +9,49 @@ DIR = os.path.dirname(
 # indices of network objects
 SWITCH_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ROUND_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-CONTROLLER_IDS = [0, 1, 2, 3, 4]
-GROUP_IDS = [0, 1, 2, 3]
+CONTROLLER_IDS = [0, 2, 3, 4, 5, 6]
+GROUP_IDS = [0, 1, 2, 3, 4, 5, 6]
 
 # switch loads
-LOADS = {i: 1 for i in range(10)}
+LOADS = {0: 299.72,
+         1: 112.63,
+         2: 314.46,
+         3: 71.78,
+         4: 346.62,
+         5: 272.62,
+         6: 123.08,
+         7: 280.35,
+         8: 343.59,
+         9: 296.22}
 
 # controller capacities
-CONTROLLER_CAPS = {i: 1 for i in range(5)}
+CONTROLLER_CAPS = {0: 123.08,
+                   2: 544.57,
+                   3: 71.78,
+                   4: 817.72,
+                   5: 272.62,
+                   6: 372.52}
 
 # group capacities
-GROUP_CAPS = {i: 1 for i in range(4)}
+GROUP_CAPS = {0: 3, 1: 2, 2: 2, 3: 2, 4: 2, 5: 3, 6: 5}
 
 # switches migrating to each destination controller
-DST_CONTROLLERS = {0: {2},
-                   1: {0, 7},
-                   2: {3, 4},
-                   3: {5, 6, 8},
-                   4: {1, 9}}
+DST_CONTROLLERS = {0: {6},
+                   2: {4, 9},
+                   3: {3},
+                   4: {0, 1, 7},
+                   5: {5},
+                   6: {2, 8}}
 
 # group membership
-GROUPS = {0: {0, 1, 5, 8},
-          1: {1, 4, 7},
-          2: {3, 6},
-          3: {2, 3}}
+GROUPS = {0: {3, 7, 8},
+          1: {3, 4, 8},
+          2: {3, 4, 6, 7, 8},
+          3: {0, 2, 6},
+          4: {0, 1, 3, 7},
+          5: {0, 7, 8},
+          6: {1, 3, 6, 7, 8}}
+
 
 def test_optimizer():
     # direct modelling
@@ -55,6 +74,6 @@ def test_optimizer():
     # optimizer
     optimizer = Optimizer()
     optimizer.get_model_data(os.path.join(DIR,
-        os.path.join("instances", "migrations0.txt")))
+        os.path.join("instances", "migrations2.txt")))
     optVal = optimizer.build_ip_model(verbose=False)
     assert round(optVal, 2) == round(m.objVal, 2)

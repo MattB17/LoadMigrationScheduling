@@ -7,32 +7,25 @@ DIR = os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # indices of network objects
-SWITCH_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-ROUND_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-CONTROLLER_IDS = [0, 1, 2, 3, 4]
-GROUP_IDS = [0, 1, 2, 3]
+SWITCH_IDS = [0, 1, 2, 3, 4]
+ROUND_IDS = [0, 1, 2, 3, 4]
+CONTROLLER_IDS = [0, 2, 3]
+GROUP_IDS = [0, 2]
 
 # switch loads
-LOADS = {i: 1 for i in range(10)}
+LOADS = {0: 354.32, 1: 334.94, 2: 36.31, 3: 14.9, 4: 73.56}
 
 # controller capacities
-CONTROLLER_CAPS = {i: 1 for i in range(5)}
+CONTROLLER_CAPS = {0: 354.32, 2: 14.9, 3: 810.15}
 
 # group capacities
-GROUP_CAPS = {i: 1 for i in range(4)}
+GROUP_CAPS = {0: 1, 2: 1}
 
 # switches migrating to each destination controller
-DST_CONTROLLERS = {0: {2},
-                   1: {0, 7},
-                   2: {3, 4},
-                   3: {5, 6, 8},
-                   4: {1, 9}}
+DST_CONTROLLERS = {0: {0}, 2: {3}, 3: {1, 2, 4}}
 
 # group membership
-GROUPS = {0: {0, 1, 5, 8},
-          1: {1, 4, 7},
-          2: {3, 6},
-          3: {2, 3}}
+GROUPS = {0: {2, 3}, 2: {3}}
 
 def test_optimizer():
     # direct modelling
@@ -55,6 +48,6 @@ def test_optimizer():
     # optimizer
     optimizer = Optimizer()
     optimizer.get_model_data(os.path.join(DIR,
-        os.path.join("instances", "migrations0.txt")))
+        os.path.join("instances", "migrations1.txt")))
     optVal = optimizer.build_ip_model(verbose=False)
     assert round(optVal, 2) == round(m.objVal, 2)
