@@ -156,6 +156,57 @@
             <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_migrations</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_qos_groups</span><span class="p">)]</span>
 
+    <span class="k">def</span> <span class="nf">_setup_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_idx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Setups a migration for `migration_idx`.</span>
+
+<span class="sd">        The setup involves simulating a load for the migration and choosing</span>
+<span class="sd">        a random destination controller.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        migration_idx: int</span>
+<span class="sd">            An integer representing the index of the migration being set up.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Migration</span>
+<span class="sd">            A created `Migration` object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">load</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">dst</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_controllers</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">load</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">Migration</span><span class="p">(</span><span class="s2">&quot;s</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">migration_idx</span><span class="p">),</span> <span class="s2">&quot;c</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst</span><span class="p">),</span> <span class="n">load</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_assign_migration_to_qos_groups</span><span class="p">(</span><span class="n">migration</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simulates the assignment of `migration` to QoS groups.</span>
+
+<span class="sd">        The simulator samples a random number x of QoS groups to which the</span>
+<span class="sd">        migration will be assigned and then the x groups are chosen from the</span>
+<span class="sd">        set of all groups uniformly at random.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        migration: Migration</span>
+<span class="sd">            The `Migration` object being assigned to QoS groups.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set of strings representing the QoS groups to which the</span>
+<span class="sd">            migration was assigned.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">num_groups</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_qos_groups</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_qos_groups</span><span class="p">))</span>
+        <span class="n">group_ids</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_qos_groups</span><span class="p">),</span> <span class="n">num_groups</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">:</span>
+            <span class="n">groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;g</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">groups</span>
+
     <span class="k">def</span> <span class="nf">_create_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulates a new migration.</span>
 
@@ -174,19 +225,9 @@
 <span class="sd">            A `Migration` object representing a simulated migration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">load</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">dst</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_controllers</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">migration</span> <span class="o">=</span> <span class="n">Migration</span><span class="p">(</span>
-            <span class="s2">&quot;s</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">migration_idx</span><span class="p">),</span> <span class="s2">&quot;c</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst</span><span class="p">),</span> <span class="n">load</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">load</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-
-        <span class="n">num_groups</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_qos_groups</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_qos_groups</span><span class="p">))</span>
-        <span class="n">group_ids</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_qos_groups</span><span class="p">),</span> <span class="n">num_groups</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">:</span>
-            <span class="n">migration</span><span class="o">.</span><span class="n">add_qos_group</span><span class="p">(</span><span class="s2">&quot;g</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_id</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">migration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_migration</span><span class="p">(</span><span class="n">migration_idx</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_migration_to_qos_groups</span><span class="p">(</span><span class="n">migration</span><span class="p">):</span>
+            <span class="n">migration</span><span class="o">.</span><span class="n">add_qos_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">migration</span>
 
     <span class="k">def</span> <span class="nf">_get_migration_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
@@ -239,7 +280,7 @@
                    <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">capacity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_cap</span><span class="p">,</span> <span class="n">min_cap</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_cap</span> <span class="o">-</span> <span class="n">min_cap</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="s2">&quot;c</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;c</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1:.2f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_qos_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qos_idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructs the QoS line for `qos_idx`.</span>
