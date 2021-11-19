@@ -209,7 +209,7 @@ class Simulator:
         max_cap = (self._controllers[controller_idx][0] *
                    self._controllers[controller_idx][1])
         capacity = min(max_cap, min_cap + max(0,
-            np.random.normal(0.3, 0.2, 1)[0] * (max_cap - min_cap)))
+            np.random.normal(0.5, 0.3, 1)[0] * (max_cap - min_cap)))
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
     def _get_qos_line(self, qos_idx):
@@ -232,7 +232,7 @@ class Simulator:
             A string representing the QoS line.
 
         """
-        capacity = int(max(1.00, max(self._qos_groups[qos_idx],
+        capacity = int(min(self._qos_groups[qos_idx], max(1.0,
             np.random.normal(0.5, 0.3, 1)[0] * self._qos_groups[qos_idx])))
         return "g{0} {1}\n".format(qos_idx, capacity)
 
