@@ -3,6 +3,7 @@ analysis of results.
 
 """
 import os
+import numpy as np
 from timeit import default_timer as timer
 from MigrationScheduling.Model import Optimizer
 from MigrationScheduling import algorithms, specs
@@ -57,7 +58,10 @@ def build_optimal_string(optimizer):
 
     """
     start = timer()
-    opt = int(optimizer.build_ip_model(verbose=False)) + 1
+    try:
+        opt = int(optimizer.build_ip_model(verbose=False)) + 1
+    except:
+        opt = np.nan
     opt_time = timer() - start
 
     return "{0} {1}".format(opt, opt_time)
