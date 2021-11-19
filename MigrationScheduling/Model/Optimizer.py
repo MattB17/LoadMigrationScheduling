@@ -39,6 +39,21 @@ class Optimizer:
         """
         return self._data
 
+    def get_size_string(self):
+        """A string representing the size of the instance.
+
+        The size string is a space separated string with the number of
+        migrations followed by the number of controllers and then the
+        number of QoS groups.
+
+        Returns
+        -------
+        str
+            A string representing the size of the instance.
+
+        """
+        return self._data.get_size_string()
+
     def get_model_data(self, migration_file):
         """Retrieves the data for the migration scheduling instance.
 

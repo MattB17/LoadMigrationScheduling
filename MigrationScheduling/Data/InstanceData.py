@@ -186,3 +186,21 @@ class InstanceData:
 
         """
         return self._migrations[switch_name].get_switch_idx()
+
+    def get_size_string(self):
+        """A string representing the parameters of the instance.
+
+        The size string is a space separated string with the number of
+        migrations followed by the number of controllers and then the
+        number of QoS groups.
+
+        Returns
+        -------
+        str
+            A string representing the parameters of the instance.
+
+        """
+        return "{0} {1} {2}".format(
+            len(self._switch_ids),
+            len(self._controller_ids),
+            len(self._qos_ids))

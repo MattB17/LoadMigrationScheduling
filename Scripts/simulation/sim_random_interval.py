@@ -13,12 +13,13 @@ from MigrationScheduling.Data import Simulator
 random.seed(42)
 np.random.seed(42)
 
-if __name__ == __main__:
+if __name__ == "__main__":
     output_path = sys.argv[1]
     num_instances = int(sys.argv[2])
     lb = max(specs.MIN_MIGRATIONS, int(sys.argv[3]))
     ub = max(lb, int(sys.argv[4]))
     curr_idx = specs.SMALL_IDX
+    simulator = Simulator()
     instance_sizes = random.choices(range(lb, ub + 1), k=num_instances)
     for instance_size in instance_sizes:
         output_file = os.path.join(

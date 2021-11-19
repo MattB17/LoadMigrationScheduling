@@ -22,7 +22,7 @@ if __name__ == "__main__":
         lb, ub = optimizer.get_model_bounds()
         print("Lower Bound: {}".format(lb))
         print("Upper Bound: {}".format(ub))
-        optimizer.build_ip_model()
+        optimizer.build_ip_model(verbose=True)
 
     print("Number of Rounds for Vector First Fit: {}".format(
         algorithms.vector_first_fit(optimizer.instance_data())))
