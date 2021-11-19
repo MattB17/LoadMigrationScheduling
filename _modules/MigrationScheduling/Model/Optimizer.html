@@ -109,6 +109,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div>
 
+<div class="viewcode-block" id="Optimizer.get_size_string"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.get_size_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_size_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A string representing the size of the instance.</span>
+
+<span class="sd">        The size string is a space separated string with the number of</span>
+<span class="sd">        migrations followed by the number of controllers and then the</span>
+<span class="sd">        number of QoS groups.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A string representing the size of the instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_size_string</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="Optimizer.get_model_data"><a class="viewcode-back" href="../../../Model/optimizer.html#MigrationScheduling.Model.Optimizer.get_model_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves the data for the migration scheduling instance.</span>
 
