@@ -202,9 +202,9 @@ class Optimizer:
         None
 
         """
-        self._model.addConstrs(
-            (x_vars.sum(i, '*') == 1
-             for i in self._data.get_switch_ids()), "migrate")
+        for i in self._data.get_switch_ids():
+            self._model.addConstr(x_vars.sum(i, '*') == 1,
+                                  "migrate[{}]".format(i))
 
     def _add_bound_constraints(self, lambda_var, x_vars):
         """Adds the constraints bounding `lambda_var`.
@@ -225,10 +225,10 @@ class Optimizer:
         None
 
         """
-        self._model.addConstrs(
-            (r * x_vars[i, r] <= lambda_var
-             for i in self._data.get_switch_ids()
-             for r in self._data.get_round_ids()), "bound")
+        for i in self._data.get_switch_ids():
+            for r in self._data.get_round_ids():
+                self._model.addConstr(r * x_vars[i, r] <= lambda_var,
+                                      "bound[{0}, {1}]".format(i, r))
 
     def _add_controller_constraints(self, x_vars):
         """Adds the set of controller constraints to the model using `x_vars`.
@@ -243,11 +243,15 @@ class Optimizer:
         None
 
         """
-        self._model.addConstrs((sum(
-            self._data.get_load(s) * x_vars[self._data.get_switch_id(s), r]
-            for s in control_const.get_switches()) <= control_const.get_cap()
-            for control_const in self._data.get_control_consts()
-            for r in self._data.get_round_ids()), "controller")
+        for control_const in self._data.get_control_consts():
+            for r in self._data.get_round_ids():
+                self._model.addConstr(sum(
+                    self._data.get_load(s) *
+                    x_vars[self._data.get_switch_id(s), r]
+                    for s in control_const.get_switches()) <=
+                    control_const.get_cap(),
+                    "controller[{0}, {1}]".format(
+                        control_const.get_controller_idx(), r))
 
     def _add_qos_constraints(self, x_vars):
         """Adds the set of QoS constraints to the model using `x_vars`.
