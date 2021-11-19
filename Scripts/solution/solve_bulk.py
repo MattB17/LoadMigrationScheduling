@@ -2,18 +2,15 @@
 and write the results to a file.
 
 """
-import re
 import os
 import sys
 import random
 import numpy as np
-from MigrationScheduling import specs
-from MigrationScheduling import algorithms
 from MigrationScheduling.Model import Optimizer
+from MigrationScheduling import algorithms, specs, utils
 
 
-random.seed(42)
-np.random.seed(42)
+utils.initialize_seeds()
 
 
 if __name__ == "__main__":
@@ -21,15 +18,10 @@ if __name__ == "__main__":
     output_dir = sys.argv[2]
     file_pattern = sys.argv[3]
     optimize = (sys.argv[4].lower() == "true")
-    match_str = r"{}.*\.txt".format(file_pattern)
-    instance_files = [file_name for file_name in os.listdir(input_dir)
-                      if re.match(match_str, file_name)]
+    instance_files = utils.get_all_files_by_pattern(input_dir, file_pattern)
     output_file = os.path.join(output_dir, "results.txt")
     with open(output_file, 'w') as result_file:
-        header_str = "num_migrations num_controllers num_groups vff cbf"
-        if optimize:
-            header_str += " opt"
-        result_file.write(header_str + "\n")
+        result_file.write(utils.get_results_header(optimize))
         for instance_file in instance_files:
             optimizer = Optimizer()
             optimizer.get_model_data(os.path.join(input_dir, instance_file))

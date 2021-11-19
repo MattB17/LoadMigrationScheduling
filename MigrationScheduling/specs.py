@@ -21,3 +21,6 @@ SMALL_CUTOFF = 250
 # selecting the number of candidate migrations from the bottleneck
 # constraint.
 CBF_CHOICES = 2
+
+# seed number used when setting seeds for reproducibility of experiments
+SEED_NUM = 42

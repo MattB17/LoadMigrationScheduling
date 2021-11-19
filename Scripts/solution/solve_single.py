@@ -4,13 +4,11 @@
 import sys
 import random
 import numpy as np
-from MigrationScheduling import specs
-from MigrationScheduling import algorithms
+from MigrationScheduling import algorithms, specs, utils
 from MigrationScheduling.Model import Optimizer
 
 
-random.seed(42)
-np.random.seed(42)
+utils.initialize_seeds()
 
 
 if __name__ == "__main__":

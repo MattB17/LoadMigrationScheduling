@@ -7,11 +7,10 @@ import os
 import sys
 import random
 import numpy as np
-from MigrationScheduling import specs
+from MigrationScheduling import specs, utils
 from MigrationScheduling.Data import Simulator
 
-random.seed(42)
-np.random.seed(42)
+utils.initialize_seeds()
 
 if __name__ == "__main__":
     output_path = sys.argv[1]

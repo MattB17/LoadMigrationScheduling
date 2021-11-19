@@ -2,6 +2,11 @@
 algorithms.
 
 """
+import os
+import re
+import random
+import numpy as np
+from MigrationScheduling import specs
 
 
 def get_controller_cap_dict(controller_constraints):
@@ -154,3 +159,63 @@ def get_constraints_dict(instance_data):
     control_dict = get_controller_constraint_dicts(instance_data)
     qos_dict = get_qos_constraint_dicts(instance_data.get_qos_consts())
     return {**control_dict, **qos_dict}
+
+def get_all_files_by_pattern(file_dir, file_pattern):
+    """Gets all files in `file_dir` matching `file_pattern`.
+
+    Searches through `file_dir` for all files that have a pattern matching
+    the one specified by `file_pattern`.
+
+    Parameters
+    ----------
+    file_dir: str
+        A string representing the name of the directory that is searched.
+    file_pattern: str
+        A string identifying the file pattern to be searched for.
+
+    Returns
+    -------
+    list
+        A list of strings representing the names of the files in `file_dir`
+        that match the pattern specified by `file_pattern`.
+
+    """
+    match_str = r"{}.*\.txt".format(file_pattern)
+    return [file_name for file_name in os.listdir(file_dir)
+            if re.match(match_str, file_name)]
+
+def get_results_header(run_optimizer=True):
+    """The header for the file storing the results of solved instances.
+
+    The header is a space-separated string identifying the column names in
+    the results file.
+
+    Parameters
+    ----------
+    run_optimizer: bool
+        A boolean value indicating whether the optimizer is run to solve the
+        instances exactly. The default value is True. If True, columns
+        indicating results for the optimal solution are added to the header.
+
+    Returns
+    -------
+    str
+        A string representing the header for the results file.
+
+    """
+    header_str = ("num_migrations num_controllers num_groups " +
+                  "vff vff_time cbf cbf_time")
+    if run_optimizer:
+        header_str += " opt opt_time"
+    return header_str + "\n"
+
+def initialize_seeds():
+    """Initializes the random seeds for reproducibility of experiments.
+
+    Returns
+    -------
+    None
+
+    """
+    random.seed(specs.SEED_NUM)
+    np.random.seed(specs.SEED_NUM)
