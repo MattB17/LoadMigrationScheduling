@@ -40,6 +40,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -71,6 +72,11 @@
 <span class="sd">algorithms.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">specs</span>
 
 
 <div class="viewcode-block" id="get_controller_cap_dict"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_controller_cap_dict">[docs]</a><span class="k">def</span> <span class="nf">get_controller_cap_dict</span><span class="p">(</span><span class="n">controller_constraints</span><span class="p">):</span>
@@ -223,6 +229,66 @@
     <span class="n">control_dict</span> <span class="o">=</span> <span class="n">get_controller_constraint_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
     <span class="n">qos_dict</span> <span class="o">=</span> <span class="n">get_qos_constraint_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">())</span>
     <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">control_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">qos_dict</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_all_files_by_pattern"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_all_files_by_pattern">[docs]</a><span class="k">def</span> <span class="nf">get_all_files_by_pattern</span><span class="p">(</span><span class="n">file_dir</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets all files in `file_dir` matching `file_pattern`.</span>
+
+<span class="sd">    Searches through `file_dir` for all files that have a pattern matching</span>
+<span class="sd">    the one specified by `file_pattern`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_dir: str</span>
+<span class="sd">        A string representing the name of the directory that is searched.</span>
+<span class="sd">    file_pattern: str</span>
+<span class="sd">        A string identifying the file pattern to be searched for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A list of strings representing the names of the files in `file_dir`</span>
+<span class="sd">        that match the pattern specified by `file_pattern`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">match_str</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.*\.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_pattern</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">file_name</span> <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">file_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">match_str</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="get_results_header"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_results_header">[docs]</a><span class="k">def</span> <span class="nf">get_results_header</span><span class="p">(</span><span class="n">run_optimizer</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The header for the file storing the results of solved instances.</span>
+
+<span class="sd">    The header is a space-separated string identifying the column names in</span>
+<span class="sd">    the results file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    run_optimizer: bool</span>
+<span class="sd">        A boolean value indicating whether the optimizer is run to solve the</span>
+<span class="sd">        instances exactly. The default value is True. If True, columns</span>
+<span class="sd">        indicating results for the optimal solution are added to the header.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        A string representing the header for the results file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">header_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;num_migrations num_controllers num_groups &quot;</span> <span class="o">+</span>
+                  <span class="s2">&quot;vff vff_time cbf cbf_time&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">run_optimizer</span><span class="p">:</span>
+        <span class="n">header_str</span> <span class="o">+=</span> <span class="s2">&quot; opt opt_time&quot;</span>
+    <span class="k">return</span> <span class="n">header_str</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="initialize_seeds"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.initialize_seeds">[docs]</a><span class="k">def</span> <span class="nf">initialize_seeds</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Initializes the random seeds for reproducibility of experiments.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">specs</span><span class="o">.</span><span class="n">SEED_NUM</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">specs</span><span class="o">.</span><span class="n">SEED_NUM</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
