@@ -78,12 +78,12 @@ class Simulator:
         None
 
         """
-        self._num_controllers = int(
-            np.random.normal(0.3, 0.1, 1)[0] * num_migrations)
+        self._num_controllers = max(1, int(
+            np.random.normal(0.3, 0.1, 1)[0] * num_migrations))
         self._controllers = [[0, 0.0] for _ in range(self._num_controllers)]
 
-        self._num_qos_groups = int(
-            np.random.normal(0.7, 0.1, 1)[0] * num_migrations)
+        self._num_qos_groups = max(0, int(
+            np.random.normal(0.7, 0.1, 1)[0] * num_migrations))
         self._qos_groups = [0 for _ in range(self._num_qos_groups)]
 
     def _setup_migration(self, migration_idx):
@@ -103,13 +103,13 @@ class Simulator:
             A created `Migration` object.
 
         """
-        load = round(np.random.normal(10, 5, 1)[0], 2)
+        load = max(1.00, round(np.random.normal(10, 5, 1)[0], 2))
         dst = random.randint(1, self._num_controllers) - 1
         self._controllers[dst][0] += 1
         self._controllers[dst][1] = max(load, self._controllers[dst][1])
         return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
 
-    def _assign_migration_to_qos_groups(migration):
+    def _assign_migration_to_qos_groups(self, migration):
         """Simulates the assignment of `migration` to QoS groups.
 
         The simulator samples a random number x of QoS groups to which the
@@ -128,9 +128,9 @@ class Simulator:
             migration was assigned.
 
         """
-        groups = {}
-        num_groups = min(self._num_qos_groups - 1,
-            int(np.random.normal(0.3, 0.4, 1)[0] * self._num_qos_groups))
+        groups = set()
+        num_groups = min(self._num_qos_groups, max(0,
+            int(np.random.normal(0.3, 0.4, 1)[0] * self._num_qos_groups)))
         group_ids = random.sample(range(self._num_qos_groups), num_groups)
         for group_id in group_ids:
             groups.add("g{}".format(group_id))
@@ -209,7 +209,7 @@ class Simulator:
         max_cap = (self._controllers[controller_idx][0] *
                    self._controllers[controller_idx][1])
         capacity = min(max_cap, min_cap + max(0,
-            np.random.normal(0.5, 0.3, 1)[0] * (max_cap - min_cap)))
+            np.random.normal(0.3, 0.2, 1)[0] * (max_cap - min_cap)))
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
     def _get_qos_line(self, qos_idx):
@@ -232,8 +232,8 @@ class Simulator:
             A string representing the QoS line.
 
         """
-        capacity = min(1, max(self._qos_groups[qos_idx],
-            np.random.normal(0.5, 0.3, 1)[0] * self._qos_groups[qos_idx]))
+        capacity = int(max(1.00, max(self._qos_groups[qos_idx],
+            np.random.normal(0.5, 0.3, 1)[0] * self._qos_groups[qos_idx])))
         return "g{0} {1}\n".format(qos_idx, capacity)
 
     def _output_simulated_instance(self, output_file):

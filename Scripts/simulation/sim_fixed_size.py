@@ -3,8 +3,13 @@
 """
 import os
 import sys
+import random
+import numpy as np
 from MigrationScheduling import specs
 from MigrationScheduling.Data import Simulator
+
+random.seed(42)
+np.random.seed(42)
 
 NUM_MIGRATIONS_LIST = [5, 10, 20, 50, 100, 250, 500, 1000, 5000, 10000]
 

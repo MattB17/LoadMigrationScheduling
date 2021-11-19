@@ -115,4 +115,7 @@ class ConstraintDict:
             A float representing the load factor on the constraint.
 
         """
-        return self._load / self._capacity
+        try:
+            return self._load / self._capacity
+        except:
+            return 0
