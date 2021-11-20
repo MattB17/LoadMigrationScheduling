@@ -7,6 +7,7 @@ import re
 import random
 import numpy as np
 from MigrationScheduling import specs
+from MigrationScheduling.Data import ConstraintDict
 
 
 def get_controller_cap_dict(controller_constraints):
@@ -83,6 +84,75 @@ def get_cap_dicts(instance_data):
     qos_caps = get_qos_group_cap_dict(instance_data.get_qos_consts())
     return controller_caps, qos_caps
 
+def calculate_load_on_controller(controller_name, migrations):
+    """Calculates the load that `migrations` impose on `controller_name`.
+
+    The load imposed by `migrations` on `controller_name` is the sum of the
+    migration loads for the subset of migrations that are destined to
+    `controller_name`.
+
+    Parameters
+    ----------
+    controller_name: str
+        The name of the controller for which the load is calculated.
+    migrations: collection
+        A collection of `Migration` objects used to calculate the load.
+
+    Returns
+    -------
+    float
+        A float representing the load imposed on `controller_name` by the
+        migrations of `migrations`.
+
+    """
+    total_load = 0
+    for migration in migrations:
+        if migration.get_dst_controller() == controller_name:
+            total_load += migration.get_load()
+    return total_load
+
+def get_constraint_dict_for_controller(control_const, migrations):
+    """Builds a constraint dict for `control_consts`.
+
+    Parameters
+    ----------
+    control_const: ControllerConstraint
+        The `ControllerConstraint` from which the constraint dict is built.
+    migrations: collection
+        A collection of `Migration` objects representing the migrations
+        used to build the constraint dict.
+
+    Returns
+    -------
+    ConstraintDict
+        A `ConstraintDict` object representing the constraint dict for
+        `control_const` based on `migrations`.
+
+    """
+    return ConstraintDict(
+        control_const.get_cap(),
+        calculate_load_on_controller(control_const.get_controller(),
+                                     migrations),
+        control_const.get_switches())
+
+def get_constraint_dict_for_qos_group(qos_const):
+    """Builds a constraint dict for `qos_const`.
+
+    Parameters
+    ----------
+    qos_const: QosConstraint
+        The `QosConstraint` from which the constraint dict is built.
+
+    Returns
+    -------
+    ConstraintDict
+        A `ConstraintDict` object representing the constraint dict for
+        `QosConstraint`.
+
+    """
+    switches = qos_const.get_switches()
+    return ConstraintDict(qos_const.get_cap(), len(switches), switches)
+
 def get_controller_constraint_dicts(instance_data):
     """The constraint dictionaries for the constraints in `instance_data`.
 
@@ -108,7 +178,7 @@ def get_controller_constraint_dicts(instance_data):
     migrations = set(instance_data.get_migrations().values())
     return {
         control_const.get_controller() :
-        control_const.get_constraint_dict(migrations)
+        get_constraint_dict_for_controller(control_const, migrations)
         for control_const in instance_data.get_control_consts()}
 
 def get_qos_constraint_dicts(qos_consts):
@@ -132,7 +202,8 @@ def get_qos_constraint_dicts(qos_consts):
         associated with that QoS group.
 
     """
-    return {qos_const.get_group(): qos_const.get_constraint_dict()
+    return {qos_const.get_group():
+            get_constraint_dict_for_qos_group(qos_const)
             for qos_const in qos_consts}
 
 def get_constraints_dict(instance_data):

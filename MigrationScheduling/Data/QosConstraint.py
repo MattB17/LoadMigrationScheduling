@@ -96,22 +96,6 @@ class QosConstraint:
         """
         self._switches.add(switch_name)
 
-    def get_constraint_dict(self):
-        """A dict representing the constraint information for the QoS group.
-
-        The dictionary is a compact representation of the information needed
-        for scheduling while accommodating the QoS constraint.
-
-        Returns
-        -------
-        ConstraintDict
-            A `ConstraintDict` object representing the constraint information
-            for the QoS group.
-
-        """
-        return ConstraintDict(
-            self._capacity, len(self._switches), self._switches)
-
     def __str__(self):
         """A string representation of the QoS constraint.
 
