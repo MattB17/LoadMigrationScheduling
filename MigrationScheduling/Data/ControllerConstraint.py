@@ -108,6 +108,10 @@ class ControllerConstraint:
             A string representing the constraint for the controller.
 
         """
-        return ("Constraint for controller {0} with a capacity of {1}.\n" +
-                "Destination for switches: {2}").format(
-                self._controller, self._capacity, " ".join(self._switches))
+        cont_str = ("Constraint for controller {0} " +
+                    "with a capacity of {1:.2f}.\n").format(
+                    self._controller, self._capacity)
+        if self._switches:
+            cont_str += "Destination for switches: {}".format(
+                " ".join(self._switches))
+        return cont_str

@@ -11,13 +11,6 @@ CONST_STR = "MigrationScheduling.Data.ControllerConstraint.ConstraintDict"
 def control_const():
     return ControllerConstraint('c2', 12.5)
 
-@pytest.fixture(scope="function")
-def mock_migration():
-    migration = MagicMock()
-    migration.get_dst_controller = MagicMock(return_value='c2')
-    migration.get_load = MagicMock(return_value=6.75)
-    return migration
-
 
 def test_instantiation(control_const):
     assert control_const.get_controller() == 'c2'
@@ -36,3 +29,16 @@ def test_adding_switches(control_const):
     control_const.add_switch("s3")
     control_const.add_switch("s7")
     assert control_const.get_switches() == {"s0", "s3", "s7"}
+
+def test_str_no_switches(control_const):
+    assert control_const.__str__() == ("Constraint for controller c2 " +
+                                       "with a capacity of 12.50.\n")
+
+def test_str_with_switches(control_const):
+    control_const.add_switch("s3")
+    control_const.add_switch("s7")
+    first_part = "Constraint for controller c2 with a capacity of 12.50.\n"
+    second_part_1 = "Destination for switches: s3 s7"
+    second_part_2 = "Destination for switches: s7 s3"
+    assert control_const.__str__() in [first_part + second_part_1,
+                                       first_part + second_part_2]
