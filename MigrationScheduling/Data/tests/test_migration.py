@@ -4,9 +4,15 @@ from MigrationScheduling.Data import Migration
 from MigrationScheduling import exceptions as exc
 
 
+VAL_STR = "MigrationScheduling.validation.validate_name"
+
+
 @pytest.fixture(scope="function")
 def migration():
-    return Migration('s0', 'c3', 3.5)
+    with patch(VAL_STR, side_effect=None) as mock_val:
+        migration = Migration('s0', 'c3', 3.5)
+    mock_val.assert_called_once_with('s0', 's', "Switch")
+    return migration
 
 
 def test_instantiation(migration):
@@ -15,8 +21,7 @@ def test_instantiation(migration):
     assert migration.get_load() == 3.5
     assert migration.get_groups() == set()
 
-@patch("MigrationScheduling.validation.validate_name",
-       side_effect=exc.InvalidName(""))
+@patch(VAL_STR, side_effect=exc.InvalidName(""))
 def test_invalid_name(mock_validate):
     with pytest.raises(exc.InvalidName):
         Migration('sw56', 'c1', 0.1)
@@ -45,8 +50,7 @@ def test_str_method_no_qos_groups(migration):
                             "load of 3.50.\nNo QoS groups.")
 
 def test_str_method_with_qos_groups(migration):
-    migration.add_qos_group('g2')
-    migration.add_qos_group('g5')
+    migration._groups = {'g2', 'g5'}
     first_part = "Migrate switch s0 to controller c3 with load of 3.50.\n"
     second_part_1 = "QoS groups: g2 g5."
     second_part_2 = "QoS groups: g5 g2."

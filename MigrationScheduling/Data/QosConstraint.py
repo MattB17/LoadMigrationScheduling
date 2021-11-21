@@ -3,6 +3,7 @@ constraint for a QoS group.
 
 """
 from MigrationScheduling import exceptions as exc
+from MigrationScheduling import validation as val
 from MigrationScheduling.Data import ConstraintDict
 
 class QosConstraint:
@@ -27,6 +28,7 @@ class QosConstraint:
 
     """
     def __init__(self, group, capacity):
+        val.validate_name(group, "g", "QoS Group")
         self._group = group
         self._capacity = capacity
         self._switches = set()
@@ -75,11 +77,7 @@ class QosConstraint:
             constraint applies.
 
         """
-        try:
-            return int(self._group[1:])
-        except:
-            raise exc.InvalidName("Group names should be in the form 'gx' " +
-                                  "where 'x' is the group ID")
+        return int(self._group[1:])
 
     def add_switch(self, switch_name):
         """Adds `switch_name` to the QoS group.
@@ -105,6 +103,10 @@ class QosConstraint:
             A string representing the QoS constraint.
 
         """
-        return ("QoS Group {0} allowing {1} concurrent migrations.\n" +
-                "Switches in QoS group: {2}").format(
-                self._group, self._capacity, " ".join(self._switches))
+        qos_str = ("QoS Group {0} allowing " +
+                   "{1} concurrent migrations.\n").format(
+                   self._group, self._capacity)
+        if self._switches:
+            qos_str += "Switches in QoS Group: {}".format(
+                " ".join(self._switches))
+        return qos_str
