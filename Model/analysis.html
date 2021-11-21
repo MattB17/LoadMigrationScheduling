@@ -38,6 +38,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
@@ -142,6 +143,62 @@ algorithms are run.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>str</dt><dd><p>A string representing the results for <cite>instance_file</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_time_df">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_time_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_cols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_time_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_time_df" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a time dataframe from <cite>results_df</cite>.</p>
+<p>A dataframe is created from <cite>results_df</cite> when restricted to <cite>time_cols</cite>
+and grouping by <cite>group_col</cite>, where the values are averages per distinct
+value of <cite>group_col</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas dataframe of experimental results which is used to create
+the time dataframe.</p>
+</dd>
+<dt><strong>group_col: str</strong></dt><dd><p>A string representing the column to group by when creating the time
+dataframe.</p>
+</dd>
+<dt><strong>time_cols: list</strong></dt><dd><p>A list of strings representing the names of the columns of the time
+variables from <cite>results_df</cite> to be included in the time dataframe.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pd.DataFrame</dt><dd><p>A pandas DataFrame representing the time dataframe generated from
+<cite>results_df</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.load_results_df">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">load_results_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#load_results_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.load_results_df" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a results dataframe from <cite>results_file</cite>.</p>
+<p>The results dataframe contains the results of solving load migration
+scheduling instances and is sorted according to <cite>sort_col</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_file: str</strong></dt><dd><p>A string representing the location of the file containing the results.</p>
+</dd>
+<dt><strong>sort_col: str</strong></dt><dd><p>A string representing the name of the column by which the results
+will be sorted.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pd.DataFrame</dt><dd><p>A DataFrame containing the results loaded from <cite>results_file</cite>.</p>
 </dd>
 </dl>
 </dd>

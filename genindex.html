@@ -37,6 +37,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
@@ -76,6 +77,7 @@
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
@@ -90,6 +92,8 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="plotting.html#MigrationScheduling.plotting.add_plot_formatting">add_plot_formatting() (in module MigrationScheduling.plotting)</a>
+</li>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.add_qos_group">add_qos_group() (MigrationScheduling.Data.Migration method)</a>
 </li>
   </ul></td>
@@ -100,6 +104,8 @@
         <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.add_switch">(MigrationScheduling.Data.QosConstraint method)</a>
 </li>
       </ul></li>
+      <li><a href="plotting.html#MigrationScheduling.plotting.adjust_y_axis">adjust_y_axis() (in module MigrationScheduling.plotting)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -124,6 +130,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#MigrationScheduling.utils.calculate_load_on_controller">calculate_load_on_controller() (in module MigrationScheduling.utils)</a>
+</li>
       <li><a href="algorithms.html#MigrationScheduling.algorithms.calculate_migration_load">calculate_migration_load() (in module MigrationScheduling.algorithms)</a>
 </li>
       <li><a href="Model/round.html#MigrationScheduling.Model.Round.can_schedule_migration">can_schedule_migration() (MigrationScheduling.Model.Round method)</a>
@@ -166,12 +174,10 @@
 </li>
       <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_capacity">get_capacity() (MigrationScheduling.Data.ConstraintDict method)</a>
 </li>
-      <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_constraint_dict">get_constraint_dict() (MigrationScheduling.Data.ControllerConstraint method)</a>
-
-      <ul>
-        <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_constraint_dict">(MigrationScheduling.Data.QosConstraint method)</a>
+      <li><a href="utils.html#MigrationScheduling.utils.get_constraint_dict_for_controller">get_constraint_dict_for_controller() (in module MigrationScheduling.utils)</a>
 </li>
-      </ul></li>
+      <li><a href="utils.html#MigrationScheduling.utils.get_constraint_dict_for_qos_group">get_constraint_dict_for_qos_group() (in module MigrationScheduling.utils)</a>
+</li>
       <li><a href="utils.html#MigrationScheduling.utils.get_constraints_dict">get_constraints_dict() (in module MigrationScheduling.utils)</a>
 </li>
       <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_controller">get_controller() (MigrationScheduling.Data.ControllerConstraint method)</a>
@@ -236,7 +242,7 @@
         <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_switches">(MigrationScheduling.Data.QosConstraint method)</a>
 </li>
       </ul></li>
-      <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_total_load">get_total_load() (MigrationScheduling.Data.ControllerConstraint method)</a>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_time_df">get_time_df() (in module MigrationScheduling.analysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -255,6 +261,14 @@
       <li><a href="exceptions.html#MigrationScheduling.exceptions.InvalidName">InvalidName</a>
 </li>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.is_in_group">is_in_group() (MigrationScheduling.Data.Migration method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.load_results_df">load_results_df() (in module MigrationScheduling.analysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -358,6 +372,13 @@
 </li>
       </ul></li>
       <li>
+    MigrationScheduling.plotting
+
+      <ul>
+        <li><a href="plotting.html#module-MigrationScheduling.plotting">module</a>
+</li>
+      </ul></li>
+      <li>
     MigrationScheduling.utils
 
       <ul>
@@ -403,6 +424,8 @@
 </li>
         <li><a href="Model/round.html#module-MigrationScheduling.Model.Round">MigrationScheduling.Model.Round</a>
 </li>
+        <li><a href="plotting.html#module-MigrationScheduling.plotting">MigrationScheduling.plotting</a>
+</li>
         <li><a href="utils.html#module-MigrationScheduling.utils">MigrationScheduling.utils</a>
 </li>
         <li><a href="validation.html#module-MigrationScheduling.validation">MigrationScheduling.validation</a>
@@ -424,9 +447,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Model/parser.html#MigrationScheduling.Model.Parser.parse_migrations">parse_migrations() (MigrationScheduling.Model.Parser method)</a>
 </li>
+      <li><a href="Model/parser.html#MigrationScheduling.Model.Parser">Parser (class in MigrationScheduling.Model)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model/parser.html#MigrationScheduling.Model.Parser">Parser (class in MigrationScheduling.Model)</a>
+      <li><a href="plotting.html#MigrationScheduling.plotting.plot_result_vals">plot_result_vals() (in module MigrationScheduling.plotting)</a>
 </li>
       <li><a href="Model/round.html#MigrationScheduling.Model.Round.print_migrations">print_migrations() (MigrationScheduling.Model.Round method)</a>
 </li>

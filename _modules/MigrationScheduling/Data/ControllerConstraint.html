@@ -37,6 +37,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
@@ -169,56 +170,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ControllerConstraint.get_total_load"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_total_load">[docs]</a>    <span class="k">def</span> <span class="nf">get_total_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migrations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The total load on the controller based on `migrations`.</span>
-
-<span class="sd">        The total load is the cumulative load of all migrations in</span>
-<span class="sd">        `migrations` that are destined for the controller. It represents the</span>
-<span class="sd">        total load incurred on the controller across all rounds.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        migrations: collection</span>
-<span class="sd">            A collection of `Migration` objects representing the migrations</span>
-<span class="sd">            to be completed. Used to calculate the load on the controller</span>
-<span class="sd">            for the given migrations.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        float</span>
-<span class="sd">            A float representing the total cumulative load that will be</span>
-<span class="sd">            incurred on the controller based on `migrations`.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">total_load</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">migration</span> <span class="ow">in</span> <span class="n">migrations</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller</span><span class="p">:</span>
-                <span class="n">total_load</span> <span class="o">+=</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">total_load</span></div>
-
-<div class="viewcode-block" id="ControllerConstraint.get_constraint_dict"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_constraint_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_constraint_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migrations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A dict representing the constraint information for the controller.</span>
-
-<span class="sd">        The dictionary is a compact representation of the information needed</span>
-<span class="sd">        for scheduling while accommodating the controller constraint.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        migrations: collection</span>
-<span class="sd">            A collection of `Migration` object representing all migrations,</span>
-<span class="sd">            used to calculate the cumulative load on the controller across</span>
-<span class="sd">            all rounds.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ConstraintDict</span>
-<span class="sd">            A `ConstraintDict` object representing the constraint information</span>
-<span class="sd">            for the controller.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ConstraintDict</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_total_load</span><span class="p">(</span><span class="n">migrations</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">)</span></div>
-
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A string representation of the controller constraint.</span>
 
@@ -228,9 +179,13 @@
 <span class="sd">            A string representing the constraint for the controller.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;Constraint for controller </span><span class="si">{0}</span><span class="s2"> with a capacity of </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-                <span class="s2">&quot;Destination for switches: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_controller</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">))</span></div>
+        <span class="n">cont_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Constraint for controller </span><span class="si">{0}</span><span class="s2"> &quot;</span> <span class="o">+</span>
+                    <span class="s2">&quot;with a capacity of </span><span class="si">{1:.2f}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_controller</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">:</span>
+            <span class="n">cont_str</span> <span class="o">+=</span> <span class="s2">&quot;Destination for switches: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cont_str</span></div>
 </pre></div>
 
            </div>

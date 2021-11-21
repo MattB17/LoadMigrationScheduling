@@ -37,6 +37,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
@@ -77,6 +78,7 @@
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">specs</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">ConstraintDict</span>
 
 
 <div class="viewcode-block" id="get_controller_cap_dict"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_controller_cap_dict">[docs]</a><span class="k">def</span> <span class="nf">get_controller_cap_dict</span><span class="p">(</span><span class="n">controller_constraints</span><span class="p">):</span>
@@ -153,6 +155,75 @@
     <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">get_qos_group_cap_dict</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span></div>
 
+<div class="viewcode-block" id="calculate_load_on_controller"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.calculate_load_on_controller">[docs]</a><span class="k">def</span> <span class="nf">calculate_load_on_controller</span><span class="p">(</span><span class="n">controller_name</span><span class="p">,</span> <span class="n">migrations</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the load that `migrations` impose on `controller_name`.</span>
+
+<span class="sd">    The load imposed by `migrations` on `controller_name` is the sum of the</span>
+<span class="sd">    migration loads for the subset of migrations that are destined to</span>
+<span class="sd">    `controller_name`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    controller_name: str</span>
+<span class="sd">        The name of the controller for which the load is calculated.</span>
+<span class="sd">    migrations: collection</span>
+<span class="sd">        A collection of `Migration` objects used to calculate the load.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        A float representing the load imposed on `controller_name` by the</span>
+<span class="sd">        migrations of `migrations`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total_load</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">migration</span> <span class="ow">in</span> <span class="n">migrations</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()</span> <span class="o">==</span> <span class="n">controller_name</span><span class="p">:</span>
+            <span class="n">total_load</span> <span class="o">+=</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">total_load</span></div>
+
+<div class="viewcode-block" id="get_constraint_dict_for_controller"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_constraint_dict_for_controller">[docs]</a><span class="k">def</span> <span class="nf">get_constraint_dict_for_controller</span><span class="p">(</span><span class="n">control_const</span><span class="p">,</span> <span class="n">migrations</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builds a constraint dict for `control_consts`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    control_const: ControllerConstraint</span>
+<span class="sd">        The `ControllerConstraint` from which the constraint dict is built.</span>
+<span class="sd">    migrations: collection</span>
+<span class="sd">        A collection of `Migration` objects representing the migrations</span>
+<span class="sd">        used to build the constraint dict.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ConstraintDict</span>
+<span class="sd">        A `ConstraintDict` object representing the constraint dict for</span>
+<span class="sd">        `control_const` based on `migrations`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ConstraintDict</span><span class="p">(</span>
+        <span class="n">control_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">(),</span>
+        <span class="n">calculate_load_on_controller</span><span class="p">(</span><span class="n">control_const</span><span class="o">.</span><span class="n">get_controller</span><span class="p">(),</span>
+                                     <span class="n">migrations</span><span class="p">),</span>
+        <span class="n">control_const</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="get_constraint_dict_for_qos_group"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_constraint_dict_for_qos_group">[docs]</a><span class="k">def</span> <span class="nf">get_constraint_dict_for_qos_group</span><span class="p">(</span><span class="n">qos_const</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builds a constraint dict for `qos_const`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    qos_const: QosConstraint</span>
+<span class="sd">        The `QosConstraint` from which the constraint dict is built.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ConstraintDict</span>
+<span class="sd">        A `ConstraintDict` object representing the constraint dict for</span>
+<span class="sd">        `QosConstraint`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">switches</span> <span class="o">=</span> <span class="n">qos_const</span><span class="o">.</span><span class="n">get_switches</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ConstraintDict</span><span class="p">(</span><span class="n">qos_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">switches</span><span class="p">),</span> <span class="n">switches</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="get_controller_constraint_dicts"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_controller_constraint_dicts">[docs]</a><span class="k">def</span> <span class="nf">get_controller_constraint_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The constraint dictionaries for the constraints in `instance_data`.</span>
 
@@ -178,7 +249,7 @@
     <span class="n">migrations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_migrations</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="n">control_const</span><span class="o">.</span><span class="n">get_controller</span><span class="p">()</span> <span class="p">:</span>
-        <span class="n">control_const</span><span class="o">.</span><span class="n">get_constraint_dict</span><span class="p">(</span><span class="n">migrations</span><span class="p">)</span>
+        <span class="n">get_constraint_dict_for_controller</span><span class="p">(</span><span class="n">control_const</span><span class="p">,</span> <span class="n">migrations</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">control_const</span> <span class="ow">in</span> <span class="n">instance_data</span><span class="o">.</span><span class="n">get_control_consts</span><span class="p">()}</span></div>
 
 <div class="viewcode-block" id="get_qos_constraint_dicts"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_qos_constraint_dicts">[docs]</a><span class="k">def</span> <span class="nf">get_qos_constraint_dicts</span><span class="p">(</span><span class="n">qos_consts</span><span class="p">):</span>
@@ -202,7 +273,8 @@
 <span class="sd">        associated with that QoS group.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">qos_const</span><span class="o">.</span><span class="n">get_group</span><span class="p">():</span> <span class="n">qos_const</span><span class="o">.</span><span class="n">get_constraint_dict</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">qos_const</span><span class="o">.</span><span class="n">get_group</span><span class="p">():</span>
+            <span class="n">get_constraint_dict_for_qos_group</span><span class="p">(</span><span class="n">qos_const</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">qos_const</span> <span class="ow">in</span> <span class="n">qos_consts</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="get_constraints_dict"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_constraints_dict">[docs]</a><span class="k">def</span> <span class="nf">get_constraints_dict</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>

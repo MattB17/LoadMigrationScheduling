@@ -37,6 +37,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
@@ -73,6 +74,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Model</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">algorithms</span><span class="p">,</span> <span class="n">specs</span>
@@ -127,7 +130,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-    <span class="n">opt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">build_ip_model</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">build_ip_model</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">opt_time</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
 
     <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">opt_time</span><span class="p">)</span></div>
@@ -167,6 +173,59 @@
         <span class="n">results_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">results_str</span><span class="p">,</span> <span class="n">build_optimal_string</span><span class="p">(</span><span class="n">optimizer</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">results_str</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="load_results_df"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.load_results_df">[docs]</a><span class="k">def</span> <span class="nf">load_results_df</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">sort_col</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads a results dataframe from `results_file`.</span>
+
+<span class="sd">    The results dataframe contains the results of solving load migration</span>
+<span class="sd">    scheduling instances and is sorted according to `sort_col`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_file: str</span>
+<span class="sd">        A string representing the location of the file containing the results.</span>
+<span class="sd">    sort_col: str</span>
+<span class="sd">        A string representing the name of the column by which the results</span>
+<span class="sd">        will be sorted.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A DataFrame containing the results loaded from `results_file`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">sort_col</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results_df</span></div>
+
+<div class="viewcode-block" id="get_time_df"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_time_df">[docs]</a><span class="k">def</span> <span class="nf">get_time_df</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">group_col</span><span class="p">,</span> <span class="n">time_cols</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a time dataframe from `results_df`.</span>
+
+<span class="sd">    A dataframe is created from `results_df` when restricted to `time_cols`</span>
+<span class="sd">    and grouping by `group_col`, where the values are averages per distinct</span>
+<span class="sd">    value of `group_col`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_df: pd.DataFrame</span>
+<span class="sd">        A pandas dataframe of experimental results which is used to create</span>
+<span class="sd">        the time dataframe.</span>
+<span class="sd">    group_col: str</span>
+<span class="sd">        A string representing the column to group by when creating the time</span>
+<span class="sd">        dataframe.</span>
+<span class="sd">    time_cols: list</span>
+<span class="sd">        A list of strings representing the names of the columns of the time</span>
+<span class="sd">        variables from `results_df` to be included in the time dataframe.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame representing the time dataframe generated from</span>
+<span class="sd">        `results_df`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">results_df</span><span class="p">[[</span><span class="n">group_col</span><span class="p">]</span> <span class="o">+</span> <span class="n">time_cols</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group_col</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

@@ -37,6 +37,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
@@ -272,9 +273,9 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">x_vars</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">()),</span> <span class="s2">&quot;migrate&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="n">x_vars</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span>
+                                  <span class="s2">&quot;migrate[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_add_bound_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lambda_var</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds the constraints bounding `lambda_var`.</span>
@@ -295,10 +296,10 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">x_vars</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lambda_var</span>
-             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">()</span>
-             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">()),</span> <span class="s2">&quot;bound&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_ids</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">x_vars</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lambda_var</span><span class="p">,</span>
+                                      <span class="s2">&quot;bound[</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_add_controller_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds the set of controller constraints to the model using `x_vars`.</span>
@@ -313,11 +314,15 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">((</span><span class="nb">sum</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_load</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_vars</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_id</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">r</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">control_const</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_control_consts</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">()),</span> <span class="s2">&quot;controller&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">control_const</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_control_consts</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_round_ids</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_load</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">*</span>
+                    <span class="n">x_vars</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_id</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">r</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())</span> <span class="o">&lt;=</span>
+                    <span class="n">control_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">(),</span>
+                    <span class="s2">&quot;controller[</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">control_const</span><span class="o">.</span><span class="n">get_controller_idx</span><span class="p">(),</span> <span class="n">r</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_add_qos_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds the set of QoS constraints to the model using `x_vars`.</span>

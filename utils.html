@@ -40,6 +40,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
@@ -74,6 +75,32 @@
 <span id="utility-functions"></span><h1>Utility Functions<a class="headerlink" href="#module-MigrationScheduling.utils" title="Permalink to this headline"></a></h1>
 <p>A module consisting of utility functions used in modeling and heuristic
 algorithms.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.calculate_load_on_controller">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_load_on_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#calculate_load_on_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.calculate_load_on_controller" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the load that <cite>migrations</cite> impose on <cite>controller_name</cite>.</p>
+<p>The load imposed by <cite>migrations</cite> on <cite>controller_name</cite> is the sum of the
+migration loads for the subset of migrations that are destined to
+<cite>controller_name</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>controller_name: str</strong></dt><dd><p>The name of the controller for which the load is calculated.</p>
+</dd>
+<dt><strong>migrations: collection</strong></dt><dd><p>A collection of <cite>Migration</cite> objects used to calculate the load.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the load imposed on <cite>controller_name</cite> by the
+migrations of <cite>migrations</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_all_files_by_pattern">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_all_files_by_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_all_files_by_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_all_files_by_pattern" title="Permalink to this definition"></a></dt>
@@ -122,6 +149,51 @@ accommodate in each round. The second dictionary specifies QoS
 group capacities. The keys are strings representing the QoS group
 names and the corresponding value is an integer representing the
 number of migrations from that group allowed within a single round.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_constraint_dict_for_controller">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraint_dict_for_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_const</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraint_dict_for_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraint_dict_for_controller" title="Permalink to this definition"></a></dt>
+<dd><p>Builds a constraint dict for <cite>control_consts</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>control_const: ControllerConstraint</strong></dt><dd><p>The <cite>ControllerConstraint</cite> from which the constraint dict is built.</p>
+</dd>
+<dt><strong>migrations: collection</strong></dt><dd><p>A collection of <cite>Migration</cite> objects representing the migrations
+used to build the constraint dict.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ConstraintDict</dt><dd><p>A <cite>ConstraintDict</cite> object representing the constraint dict for
+<cite>control_const</cite> based on <cite>migrations</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_constraint_dict_for_qos_group">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraint_dict_for_qos_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qos_const</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraint_dict_for_qos_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraint_dict_for_qos_group" title="Permalink to this definition"></a></dt>
+<dd><p>Builds a constraint dict for <cite>qos_const</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>qos_const: QosConstraint</strong></dt><dd><p>The <cite>QosConstraint</cite> from which the constraint dict is built.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ConstraintDict</dt><dd><p>A <cite>ConstraintDict</cite> object representing the constraint dict for
+<cite>QosConstraint</cite>.</p>
 </dd>
 </dl>
 </dd>
