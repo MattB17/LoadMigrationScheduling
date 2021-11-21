@@ -9,6 +9,7 @@ Welcome to Load Migration Scheduling's documentation!
    Data/data
    Model/model
    analysis
+   plotting
    algorithms
    utils
    exceptions
