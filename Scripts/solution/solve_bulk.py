@@ -20,8 +20,5 @@ if __name__ == "__main__":
     optimize = (sys.argv[4].lower() == "true")
     instance_files = utils.get_all_files_by_pattern(input_dir, file_pattern)
     output_file = os.path.join(output_dir, "results.txt")
-    with open(output_file, 'w') as result_file:
-        result_file.write(utils.get_results_header(optimize))
-        for instance_file in instance_files:
-            result_file.write(analysis.build_results_string(
-                input_dir, instance_file, optimize))
+    analysis.calculate_results_for_instances(
+        input_dir, instance_files, output_file, optimize)
