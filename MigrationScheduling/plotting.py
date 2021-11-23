@@ -3,7 +3,7 @@ results of experiments.
 
 """
 import matplotlib.pyplot as plt
-from MigrationScheduling import analysis
+from MigrationScheduling import analysis, specs
 
 
 def adjust_y_axis(results_df, result_cols, log_scale=False, bound_y=False):
@@ -86,7 +86,8 @@ def plot_result_vals(results_df, result_cols, x_title,
     """
     plt.figure(figsize=(10, 10))
     for result_col in result_cols:
+        col_name = result_col.split("_")[0].upper()
         plt.plot(results_df.index, results_df[result_col],
-                 label=result_col.split("_")[0].upper())
+                 specs.STYLE_MAP[col_name], label=col_name)
     adjust_y_axis(results_df, result_cols, log_scale, bound_y)
     add_plot_formatting(x_title, y_title)

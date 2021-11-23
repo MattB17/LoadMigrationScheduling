@@ -24,3 +24,9 @@ CBF_CHOICES = 2
 
 # seed number used when setting seeds for reproducibility of experiments
 SEED_NUM = 42
+
+# a map representing the colors to use for plotting.
+COLOR_MAP = {"VFF": "red", "CBF": "black", "OPT": "blue"}
+
+# a map representing the styles to use for plotting
+STYLE_MAP = {"VFF": "r^", "CBF": "k-.", "OPT": 'b+'}
