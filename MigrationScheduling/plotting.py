@@ -87,6 +87,6 @@ def plot_result_vals(results_df, result_cols, x_title,
     plt.figure(figsize=(10, 10))
     for result_col in result_cols:
         plt.plot(results_df.index, results_df[result_col],
-                 label=result_col.split("_")[0])
+                 label=result_col.split("_")[0].upper())
     adjust_y_axis(results_df, result_cols, log_scale, bound_y)
     add_plot_formatting(x_title, y_title)

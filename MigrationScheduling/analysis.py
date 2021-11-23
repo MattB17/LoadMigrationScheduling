@@ -366,6 +366,42 @@ def simulate_all_instances(sim_tuples, output_dir):
         simulate_instance(sim_tuple[0], sim_tuple[1], output_dir)
 
 
+def create_simulated_instances(instance_sizes, start_idx, output_dir):
+    """Simulates instances of the sizes specified in `instance_sizes`.
+
+    An instance is simulated for each element of `instance_sizes` where
+    the number of migrations of the instance is equal to the corresponding
+    element of `instance_sizes`. The instances are numbered contiguously
+    starting from `start_idx` and written to `output_dir`.
+
+    Parameters
+    ----------
+    instance_sizes: list
+        A list of integers representing the number of migrations in each
+        simulated instance.
+    start_idx: int
+        An integer denoting the instance number from which instances are
+        numbered.
+    output_dir: str
+        A string specifying the directory to which the instance files will
+        be written.
+
+    Returns
+    -------
+    None
+
+    """
+    procs = []
+    cores, sims_per_core = get_cores_and_instances_per_core(
+        len(instance_sizes))
+    for core_num in range(cores):
+        sim_tuples = get_sim_tuples_for_core(
+            instance_sizes, sims_per_core, core_num, start_idx)
+        procs.append(mp.Process(target=simulate_all_instances,
+                                args=(sim_tuples, output_dir)))
+    initialize_and_join_processes(procs)
+
+
 def load_results_df(results_file, sort_col):
     """Loads a results dataframe from `results_file`.
 
