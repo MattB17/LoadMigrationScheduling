@@ -280,13 +280,18 @@ def get_results_header(run_optimizer=True):
         header_str += " opt opt_time"
     return header_str + "\n"
 
-def initialize_seeds():
+def initialize_seeds(seed_num):
     """Initializes the random seeds for reproducibility of experiments.
+
+    Parameters
+    ----------
+    seed_num: int
+        An integer representing the seed used.
 
     Returns
     -------
     None
 
     """
-    random.seed(specs.SEED_NUM)
-    np.random.seed(specs.SEED_NUM)
+    random.seed(seed_num)
+    np.random.seed(seed_num)

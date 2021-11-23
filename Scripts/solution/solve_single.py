@@ -8,7 +8,7 @@ from MigrationScheduling import algorithms, specs, utils
 from MigrationScheduling.Model import Optimizer
 
 
-utils.initialize_seeds()
+utils.initialize_seeds(specs.SEED_NUM)
 
 
 if __name__ == "__main__":

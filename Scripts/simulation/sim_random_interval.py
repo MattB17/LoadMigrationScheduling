@@ -10,7 +10,7 @@ import numpy as np
 from MigrationScheduling import specs, utils
 from MigrationScheduling.Data import Simulator
 
-utils.initialize_seeds()
+utils.initialize_seeds(specs.SEED_NUM)
 
 if __name__ == "__main__":
     output_path = sys.argv[1]

@@ -8,7 +8,7 @@ import numpy as np
 from MigrationScheduling import specs, utils
 from MigrationScheduling.Data import Simulator
 
-uitls.initialize_seeds()
+uitls.initialize_seeds(specs.SEED_NUM)
 
 NUM_MIGRATIONS_LIST = [5, 10, 20, 50, 100, 250, 500, 1000, 5000, 10000]
 

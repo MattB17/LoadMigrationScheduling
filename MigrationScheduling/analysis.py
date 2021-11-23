@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import multiprocessing as mp
 from timeit import default_timer as timer
+from MigrationScheduling.Data import Simulator
 from MigrationScheduling.Model import Optimizer
 from MigrationScheduling import algorithms, specs, utils
 
@@ -277,6 +278,92 @@ def calculate_results_for_instances(input_dir, instance_files,
                                       input_dir, run_optimizer)))
     initialize_and_join_processes(procs)
     write_results_to_file(list(results), output_file, run_optimizer)
+
+
+def get_sim_tuples_for_core(instance_sizes, sims_per_core,
+                            core_num, start_idx):
+    """Gets the simulation tuples to be simulated on `core_num`.
+
+    The simulation tuples identify the instance number and instance size
+    taken from `instance_sizes` to be simulated on `core_num`. Roughly
+    `sims_per_core` instances will be simulated on the core.
+
+    Parameters
+    ----------
+    instance_sizes: list
+        A list of integers representing the number of migrations in each
+        simulated instance.
+    sims_per_core: int
+        An integer representing the number of simulations to be completed
+        on each machine core.
+    core_num: int
+        An integer representing the index of the core for which the
+        simulation tuples are retrieved.
+    start_idx: int
+        An integer denoting the index at which to start counting for
+        the instance numbers.
+
+    Returns
+    -------
+    list
+        A list of two element tuples representing the simulation tuples for
+        `core_num`. The first element of each tuple is an integer identifying
+        the instance number and the second is an integer representing the
+        number of migrations in the instance.
+
+    """
+    start = sims_per_core * core_num
+    end = min(len(instance_sizes), sims_per_core * (core_num + 1))
+    return [(start_idx + i, instance_sizes[i]) for i in range(start, end)]
+
+
+def simulate_instance(instance_idx, instance_size, output_dir):
+    """Simulates `instance_idx` having `instance_size` migrations.
+
+    An instance is simulated and written to `output_dir`. The instance number
+    is `instance_idx` and it has `instance_size` migrations.
+
+    Parameters
+    ----------
+    instance_idx: int
+        An integer representing the index of the instance being simulated.
+    instance_size: int
+        An integer representing the number of migrations in the simulated
+        instance.
+    output_dir: str
+        A string identifying the directory to which the instance file will be
+        written.
+
+    Returns
+    -------
+    None
+
+    """
+    output_file = os.path.join(
+        output_dir, "migrations{}.txt".format(instance_idx))
+    simulator = Simulator()
+    simulator.run(instance_size, output_file)
+
+
+def simulate_all_instances(sim_tuples, output_dir):
+    """An instance is simulated for each instance specified in `sim_tuples`.
+
+    Parameters
+    ----------
+    sim_tuples: list
+        A list of two element tuples specifying the parameters of each
+        instance to be simulated. Both elements of each tuples are integers
+        specifying the index of the instance and the number of migrations.
+    output_dir: str
+        A string specifying the directory to which the instance will be output.
+
+    Returns
+    -------
+    None
+
+    """
+    for sim_tuple in sim_tuples:
+        simulate_instance(sim_tuple[0], sim_tuple[1], output_dir)
 
 
 def load_results_df(results_file, sort_col):
