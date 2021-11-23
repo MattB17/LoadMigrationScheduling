@@ -150,6 +150,161 @@ algorithms are run.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.calculate_results_for_instances">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#calculate_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.calculate_results_for_instances" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the results for each instance in <cite>instance_files</cite>.</p>
+<p>For each instance in <cite>instance_files</cite>, the instance is solved with the
+vector first fit and current bottleneck first algorithms. If
+<cite>run_optimizer</cite> is True, then the ILP model is also solved directly. A
+string is generated of the results and the results of all instances are
+written to <cite>output_file</cite> with 1 result per line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_dir: str</strong></dt><dd><p>A string representing the name of the directory from which the
+instance files are read.</p>
+</dd>
+<dt><strong>instance_files: list</strong></dt><dd><p>A list of strings representing the names of the files specifying the
+instances for which the results are calculated.</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the results will
+be written.</p>
+</dd>
+<dt><strong>run_optimizer: bool</strong></dt><dd><p>A boolean value indicating whether the ILP model will be solved
+directly so that the optimal solution can be included in the results
+for each instance.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_cores_and_instances_per_core">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_cores_and_instances_per_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_cores_and_instances_per_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_cores_and_instances_per_core" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the number of cores to use and the number of instances per core.</p>
+<p>The number of cores to use is based on the system and <cite>instance_count</cite>.
+Then, based on the number of cores, the number of instances per core is
+calculated using <cite>instance_count</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_count: int</strong></dt><dd><p>A count of the number of instances to be analyzed.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>int, int</dt><dd><p>Two integers. The first represents the number of cores to be used and
+the second represents the number of instances that will be analyzed
+on each core.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_instances_for_core">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_instances_for_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instances_per_core</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_instances_for_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_instances_for_core" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the instances from <cite>instance_files</cite> to be analyzed on <cite>core_num</cite>.</p>
+<p>A subset of <cite>instance_files</cite> is taken so that <cite>core_num</cite> processes roughly
+<cite>instances_per_core</cite> instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_files: list</strong></dt><dd><p>A list of strings representing the filenames of the instances to be
+analyzed.</p>
+</dd>
+<dt><strong>instances_per_core: int</strong></dt><dd><p>An integer representing the number of instances to be processed on
+each machine core.</p>
+</dd>
+<dt><strong>core_num: int</strong></dt><dd><p>An integer representing the core number for which the instances are
+retrieved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>A subset of <cite>instance_files</cite> representing the instances to be
+processed on <cite>core_num</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_results_for_instances">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_results_for_instances" title="Permalink to this definition"></a></dt>
+<dd><p>Gets results for all the instances specified in <cite>instance_files</cite>.</p>
+<p>For each instance in <cite>instance_files</cite> the result string is computed and
+appended to <cite>results_list</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_list: mp.Manager().list</strong></dt><dd><p>A multiprocessing list to which the result strings are appended.</p>
+</dd>
+<dt><strong>instance_files: list</strong></dt><dd><p>A list of strings representing the names of files specifying the
+instances to be analyzed.</p>
+</dd>
+<dt><strong>input_dir: str</strong></dt><dd><p>A string specifying the directory from which the instances are read.</p>
+</dd>
+<dt><strong>run_optimizer: bool</strong></dt><dd><p>A boolean value indicating whether the ILP model will be solved and
+included in the result string for each instance.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_sim_tuples_for_core">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_sim_tuples_for_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sims_per_core</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_sim_tuples_for_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_sim_tuples_for_core" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the simulation tuples to be simulated on <cite>core_num</cite>.</p>
+<p>The simulation tuples identify the instance number and instance size
+taken from <cite>instance_sizes</cite> to be simulated on <cite>core_num</cite>. Roughly
+<cite>sims_per_core</cite> instances will be simulated on the core.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_sizes: list</strong></dt><dd><p>A list of integers representing the number of migrations in each
+simulated instance.</p>
+</dd>
+<dt><strong>sims_per_core: int</strong></dt><dd><p>An integer representing the number of simulations to be completed
+on each machine core.</p>
+</dd>
+<dt><strong>core_num: int</strong></dt><dd><p>An integer representing the index of the core for which the
+simulation tuples are retrieved.</p>
+</dd>
+<dt><strong>start_idx: int</strong></dt><dd><p>An integer denoting the index at which to start counting for
+the instance numbers.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>A list of two element tuples representing the simulation tuples for
+<cite>core_num</cite>. The first element of each tuple is an integer identifying
+the instance number and the second is an integer representing the
+number of migrations in the instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.get_time_df">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_time_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_cols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_time_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_time_df" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a time dataframe from <cite>results_df</cite>.</p>
@@ -181,6 +336,26 @@ variables from <cite>results_df</cite> to be included in the time dataframe.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.initialize_and_join_processes">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">initialize_and_join_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">procs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#initialize_and_join_processes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.initialize_and_join_processes" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes and joins all the processes in <cite>procs</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>procs</strong></dt><dd><p>A list of <cite>mp.Process</cite> objects representing the processes to be
+initialized and joined.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.load_results_df">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">load_results_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#load_results_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.load_results_df" title="Permalink to this definition"></a></dt>
 <dd><p>Loads a results dataframe from <cite>results_file</cite>.</p>
@@ -200,6 +375,82 @@ will be sorted.</p>
 <dd class="field-even"><dl class="simple">
 <dt>pd.DataFrame</dt><dd><p>A DataFrame containing the results loaded from <cite>results_file</cite>.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.simulate_all_instances">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">simulate_all_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_tuples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#simulate_all_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.simulate_all_instances" title="Permalink to this definition"></a></dt>
+<dd><p>An instance is simulated for each instance specified in <cite>sim_tuples</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sim_tuples: list</strong></dt><dd><p>A list of two element tuples specifying the parameters of each
+instance to be simulated. Both elements of each tuples are integers
+specifying the index of the instance and the number of migrations.</p>
+</dd>
+<dt><strong>output_dir: str</strong></dt><dd><p>A string specifying the directory to which the instance will be output.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.simulate_instance">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">simulate_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#simulate_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.simulate_instance" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates <cite>instance_idx</cite> having <cite>instance_size</cite> migrations.</p>
+<p>An instance is simulated and written to <cite>output_dir</cite>. The instance number
+is <cite>instance_idx</cite> and it has <cite>instance_size</cite> migrations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_idx: int</strong></dt><dd><p>An integer representing the index of the instance being simulated.</p>
+</dd>
+<dt><strong>instance_size: int</strong></dt><dd><p>An integer representing the number of migrations in the simulated
+instance.</p>
+</dd>
+<dt><strong>output_dir: str</strong></dt><dd><p>A string identifying the directory to which the instance file will be
+written.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.write_results_to_file">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_results_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_results_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_results_to_file" title="Permalink to this definition"></a></dt>
+<dd><p>Write the results in <cite>results_list</cite> to <cite>output_file</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_list: list</strong></dt><dd><p>A list of strings representing the result strings for the instances
+that have been analyzed.</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the results will
+be written.</p>
+</dd>
+<dt><strong>run_optimizer: bool</strong></dt><dd><p>A boolean value indicating whether the ILP model is solved and
+included in the results of <cite>results_list</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
 </dl>
 </dd>
 </dl>

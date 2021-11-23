@@ -87,6 +87,7 @@
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -134,10 +135,12 @@
 </li>
       <li><a href="algorithms.html#MigrationScheduling.algorithms.calculate_migration_load">calculate_migration_load() (in module MigrationScheduling.algorithms)</a>
 </li>
-      <li><a href="Model/round.html#MigrationScheduling.Model.Round.can_schedule_migration">can_schedule_migration() (MigrationScheduling.Model.Round method)</a>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.calculate_results_for_instances">calculate_results_for_instances() (in module MigrationScheduling.analysis)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model/round.html#MigrationScheduling.Model.Round.can_schedule_migration">can_schedule_migration() (MigrationScheduling.Model.Round method)</a>
+</li>
       <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict">ConstraintDict (class in MigrationScheduling.Data)</a>
 </li>
       <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint">ControllerConstraint (class in MigrationScheduling.Data)</a>
@@ -192,17 +195,21 @@
 </li>
       <li><a href="Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_controller_idx">get_controller_idx() (MigrationScheduling.Data.ControllerConstraint method)</a>
 </li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_cores_and_instances_per_core">get_cores_and_instances_per_core() (in module MigrationScheduling.analysis)</a>
+</li>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_dst_controller">get_dst_controller() (MigrationScheduling.Data.Migration method)</a>
 </li>
       <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_group">get_group() (MigrationScheduling.Data.QosConstraint method)</a>
 </li>
       <li><a href="Model/parser.html#MigrationScheduling.Model.Parser.get_group_ids">get_group_ids() (MigrationScheduling.Model.Parser method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_group_idx">get_group_idx() (MigrationScheduling.Data.QosConstraint method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_groups">get_groups() (MigrationScheduling.Data.Migration method)</a>
+</li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_instances_for_core">get_instances_for_core() (in module MigrationScheduling.analysis)</a>
 </li>
       <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_load">get_load() (MigrationScheduling.Data.ConstraintDict method)</a>
 
@@ -224,7 +231,11 @@
 </li>
       <li><a href="utils.html#MigrationScheduling.utils.get_qos_group_cap_dict">get_qos_group_cap_dict() (in module MigrationScheduling.utils)</a>
 </li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_results_for_instances">get_results_for_instances() (in module MigrationScheduling.analysis)</a>
+</li>
       <li><a href="utils.html#MigrationScheduling.utils.get_results_header">get_results_header() (in module MigrationScheduling.utils)</a>
+</li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_sim_tuples_for_core">get_sim_tuples_for_core() (in module MigrationScheduling.analysis)</a>
 </li>
       <li><a href="Model/optimizer.html#MigrationScheduling.Model.Optimizer.get_size_string">get_size_string() (MigrationScheduling.Model.Optimizer method)</a>
 </li>
@@ -250,6 +261,8 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.initialize_and_join_processes">initialize_and_join_processes() (in module MigrationScheduling.analysis)</a>
+</li>
       <li><a href="utils.html#MigrationScheduling.utils.initialize_seeds">initialize_seeds() (in module MigrationScheduling.utils)</a>
 </li>
       <li><a href="Model/optimizer.html#MigrationScheduling.Model.Optimizer.instance_data">instance_data() (MigrationScheduling.Model.Optimizer method)</a>
@@ -491,9 +504,13 @@
 </li>
       <li><a href="algorithms.html#MigrationScheduling.algorithms.select_bottleneck_migration">select_bottleneck_migration() (in module MigrationScheduling.algorithms)</a>
 </li>
+      <li><a href="algorithms.html#MigrationScheduling.algorithms.select_candidate_migrations">select_candidate_migrations() (in module MigrationScheduling.algorithms)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="algorithms.html#MigrationScheduling.algorithms.select_candidate_migrations">select_candidate_migrations() (in module MigrationScheduling.algorithms)</a>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.simulate_all_instances">simulate_all_instances() (in module MigrationScheduling.analysis)</a>
+</li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.simulate_instance">simulate_instance() (in module MigrationScheduling.analysis)</a>
 </li>
       <li><a href="Data/simulator.html#MigrationScheduling.Data.Simulator">Simulator (class in MigrationScheduling.Data)</a>
 </li>
@@ -526,6 +543,14 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="algorithms.html#MigrationScheduling.algorithms.vector_first_fit">vector_first_fit() (in module MigrationScheduling.algorithms)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.write_results_to_file">write_results_to_file() (in module MigrationScheduling.analysis)</a>
 </li>
   </ul></td>
 </tr></table>

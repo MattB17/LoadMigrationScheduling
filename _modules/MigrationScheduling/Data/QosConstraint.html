@@ -74,6 +74,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">validation</span> <span class="k">as</span> <span class="n">val</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">ConstraintDict</span>
 
 <div class="viewcode-block" id="QosConstraint"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint">[docs]</a><span class="k">class</span> <span class="nc">QosConstraint</span><span class="p">:</span>
@@ -98,6 +99,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
+        <span class="n">val</span><span class="o">.</span><span class="n">validate_name</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;QoS Group&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group</span> <span class="o">=</span> <span class="n">group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -146,11 +148,7 @@
 <span class="sd">            constraint applies.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InvalidName</span><span class="p">(</span><span class="s2">&quot;Group names should be in the form &#39;gx&#39; &quot;</span> <span class="o">+</span>
-                                  <span class="s2">&quot;where &#39;x&#39; is the group ID&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
 
 <div class="viewcode-block" id="QosConstraint.add_switch"><a class="viewcode-back" href="../../../Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.add_switch">[docs]</a>    <span class="k">def</span> <span class="nf">add_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds `switch_name` to the QoS group.</span>
@@ -176,9 +174,13 @@
 <span class="sd">            A string representing the QoS constraint.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;QoS Group </span><span class="si">{0}</span><span class="s2"> allowing </span><span class="si">{1}</span><span class="s2"> concurrent migrations.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-                <span class="s2">&quot;Switches in QoS group: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">))</span></div>
+        <span class="n">qos_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;QoS Group </span><span class="si">{0}</span><span class="s2"> allowing &quot;</span> <span class="o">+</span>
+                   <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2"> concurrent migrations.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">:</span>
+            <span class="n">qos_str</span> <span class="o">+=</span> <span class="s2">&quot;Switches in QoS Group: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">qos_str</span></div>
 </pre></div>
 
            </div>

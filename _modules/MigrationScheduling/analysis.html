@@ -76,9 +76,86 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">Simulator</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Model</span> <span class="kn">import</span> <span class="n">Optimizer</span>
-<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">algorithms</span><span class="p">,</span> <span class="n">specs</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">algorithms</span><span class="p">,</span> <span class="n">specs</span><span class="p">,</span> <span class="n">utils</span>
+
+
+<div class="viewcode-block" id="get_cores_and_instances_per_core"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_cores_and_instances_per_core">[docs]</a><span class="k">def</span> <span class="nf">get_cores_and_instances_per_core</span><span class="p">(</span><span class="n">instance_count</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the number of cores to use and the number of instances per core.</span>
+
+<span class="sd">    The number of cores to use is based on the system and `instance_count`.</span>
+<span class="sd">    Then, based on the number of cores, the number of instances per core is</span>
+<span class="sd">    calculated using `instance_count`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_count: int</span>
+<span class="sd">        A count of the number of instances to be analyzed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int, int</span>
+<span class="sd">        Two integers. The first represents the number of cores to be used and</span>
+<span class="sd">        the second represents the number of instances that will be analyzed</span>
+<span class="sd">        on each core.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">core_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">instance_count</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">instances_per_core</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">instance_count</span> <span class="o">/</span> <span class="n">core_count</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">core_count</span><span class="p">,</span> <span class="n">instances_per_core</span></div>
+
+
+<div class="viewcode-block" id="get_instances_for_core"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_instances_for_core">[docs]</a><span class="k">def</span> <span class="nf">get_instances_for_core</span><span class="p">(</span><span class="n">instance_files</span><span class="p">,</span> <span class="n">instances_per_core</span><span class="p">,</span> <span class="n">core_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the instances from `instance_files` to be analyzed on `core_num`.</span>
+
+<span class="sd">    A subset of `instance_files` is taken so that `core_num` processes roughly</span>
+<span class="sd">    `instances_per_core` instances.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_files: list</span>
+<span class="sd">        A list of strings representing the filenames of the instances to be</span>
+<span class="sd">        analyzed.</span>
+<span class="sd">    instances_per_core: int</span>
+<span class="sd">        An integer representing the number of instances to be processed on</span>
+<span class="sd">        each machine core.</span>
+<span class="sd">    core_num: int</span>
+<span class="sd">        An integer representing the core number for which the instances are</span>
+<span class="sd">        retrieved.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A subset of `instance_files` representing the instances to be</span>
+<span class="sd">        processed on `core_num`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">instances_per_core</span> <span class="o">*</span> <span class="n">core_num</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">instance_files</span><span class="p">),</span> <span class="n">instances_per_core</span> <span class="o">*</span> <span class="p">(</span><span class="n">core_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">instance_files</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="initialize_and_join_processes"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.initialize_and_join_processes">[docs]</a><span class="k">def</span> <span class="nf">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initializes and joins all the processes in `procs`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    procs</span>
+<span class="sd">        A list of `mp.Process` objects representing the processes to be</span>
+<span class="sd">        initialized and joined.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">procs</span><span class="p">:</span>
+        <span class="n">proc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">procs</span><span class="p">:</span>
+        <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="build_heuristics_string"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.build_heuristics_string">[docs]</a><span class="k">def</span> <span class="nf">build_heuristics_string</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>
@@ -173,6 +250,191 @@
         <span class="n">results_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">results_str</span><span class="p">,</span> <span class="n">build_optimal_string</span><span class="p">(</span><span class="n">optimizer</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">results_str</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="get_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">get_results_for_instances</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">instance_files</span><span class="p">,</span>
+                              <span class="n">input_dir</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets results for all the instances specified in `instance_files`.</span>
+
+<span class="sd">    For each instance in `instance_files` the result string is computed and</span>
+<span class="sd">    appended to `results_list`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_list: mp.Manager().list</span>
+<span class="sd">        A multiprocessing list to which the result strings are appended.</span>
+<span class="sd">    instance_files: list</span>
+<span class="sd">        A list of strings representing the names of files specifying the</span>
+<span class="sd">        instances to be analyzed.</span>
+<span class="sd">    input_dir: str</span>
+<span class="sd">        A string specifying the directory from which the instances are read.</span>
+<span class="sd">    run_optimizer: bool</span>
+<span class="sd">        A boolean value indicating whether the ILP model will be solved and</span>
+<span class="sd">        included in the result string for each instance.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">instance_file</span> <span class="ow">in</span> <span class="n">instance_files</span><span class="p">:</span>
+        <span class="n">results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">build_results_string</span><span class="p">(</span>
+            <span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="write_results_to_file"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.write_results_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_results_to_file</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write the results in `results_list` to `output_file`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_list: list</span>
+<span class="sd">        A list of strings representing the result strings for the instances</span>
+<span class="sd">        that have been analyzed.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the results will</span>
+<span class="sd">        be written.</span>
+<span class="sd">    run_optimizer: bool</span>
+<span class="sd">        A boolean value indicating whether the ILP model is solved and</span>
+<span class="sd">        included in the results of `results_list`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">results_file</span><span class="p">:</span>
+        <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_results_header</span><span class="p">(</span><span class="n">run_optimizer</span><span class="p">))</span>
+        <span class="n">results_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">results_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.calculate_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">calculate_results_for_instances</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_files</span><span class="p">,</span>
+                                    <span class="n">output_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the results for each instance in `instance_files`.</span>
+
+<span class="sd">    For each instance in `instance_files`, the instance is solved with the</span>
+<span class="sd">    vector first fit and current bottleneck first algorithms. If</span>
+<span class="sd">    `run_optimizer` is True, then the ILP model is also solved directly. A</span>
+<span class="sd">    string is generated of the results and the results of all instances are</span>
+<span class="sd">    written to `output_file` with 1 result per line.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_dir: str</span>
+<span class="sd">        A string representing the name of the directory from which the</span>
+<span class="sd">        instance files are read.</span>
+<span class="sd">    instance_files: list</span>
+<span class="sd">        A list of strings representing the names of the files specifying the</span>
+<span class="sd">        instances for which the results are calculated.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the results will</span>
+<span class="sd">        be written.</span>
+<span class="sd">    run_optimizer: bool</span>
+<span class="sd">        A boolean value indicating whether the ILP model will be solved</span>
+<span class="sd">        directly so that the optimal solution can be included in the results</span>
+<span class="sd">        for each instance.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+    <span class="n">procs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cores</span><span class="p">,</span> <span class="n">instances_per_core</span> <span class="o">=</span> <span class="n">get_cores_and_instances_per_core</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">instance_files</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">core_num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cores</span><span class="p">):</span>
+        <span class="n">instances</span> <span class="o">=</span> <span class="n">get_instances_for_core</span><span class="p">(</span>
+            <span class="n">instance_files</span><span class="p">,</span> <span class="n">instances_per_core</span><span class="p">,</span> <span class="n">core_num</span><span class="p">)</span>
+        <span class="n">procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">get_results_for_instances</span><span class="p">,</span>
+                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span>
+                                      <span class="n">input_dir</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">)))</span>
+    <span class="n">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span>
+    <span class="n">write_results_to_file</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_sim_tuples_for_core"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_sim_tuples_for_core">[docs]</a><span class="k">def</span> <span class="nf">get_sim_tuples_for_core</span><span class="p">(</span><span class="n">instance_sizes</span><span class="p">,</span> <span class="n">sims_per_core</span><span class="p">,</span>
+                            <span class="n">core_num</span><span class="p">,</span> <span class="n">start_idx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the simulation tuples to be simulated on `core_num`.</span>
+
+<span class="sd">    The simulation tuples identify the instance number and instance size</span>
+<span class="sd">    taken from `instance_sizes` to be simulated on `core_num`. Roughly</span>
+<span class="sd">    `sims_per_core` instances will be simulated on the core.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_sizes: list</span>
+<span class="sd">        A list of integers representing the number of migrations in each</span>
+<span class="sd">        simulated instance.</span>
+<span class="sd">    sims_per_core: int</span>
+<span class="sd">        An integer representing the number of simulations to be completed</span>
+<span class="sd">        on each machine core.</span>
+<span class="sd">    core_num: int</span>
+<span class="sd">        An integer representing the index of the core for which the</span>
+<span class="sd">        simulation tuples are retrieved.</span>
+<span class="sd">    start_idx: int</span>
+<span class="sd">        An integer denoting the index at which to start counting for</span>
+<span class="sd">        the instance numbers.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A list of two element tuples representing the simulation tuples for</span>
+<span class="sd">        `core_num`. The first element of each tuple is an integer identifying</span>
+<span class="sd">        the instance number and the second is an integer representing the</span>
+<span class="sd">        number of migrations in the instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">sims_per_core</span> <span class="o">*</span> <span class="n">core_num</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">instance_sizes</span><span class="p">),</span> <span class="n">sims_per_core</span> <span class="o">*</span> <span class="p">(</span><span class="n">core_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">start_idx</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">instance_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="simulate_instance"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.simulate_instance">[docs]</a><span class="k">def</span> <span class="nf">simulate_instance</span><span class="p">(</span><span class="n">instance_idx</span><span class="p">,</span> <span class="n">instance_size</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulates `instance_idx` having `instance_size` migrations.</span>
+
+<span class="sd">    An instance is simulated and written to `output_dir`. The instance number</span>
+<span class="sd">    is `instance_idx` and it has `instance_size` migrations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_idx: int</span>
+<span class="sd">        An integer representing the index of the instance being simulated.</span>
+<span class="sd">    instance_size: int</span>
+<span class="sd">        An integer representing the number of migrations in the simulated</span>
+<span class="sd">        instance.</span>
+<span class="sd">    output_dir: str</span>
+<span class="sd">        A string identifying the directory to which the instance file will be</span>
+<span class="sd">        written.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;migrations</span><span class="si">{}</span><span class="s2">.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">instance_idx</span><span class="p">))</span>
+    <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">instance_size</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="simulate_all_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.simulate_all_instances">[docs]</a><span class="k">def</span> <span class="nf">simulate_all_instances</span><span class="p">(</span><span class="n">sim_tuples</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An instance is simulated for each instance specified in `sim_tuples`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sim_tuples: list</span>
+<span class="sd">        A list of two element tuples specifying the parameters of each</span>
+<span class="sd">        instance to be simulated. Both elements of each tuples are integers</span>
+<span class="sd">        specifying the index of the instance and the number of migrations.</span>
+<span class="sd">    output_dir: str</span>
+<span class="sd">        A string specifying the directory to which the instance will be output.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">sim_tuple</span> <span class="ow">in</span> <span class="n">sim_tuples</span><span class="p">:</span>
+        <span class="n">simulate_instance</span><span class="p">(</span><span class="n">sim_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sim_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="load_results_df"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.load_results_df">[docs]</a><span class="k">def</span> <span class="nf">load_results_df</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">sort_col</span><span class="p">):</span>
