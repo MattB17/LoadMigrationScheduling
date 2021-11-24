@@ -5,7 +5,7 @@ import os
 import sys
 import random
 import numpy as np
-from MigrationScheduling import specs, utils
+from MigrationScheduling import specs, utils, validation
 from MigrationScheduling.Data import Simulator
 
 uitls.initialize_seeds(specs.SEED_NUM)
@@ -14,6 +14,10 @@ NUM_MIGRATIONS_LIST = [5, 10, 20, 50, 100, 250, 500, 1000, 5000, 10000]
 
 if __name__ == "__main__":
     output_path = sys.argv[1]
+    bottleneck_setting = sys.argv[2].lower()
+
+    validation.validate_bottleneck_setting(bottleneck_setting)
+
     simulator = Simulator()
     curr_idx_small = specs.SMALL_IDX
     curr_idx_large = specs.LARGE_IDX

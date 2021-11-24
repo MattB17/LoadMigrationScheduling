@@ -4,13 +4,26 @@ instances.
 """
 import random
 import numpy as np
+from MigrationScheduling import utils
 from MigrationScheduling.Data import Migration
 
 class Simulator:
     """Used to simulate a load migration scheduling instance.
 
+    Parameters
+    ----------
+    bottleneck_type: str
+        A string representing the bottleneck setting used to generate the
+        capacities for the constraints in the simulated instance. Accepted
+        values are 'high', 'medium', and 'low'. The capacity of the
+        constraints are then calculated using this setting and the individual
+        load on the constraint.
+
     Attributes
     ----------
+    _bottleneck_type: str
+        Represents the bottleneck setting used to generate the capacity of
+        constraints for the simulated instance.
     _migrations: list
         A list of `Migration` objects specifying the simulated migrations.
     _num_migrations: int
@@ -30,7 +43,8 @@ class Simulator:
         An integer representing the number of QoS groups.
 
     """
-    def __init__(self):
+    def __init__(self, bottleneck_type="low"):
+        self._bottleneck_type = bottleneck_type
         self._migrations = []
         self._num_migrations = 0
         self._controllers = []
@@ -208,8 +222,8 @@ class Simulator:
         min_cap = self._controllers[controller_idx][1]
         max_cap = (self._controllers[controller_idx][0] *
                    self._controllers[controller_idx][1])
-        capacity = min(max_cap, min_cap + max(0,
-            np.random.normal(0.5, 0.3, 1)[0] * (max_cap - min_cap)))
+        capacity = utils.generate_controller_capacity(
+            min_cap, max_cap, self._bottleneck_type)
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
     def _get_qos_line(self, qos_idx):
@@ -232,8 +246,8 @@ class Simulator:
             A string representing the QoS line.
 
         """
-        capacity = int(min(self._qos_groups[qos_idx], max(1.0,
-            np.random.normal(0.5, 0.3, 1)[0] * self._qos_groups[qos_idx])))
+        capacity = utils.generate_qos_capacity(
+            self._qos_groups[qos_idx], self._bottleneck_type)
         return "g{0} {1}\n".format(qos_idx, capacity)
 
     def _output_simulated_instance(self, output_file):

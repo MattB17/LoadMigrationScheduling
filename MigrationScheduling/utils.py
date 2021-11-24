@@ -231,6 +231,68 @@ def get_constraints_dict(instance_data):
     qos_dict = get_qos_constraint_dicts(instance_data.get_qos_consts())
     return {**control_dict, **qos_dict}
 
+
+def generate_controller_capacity(min_cap, max_cap, bottleneck_type):
+    """Generates the capacity for a controller in [`min_cap`, `max_cap`].
+
+    The controller capacity is picked from the range [`min_cap`, `max_cap`]
+    based on `bottleneck_type`.
+
+    Parameters
+    ----------
+    min_cap: float
+        A float representing the minimum controller capacity.
+    max_cap: float
+        A float representing the maximum controller capacity.
+    bottleneck_type: str
+        A string representing the bottleneck setting used to generate the
+        group capacity. Accepted values are 'high', 'medium', and 'low'.
+        The capacity is calculated relative to the group size.
+
+    Returns
+    -------
+    float
+        A float representing the capacity for the controller.
+
+    """
+    if bottleneck_type == "high":
+        return min_cap
+    cap_mean = 0.2
+    if bottleneck_type == "low":
+        cap_mean = 0.5
+    return min(max_cap, min_cap + max(0,
+        np.random.normal(cap_mean, 0.3, 1)[0] * (max_cap - min_cap)))
+
+
+def generate_qos_capacity(group_size, bottleneck_type):
+    """Generates the capacity for a QoS group of size `group_size`.
+
+    The capacity is a factor of `group_size` and `bottleneck_type`.
+
+    Parameters
+    ----------
+    group_size: int
+        An integer representing the number of migrations in the QoS group.
+    bottleneck_type: str
+        A string representing the bottleneck setting used to generate the
+        group capacity. Accepted values are 'high', 'medium', and 'low'.
+        The capacity is calculated relative to the group size.
+
+    Returns
+    -------
+    int
+        An integer representing the capacity for the QoS group.
+
+    """
+    if bottleneck_type == "high":
+        return 1
+    cap_mean = 0.2
+    if bottleneck_type == "low":
+        cap_mean = 0.5
+    return int(min(group_size, max(1.0,
+        np.random.normal(cap_mean, 0.3, 1)[0] * group_size)))
+
+
 def get_all_files_by_pattern(file_dir, file_pattern):
     """Gets all files in `file_dir` matching `file_pattern`.
 

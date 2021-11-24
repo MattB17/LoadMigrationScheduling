@@ -44,7 +44,7 @@ class ModelNotOptimized(Exception):
                          "model before looking at results.")
 
 class SwitchNotFound(Exception):
-    """Generate when `switch_name` is not found in a queried object.
+    """Generated when `switch_name` is not found in a queried object.
 
     Parameters
     ----------
@@ -54,3 +54,21 @@ class SwitchNotFound(Exception):
     """
     def __init__(self, switch_name):
         super().__init__("Switch {} not found.".format(switch_name))
+
+class IncorrectBottleneckSetting(Exception):
+    """Generated when `supplied_setting` is an incorrect bottleneck setting.
+
+    The exception is generated when an incorrect bottleneck setting is used.
+    A correct bottleneck setting is one of "high", "medium", or "low".
+
+    Parameters
+    ----------
+    supplied_setting: str
+        A string representing the supplied bottleneck setting that generated
+        the exception.
+
+    """
+    def __init__(self, supplied_setting):
+        super().__init__(
+            "Incorrect bottleneck setting used: {}. Possible settings are " +
+            "'high', 'medium', or 'low'.\n".format(supplied_setting))

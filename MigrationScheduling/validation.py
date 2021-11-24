@@ -27,6 +27,10 @@ def validate_name(proposed_name, first_letter, object_type):
         If `proposed_name` does not follow the correct naming convention for
         `object_type`.
 
+    Returns
+    -------
+    None
+
     """
     msg_str = ("{0} names should be in the form '{1}x' where " +
                "'x' is an ID. {2} does not meet this criteria").format(
@@ -37,3 +41,27 @@ def validate_name(proposed_name, first_letter, object_type):
         int(proposed_name[1:])
     except:
         raise exc.InvalidName(msg_str)
+
+
+def validate_bottleneck_setting(supplied_setting):
+    """Validates whether `supplied_setting` is a correct bottleneck setting.
+
+    Correct bottleneck settings are 'high', 'medium', or 'low'
+
+    Parameters
+    ----------
+    supplied_setting: str
+        A string representing the bottleneck setting to be validated.
+
+    Raises
+    ------
+    IncorrectBottleneckSetting
+        If `supplied_setting` is not one of the correct bottleneck settings.
+
+    Returns
+    -------
+    None
+
+    """
+    if supplied_setting not in {"low", "medium", "high"}:
+        raise exc.IncorrectBottleneckSetting(supplied_setting)
