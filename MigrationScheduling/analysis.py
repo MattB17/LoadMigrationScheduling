@@ -453,3 +453,108 @@ def get_time_df(results_df, group_col, time_cols):
 
     """
     return results_df[[group_col] + time_cols].groupby(group_col).mean()
+
+
+def get_proportion_better(results_df, heuristic1, heuristic2):
+    """The proportion of times `heuristic1` outperforms `heuristic2`.
+
+    The performance of the two heuristics is taken from `results_df`.
+    `heuristic1` outperforms `heuristic2` if it requires fewer rounds on
+    the same instance.
+
+    Parameters
+    ----------
+    results_df: pd.DataFrame
+        A pandas DataFrame of experimental results for the heuristics.
+    heuristic1: str
+        A string representing the heuristic of interest.
+    heuristic2: str
+        A string representing the heuristic being compared against.
+
+    Returns
+    -------
+    float
+        A float representing the proportion of times `heuristic1`
+        outperforms `heuristic2`.
+
+    """
+    outperform_indicator = np.where(
+        results_df[heuristic1] < results_df[heuristic2], 1, 0)
+    return 100 * outperform_indicator.mean()
+
+
+def get_round_reduction_stats(results_df, method1, method2):
+    """Gets round reduction statistics of `method1` over `method2`.
+
+    The round reduction statistics are calculated using `results_df` and
+    represent the statistics for the times that `method1` completes in
+    fewer rounds than `method2`.
+
+    Parameters
+    ----------
+    results_df: pd.DataFrame
+        A pandas DataFrame of experimental results for the methods.
+    method1: str
+        A string representing the method of interest.
+    method2: str
+        A string representing the method being compared against.
+
+    Returns
+    -------
+    int, float
+        An integer denoting the maximum improvement of `method1` over
+        `method2` in `results_df` and a float representing the average
+        improvement of `method1` over `method2`.
+
+    """
+    improvement_vals = results_df[method2] - results_df[method1]
+    return (improvement_vals.max(),
+            improvement_vals[improvement_vals > 0].mean())
+
+
+def compare_heuristic_results(results_df, method1, method2):
+    """Compares `method1` and `method2` based on `results_df`.
+
+    A dictionary is created recording statistics of the comparison between
+    `method1` and `method2` in `results_df`. The statistics calculated
+    are the percent of time `method1` is less than `method2`, the
+    maximum improvement compared to `method2` and the average improvement
+    over `method2`. The same is calculated for `method2` compared to
+    `method1`.
+
+    Parameters
+    ----------
+    results_df: pd.DataFrame
+        A pandas DataFrame containing experimental results for the
+        heuristics.
+    heuristic1: str
+        A string representing the name of one of the heuristics being
+        compared.
+    heuristic2: str
+        A string representing the name of the other heuristic being
+        compared.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the comparison statistics between the
+        two heuristics.
+
+    """
+    stats_dict = {}
+    percent_str = '{0} outperforms {1} percentage'
+    stats_dict[percent_str.format(method1, method2)] = get_proportion_better(
+        results_df, method1, method2)
+    stats_dict[percent_str.format(method2, method1)] = get_proportion_better(
+        results_df, method2, method1)
+    max_str = '{0} max round reduction over {1}'
+    mean_str = '{0} mean round reduction over {1}'
+    max1_over_2, mean1_over_2 = get_round_reduction_stats(
+        results_df, method1, method2)
+    stats_dict[max_str.format(method1, method2)] = max1_over_2
+    stats_dict[mean_str.format(method1, method2)] = mean1_over_2
+    max2_over_1, mean2_over_1 = get_round_reduction_stats(
+        results_df, method2, method1)
+    stats_dict[max_str.format(method2, method1)] = max2_over_1
+    stats_dict[mean_str.format(method2, method1)] = mean2_over_1
+    return stats_dict
