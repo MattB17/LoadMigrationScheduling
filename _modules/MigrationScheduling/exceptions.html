@@ -37,9 +37,11 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -113,7 +115,7 @@
                          <span class="s2">&quot;model before looking at results.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SwitchNotFound"><a class="viewcode-back" href="../../exceptions.html#MigrationScheduling.exceptions.SwitchNotFound">[docs]</a><span class="k">class</span> <span class="nc">SwitchNotFound</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate when `switch_name` is not found in a queried object.</span>
+    <span class="sd">&quot;&quot;&quot;Generated when `switch_name` is not found in a queried object.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -123,6 +125,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Switch </span><span class="si">{}</span><span class="s2"> not found.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">switch_name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="IncorrectBottleneckSetting"><a class="viewcode-back" href="../../exceptions.html#MigrationScheduling.exceptions.IncorrectBottleneckSetting">[docs]</a><span class="k">class</span> <span class="nc">IncorrectBottleneckSetting</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generated when `supplied_setting` is an incorrect bottleneck setting.</span>
+
+<span class="sd">    The exception is generated when an incorrect bottleneck setting is used.</span>
+<span class="sd">    A correct bottleneck setting is one of &quot;high&quot;, &quot;medium&quot;, or &quot;low&quot;.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    supplied_setting: str</span>
+<span class="sd">        A string representing the supplied bottleneck setting that generated</span>
+<span class="sd">        the exception.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supplied_setting</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Incorrect bottleneck setting used: </span><span class="si">{}</span><span class="s2">. Possible settings are &quot;</span> <span class="o">+</span>
+            <span class="s2">&quot;&#39;high&#39;, &#39;medium&#39;, or &#39;low&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">supplied_setting</span><span class="p">))</span></div>
 </pre></div>
 
            </div>

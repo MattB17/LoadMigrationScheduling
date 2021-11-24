@@ -37,6 +37,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
@@ -74,13 +75,26 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">Migration</span>
 
 <div class="viewcode-block" id="Simulator"><a class="viewcode-back" href="../../../Data/simulator.html#MigrationScheduling.Data.Simulator">[docs]</a><span class="k">class</span> <span class="nc">Simulator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Used to simulate a load migration scheduling instance.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bottleneck_type: str</span>
+<span class="sd">        A string representing the bottleneck setting used to generate the</span>
+<span class="sd">        capacities for the constraints in the simulated instance. Accepted</span>
+<span class="sd">        values are &#39;high&#39;, &#39;medium&#39;, and &#39;low&#39;. The capacity of the</span>
+<span class="sd">        constraints are then calculated using this setting and the individual</span>
+<span class="sd">        load on the constraint.</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
+<span class="sd">    _bottleneck_type: str</span>
+<span class="sd">        Represents the bottleneck setting used to generate the capacity of</span>
+<span class="sd">        constraints for the simulated instance.</span>
 <span class="sd">    _migrations: list</span>
 <span class="sd">        A list of `Migration` objects specifying the simulated migrations.</span>
 <span class="sd">    _num_migrations: int</span>
@@ -100,7 +114,8 @@
 <span class="sd">        An integer representing the number of QoS groups.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bottleneck_type</span><span class="o">=</span><span class="s2">&quot;low&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bottleneck_type</span> <span class="o">=</span> <span class="n">bottleneck_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_migrations</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span> <span class="o">=</span> <span class="p">[]</span>
@@ -278,8 +293,8 @@
         <span class="n">min_cap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">max_cap</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>
                    <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">capacity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_cap</span><span class="p">,</span> <span class="n">min_cap</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_cap</span> <span class="o">-</span> <span class="n">min_cap</span><span class="p">)))</span>
+        <span class="n">capacity</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_controller_capacity</span><span class="p">(</span>
+            <span class="n">min_cap</span><span class="p">,</span> <span class="n">max_cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bottleneck_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;c</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1:.2f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_qos_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qos_idx</span><span class="p">):</span>
@@ -302,8 +317,8 @@
 <span class="sd">            A string representing the QoS line.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">capacity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span><span class="p">[</span><span class="n">qos_idx</span><span class="p">],</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span><span class="p">[</span><span class="n">qos_idx</span><span class="p">])))</span>
+        <span class="n">capacity</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_qos_capacity</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span><span class="p">[</span><span class="n">qos_idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bottleneck_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;g</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qos_idx</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_output_simulated_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>

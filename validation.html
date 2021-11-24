@@ -39,6 +39,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
@@ -74,6 +75,32 @@
 <p>This module implements functions related to validation used to ensure
 that objects are initialized properly or signal errors if not.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.validation.validate_bottleneck_setting">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.validation.</span></span><span class="sig-name descname"><span class="pre">validate_bottleneck_setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">supplied_setting</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/validation.html#validate_bottleneck_setting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.validation.validate_bottleneck_setting" title="Permalink to this definition"></a></dt>
+<dd><p>Validates whether <cite>supplied_setting</cite> is a correct bottleneck setting.</p>
+<p>Correct bottleneck settings are ‘high’, ‘medium’, or ‘low’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>supplied_setting: str</strong></dt><dd><p>A string representing the bottleneck setting to be validated.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>IncorrectBottleneckSetting</dt><dd><p>If <cite>supplied_setting</cite> is not one of the correct bottleneck settings.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.validation.validate_name">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.validation.</span></span><span class="sig-name descname"><span class="pre">validate_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proposed_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_letter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/validation.html#validate_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.validation.validate_name" title="Permalink to this definition"></a></dt>
 <dd><p>Validates that <cite>proposed_name</cite> follows the proper naming convention.</p>
@@ -91,8 +118,13 @@ applies.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
 <dt>InvalidName</dt><dd><p>If <cite>proposed_name</cite> does not follow the correct naming convention for
 <cite>object_type</cite>.</p>
 </dd>

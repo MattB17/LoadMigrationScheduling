@@ -102,6 +102,59 @@ migrations of <cite>migrations</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.generate_controller_capacity">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">generate_controller_capacity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_cap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottleneck_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#generate_controller_capacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.generate_controller_capacity" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the capacity for a controller in [<cite>min_cap</cite>, <cite>max_cap</cite>].</p>
+<p>The controller capacity is picked from the range [<cite>min_cap</cite>, <cite>max_cap</cite>]
+based on <cite>bottleneck_type</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>min_cap: float</strong></dt><dd><p>A float representing the minimum controller capacity.</p>
+</dd>
+<dt><strong>max_cap: float</strong></dt><dd><p>A float representing the maximum controller capacity.</p>
+</dd>
+<dt><strong>bottleneck_type: str</strong></dt><dd><p>A string representing the bottleneck setting used to generate the
+group capacity. Accepted values are ‘high’, ‘medium’, and ‘low’.
+The capacity is calculated relative to the group size.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the capacity for the controller.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.generate_qos_capacity">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">generate_qos_capacity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottleneck_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#generate_qos_capacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.generate_qos_capacity" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the capacity for a QoS group of size <cite>group_size</cite>.</p>
+<p>The capacity is a factor of <cite>group_size</cite> and <cite>bottleneck_type</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>group_size: int</strong></dt><dd><p>An integer representing the number of migrations in the QoS group.</p>
+</dd>
+<dt><strong>bottleneck_type: str</strong></dt><dd><p>A string representing the bottleneck setting used to generate the
+group capacity. Accepted values are ‘high’, ‘medium’, and ‘low’.
+The capacity is calculated relative to the group size.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>An integer representing the capacity for the QoS group.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_all_files_by_pattern">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_all_files_by_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_all_files_by_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_all_files_by_pattern" title="Permalink to this definition"></a></dt>
 <dd><p>Gets all files in <cite>file_dir</cite> matching <cite>file_pattern</cite>.</p>

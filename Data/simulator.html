@@ -48,6 +48,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
@@ -85,11 +86,24 @@
 instances.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MigrationScheduling.Data.Simulator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MigrationScheduling.Data.</span></span><span class="sig-name descname"><span class="pre">Simulator</span></span><a class="reference internal" href="../_modules/MigrationScheduling/Data/Simulator.html#Simulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.Simulator" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MigrationScheduling.Data.</span></span><span class="sig-name descname"><span class="pre">Simulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bottleneck_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'low'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Data/Simulator.html#Simulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Data.Simulator" title="Permalink to this definition"></a></dt>
 <dd><p>Used to simulate a load migration scheduling instance.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>bottleneck_type: str</strong></dt><dd><p>A string representing the bottleneck setting used to generate the
+capacities for the constraints in the simulated instance. Accepted
+values are ‘high’, ‘medium’, and ‘low’. The capacity of the
+constraints are then calculated using this setting and the individual
+load on the constraint.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>_bottleneck_type: str</strong></dt><dd><p>Represents the bottleneck setting used to generate the capacity of
+constraints for the simulated instance.</p>
+</dd>
 <dt><strong>_migrations: list</strong></dt><dd><p>A list of <cite>Migration</cite> objects specifying the simulated migrations.</p>
 </dd>
 <dt><strong>_num_migrations: int</strong></dt><dd><p>An integer representing the number of migrations.</p>

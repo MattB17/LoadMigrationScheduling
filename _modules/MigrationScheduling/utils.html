@@ -302,6 +302,68 @@
     <span class="n">qos_dict</span> <span class="o">=</span> <span class="n">get_qos_constraint_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">())</span>
     <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">control_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">qos_dict</span><span class="p">}</span></div>
 
+
+<div class="viewcode-block" id="generate_controller_capacity"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.generate_controller_capacity">[docs]</a><span class="k">def</span> <span class="nf">generate_controller_capacity</span><span class="p">(</span><span class="n">min_cap</span><span class="p">,</span> <span class="n">max_cap</span><span class="p">,</span> <span class="n">bottleneck_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates the capacity for a controller in [`min_cap`, `max_cap`].</span>
+
+<span class="sd">    The controller capacity is picked from the range [`min_cap`, `max_cap`]</span>
+<span class="sd">    based on `bottleneck_type`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    min_cap: float</span>
+<span class="sd">        A float representing the minimum controller capacity.</span>
+<span class="sd">    max_cap: float</span>
+<span class="sd">        A float representing the maximum controller capacity.</span>
+<span class="sd">    bottleneck_type: str</span>
+<span class="sd">        A string representing the bottleneck setting used to generate the</span>
+<span class="sd">        group capacity. Accepted values are &#39;high&#39;, &#39;medium&#39;, and &#39;low&#39;.</span>
+<span class="sd">        The capacity is calculated relative to the group size.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        A float representing the capacity for the controller.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">bottleneck_type</span> <span class="o">==</span> <span class="s2">&quot;high&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">min_cap</span>
+    <span class="n">cap_mean</span> <span class="o">=</span> <span class="mf">0.2</span>
+    <span class="k">if</span> <span class="n">bottleneck_type</span> <span class="o">==</span> <span class="s2">&quot;low&quot;</span><span class="p">:</span>
+        <span class="n">cap_mean</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_cap</span><span class="p">,</span> <span class="n">min_cap</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">cap_mean</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_cap</span> <span class="o">-</span> <span class="n">min_cap</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="generate_qos_capacity"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.generate_qos_capacity">[docs]</a><span class="k">def</span> <span class="nf">generate_qos_capacity</span><span class="p">(</span><span class="n">group_size</span><span class="p">,</span> <span class="n">bottleneck_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates the capacity for a QoS group of size `group_size`.</span>
+
+<span class="sd">    The capacity is a factor of `group_size` and `bottleneck_type`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    group_size: int</span>
+<span class="sd">        An integer representing the number of migrations in the QoS group.</span>
+<span class="sd">    bottleneck_type: str</span>
+<span class="sd">        A string representing the bottleneck setting used to generate the</span>
+<span class="sd">        group capacity. Accepted values are &#39;high&#39;, &#39;medium&#39;, and &#39;low&#39;.</span>
+<span class="sd">        The capacity is calculated relative to the group size.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        An integer representing the capacity for the QoS group.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">bottleneck_type</span> <span class="o">==</span> <span class="s2">&quot;high&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="n">cap_mean</span> <span class="o">=</span> <span class="mf">0.2</span>
+    <span class="k">if</span> <span class="n">bottleneck_type</span> <span class="o">==</span> <span class="s2">&quot;low&quot;</span><span class="p">:</span>
+        <span class="n">cap_mean</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">group_size</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">cap_mean</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">group_size</span><span class="p">)))</span></div>
+
+
 <div class="viewcode-block" id="get_all_files_by_pattern"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_all_files_by_pattern">[docs]</a><span class="k">def</span> <span class="nf">get_all_files_by_pattern</span><span class="p">(</span><span class="n">file_dir</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Gets all files in `file_dir` matching `file_pattern`.</span>
 
