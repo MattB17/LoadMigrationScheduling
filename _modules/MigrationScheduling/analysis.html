@@ -437,6 +437,42 @@
         <span class="n">simulate_instance</span><span class="p">(</span><span class="n">sim_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sim_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="create_simulated_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.create_simulated_instances">[docs]</a><span class="k">def</span> <span class="nf">create_simulated_instances</span><span class="p">(</span><span class="n">instance_sizes</span><span class="p">,</span> <span class="n">start_idx</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulates instances of the sizes specified in `instance_sizes`.</span>
+
+<span class="sd">    An instance is simulated for each element of `instance_sizes` where</span>
+<span class="sd">    the number of migrations of the instance is equal to the corresponding</span>
+<span class="sd">    element of `instance_sizes`. The instances are numbered contiguously</span>
+<span class="sd">    starting from `start_idx` and written to `output_dir`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_sizes: list</span>
+<span class="sd">        A list of integers representing the number of migrations in each</span>
+<span class="sd">        simulated instance.</span>
+<span class="sd">    start_idx: int</span>
+<span class="sd">        An integer denoting the instance number from which instances are</span>
+<span class="sd">        numbered.</span>
+<span class="sd">    output_dir: str</span>
+<span class="sd">        A string specifying the directory to which the instance files will</span>
+<span class="sd">        be written.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">procs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cores</span><span class="p">,</span> <span class="n">sims_per_core</span> <span class="o">=</span> <span class="n">get_cores_and_instances_per_core</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">instance_sizes</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">core_num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cores</span><span class="p">):</span>
+        <span class="n">sim_tuples</span> <span class="o">=</span> <span class="n">get_sim_tuples_for_core</span><span class="p">(</span>
+            <span class="n">instance_sizes</span><span class="p">,</span> <span class="n">sims_per_core</span><span class="p">,</span> <span class="n">core_num</span><span class="p">,</span> <span class="n">start_idx</span><span class="p">)</span>
+        <span class="n">procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">simulate_all_instances</span><span class="p">,</span>
+                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">sim_tuples</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)))</span>
+    <span class="n">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="load_results_df"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.load_results_df">[docs]</a><span class="k">def</span> <span class="nf">load_results_df</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">sort_col</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Loads a results dataframe from `results_file`.</span>
 
@@ -488,6 +524,111 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">results_df</span><span class="p">[[</span><span class="n">group_col</span><span class="p">]</span> <span class="o">+</span> <span class="n">time_cols</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group_col</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_proportion_better"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_proportion_better">[docs]</a><span class="k">def</span> <span class="nf">get_proportion_better</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">heuristic1</span><span class="p">,</span> <span class="n">heuristic2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The proportion of times `heuristic1` outperforms `heuristic2`.</span>
+
+<span class="sd">    The performance of the two heuristics is taken from `results_df`.</span>
+<span class="sd">    `heuristic1` outperforms `heuristic2` if it requires fewer rounds on</span>
+<span class="sd">    the same instance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_df: pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame of experimental results for the heuristics.</span>
+<span class="sd">    heuristic1: str</span>
+<span class="sd">        A string representing the heuristic of interest.</span>
+<span class="sd">    heuristic2: str</span>
+<span class="sd">        A string representing the heuristic being compared against.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        A float representing the proportion of times `heuristic1`</span>
+<span class="sd">        outperforms `heuristic2`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">outperform_indicator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="n">heuristic1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">results_df</span><span class="p">[</span><span class="n">heuristic2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">outperform_indicator</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_round_reduction_stats"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_round_reduction_stats">[docs]</a><span class="k">def</span> <span class="nf">get_round_reduction_stats</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">method1</span><span class="p">,</span> <span class="n">method2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets round reduction statistics of `method1` over `method2`.</span>
+
+<span class="sd">    The round reduction statistics are calculated using `results_df` and</span>
+<span class="sd">    represent the statistics for the times that `method1` completes in</span>
+<span class="sd">    fewer rounds than `method2`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_df: pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame of experimental results for the methods.</span>
+<span class="sd">    method1: str</span>
+<span class="sd">        A string representing the method of interest.</span>
+<span class="sd">    method2: str</span>
+<span class="sd">        A string representing the method being compared against.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int, float</span>
+<span class="sd">        An integer denoting the maximum improvement of `method1` over</span>
+<span class="sd">        `method2` in `results_df` and a float representing the average</span>
+<span class="sd">        improvement of `method1` over `method2`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">improvement_vals</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="n">method2</span><span class="p">]</span> <span class="o">-</span> <span class="n">results_df</span><span class="p">[</span><span class="n">method1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">improvement_vals</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+            <span class="n">improvement_vals</span><span class="p">[</span><span class="n">improvement_vals</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="compare_heuristic_results"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.compare_heuristic_results">[docs]</a><span class="k">def</span> <span class="nf">compare_heuristic_results</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">method1</span><span class="p">,</span> <span class="n">method2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compares `method1` and `method2` based on `results_df`.</span>
+
+<span class="sd">    A dictionary is created recording statistics of the comparison between</span>
+<span class="sd">    `method1` and `method2` in `results_df`. The statistics calculated</span>
+<span class="sd">    are the percent of time `method1` is less than `method2`, the</span>
+<span class="sd">    maximum improvement compared to `method2` and the average improvement</span>
+<span class="sd">    over `method2`. The same is calculated for `method2` compared to</span>
+<span class="sd">    `method1`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_df: pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame containing experimental results for the</span>
+<span class="sd">        heuristics.</span>
+<span class="sd">    heuristic1: str</span>
+<span class="sd">        A string representing the name of one of the heuristics being</span>
+<span class="sd">        compared.</span>
+<span class="sd">    heuristic2: str</span>
+<span class="sd">        A string representing the name of the other heuristic being</span>
+<span class="sd">        compared.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing the comparison statistics between the</span>
+<span class="sd">        two heuristics.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stats_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">percent_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> outperforms </span><span class="si">{1}</span><span class="s1"> percentage&#39;</span>
+    <span class="n">stats_dict</span><span class="p">[</span><span class="n">percent_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method1</span><span class="p">,</span> <span class="n">method2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">get_proportion_better</span><span class="p">(</span>
+        <span class="n">results_df</span><span class="p">,</span> <span class="n">method1</span><span class="p">,</span> <span class="n">method2</span><span class="p">)</span>
+    <span class="n">stats_dict</span><span class="p">[</span><span class="n">percent_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method2</span><span class="p">,</span> <span class="n">method1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">get_proportion_better</span><span class="p">(</span>
+        <span class="n">results_df</span><span class="p">,</span> <span class="n">method2</span><span class="p">,</span> <span class="n">method1</span><span class="p">)</span>
+    <span class="n">max_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> max round reduction over </span><span class="si">{1}</span><span class="s1">&#39;</span>
+    <span class="n">mean_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> mean round reduction over </span><span class="si">{1}</span><span class="s1">&#39;</span>
+    <span class="n">max1_over_2</span><span class="p">,</span> <span class="n">mean1_over_2</span> <span class="o">=</span> <span class="n">get_round_reduction_stats</span><span class="p">(</span>
+        <span class="n">results_df</span><span class="p">,</span> <span class="n">method1</span><span class="p">,</span> <span class="n">method2</span><span class="p">)</span>
+    <span class="n">stats_dict</span><span class="p">[</span><span class="n">max_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method1</span><span class="p">,</span> <span class="n">method2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">max1_over_2</span>
+    <span class="n">stats_dict</span><span class="p">[</span><span class="n">mean_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method1</span><span class="p">,</span> <span class="n">method2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mean1_over_2</span>
+    <span class="n">max2_over_1</span><span class="p">,</span> <span class="n">mean2_over_1</span> <span class="o">=</span> <span class="n">get_round_reduction_stats</span><span class="p">(</span>
+        <span class="n">results_df</span><span class="p">,</span> <span class="n">method2</span><span class="p">,</span> <span class="n">method1</span><span class="p">)</span>
+    <span class="n">stats_dict</span><span class="p">[</span><span class="n">max_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method2</span><span class="p">,</span> <span class="n">method1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">max2_over_1</span>
+    <span class="n">stats_dict</span><span class="p">[</span><span class="n">mean_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method2</span><span class="p">,</span> <span class="n">method1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mean2_over_1</span>
+    <span class="k">return</span> <span class="n">stats_dict</span></div>
 </pre></div>
 
            </div>

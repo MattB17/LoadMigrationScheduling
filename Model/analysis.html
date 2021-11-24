@@ -185,6 +185,70 @@ for each instance.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.compare_heuristic_results">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">compare_heuristic_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#compare_heuristic_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.compare_heuristic_results" title="Permalink to this definition"></a></dt>
+<dd><p>Compares <cite>method1</cite> and <cite>method2</cite> based on <cite>results_df</cite>.</p>
+<p>A dictionary is created recording statistics of the comparison between
+<cite>method1</cite> and <cite>method2</cite> in <cite>results_df</cite>. The statistics calculated
+are the percent of time <cite>method1</cite> is less than <cite>method2</cite>, the
+maximum improvement compared to <cite>method2</cite> and the average improvement
+over <cite>method2</cite>. The same is calculated for <cite>method2</cite> compared to
+<cite>method1</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame containing experimental results for the
+heuristics.</p>
+</dd>
+<dt><strong>heuristic1: str</strong></dt><dd><p>A string representing the name of one of the heuristics being
+compared.</p>
+</dd>
+<dt><strong>heuristic2: str</strong></dt><dd><p>A string representing the name of the other heuristic being
+compared.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary containing the comparison statistics between the
+two heuristics.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.create_simulated_instances">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">create_simulated_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#create_simulated_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.create_simulated_instances" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates instances of the sizes specified in <cite>instance_sizes</cite>.</p>
+<p>An instance is simulated for each element of <cite>instance_sizes</cite> where
+the number of migrations of the instance is equal to the corresponding
+element of <cite>instance_sizes</cite>. The instances are numbered contiguously
+starting from <cite>start_idx</cite> and written to <cite>output_dir</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_sizes: list</strong></dt><dd><p>A list of integers representing the number of migrations in each
+simulated instance.</p>
+</dd>
+<dt><strong>start_idx: int</strong></dt><dd><p>An integer denoting the instance number from which instances are
+numbered.</p>
+</dd>
+<dt><strong>output_dir: str</strong></dt><dd><p>A string specifying the directory to which the instance files will
+be written.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.get_cores_and_instances_per_core">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_cores_and_instances_per_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_cores_and_instances_per_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_cores_and_instances_per_core" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the number of cores to use and the number of instances per core.</p>
@@ -240,6 +304,34 @@ processed on <cite>core_num</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_proportion_better">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_proportion_better</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_proportion_better"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_proportion_better" title="Permalink to this definition"></a></dt>
+<dd><p>The proportion of times <cite>heuristic1</cite> outperforms <cite>heuristic2</cite>.</p>
+<p>The performance of the two heuristics is taken from <cite>results_df</cite>.
+<cite>heuristic1</cite> outperforms <cite>heuristic2</cite> if it requires fewer rounds on
+the same instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame of experimental results for the heuristics.</p>
+</dd>
+<dt><strong>heuristic1: str</strong></dt><dd><p>A string representing the heuristic of interest.</p>
+</dd>
+<dt><strong>heuristic2: str</strong></dt><dd><p>A string representing the heuristic being compared against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the proportion of times <cite>heuristic1</cite>
+outperforms <cite>heuristic2</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.get_results_for_instances">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_results_for_instances" title="Permalink to this definition"></a></dt>
 <dd><p>Gets results for all the instances specified in <cite>instance_files</cite>.</p>
@@ -263,6 +355,35 @@ included in the result string for each instance.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_round_reduction_stats">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_round_reduction_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_round_reduction_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_round_reduction_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Gets round reduction statistics of <cite>method1</cite> over <cite>method2</cite>.</p>
+<p>The round reduction statistics are calculated using <cite>results_df</cite> and
+represent the statistics for the times that <cite>method1</cite> completes in
+fewer rounds than <cite>method2</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame of experimental results for the methods.</p>
+</dd>
+<dt><strong>method1: str</strong></dt><dd><p>A string representing the method of interest.</p>
+</dd>
+<dt><strong>method2: str</strong></dt><dd><p>A string representing the method being compared against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>int, float</dt><dd><p>An integer denoting the maximum improvement of <cite>method1</cite> over
+<cite>method2</cite> in <cite>results_df</cite> and a float representing the average
+improvement of <cite>method1</cite> over <cite>method2</cite>.</p>
+</dd>
 </dl>
 </dd>
 </dl>
