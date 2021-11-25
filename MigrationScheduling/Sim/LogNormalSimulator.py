@@ -94,6 +94,7 @@ class LogNormalSimulator(Simulator):
         capacity = min(max_cap, min_cap + max(0,
             (1 - np.random.lognormal(self._mu, self._sigma)) *
             (max_cap - min_cap)))
+        return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
     def _get_qos_line(self, qos_idx):
         """Constructs the QoS line for `qos_idx`.

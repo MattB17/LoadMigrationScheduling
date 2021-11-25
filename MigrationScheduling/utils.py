@@ -314,7 +314,7 @@ def get_log_mean(mu, sigma):
         A float representing the mean for the lognormal distribution.
 
     """
-    new_mu = (2 * np.ln(mu)) - (0.5 * np.ln(sigma**2 + mu**2))
+    return (2 * np.log(mu)) - (0.5 * np.log(sigma**2 + mu**2))
 
 
 def get_log_std(mu, sigma):
@@ -339,7 +339,7 @@ def get_log_std(mu, sigma):
         distribution.
 
     """
-    return np.sqrt((-2 * np.ln(mu)) + np.ln(sigma**2 + mu**2))
+    return np.sqrt((-2 * np.log(mu)) + np.log(sigma**2 + mu**2))
 
 
 def sample_with_log_op(mu, sigma):

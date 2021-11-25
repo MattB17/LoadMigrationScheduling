@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import multiprocessing as mp
 from timeit import default_timer as timer
-from MigrationScheduling.Sim import GaussianSimulator
 from MigrationScheduling.Model import Optimizer
 from MigrationScheduling import algorithms, specs, utils
 
@@ -317,17 +316,25 @@ def get_sim_tuples_for_core(instance_sizes, sims_per_core,
     return [(start_idx + i, instance_sizes[i]) for i in range(start, end)]
 
 
-def simulate_instance(instance_idx, instance_size, output_dir):
-    """Simulates `instance_idx` having `instance_size` migrations.
+def simulate_instance(sim_cls, sim_args, instance_idx, size, output_dir):
+    """Simulates `instance_idx` having `size` migrations with `sim_cls`.
 
-    An instance is simulated and written to `output_dir`. The instance number
-    is `instance_idx` and it has `instance_size` migrations.
+    An instance is simulated using `sim_cls` with `sim_args` as arguments
+    and the result is written to `output_dir`. The instance number is
+    `instance_idx` and it has `size` migrations.
 
     Parameters
     ----------
+    sim_cls: Simulator.class
+        A `Simulator` class object specifying the type of simulation being
+        performed.
+    sim_args: dict
+        A dictionary specifying arguments for `sim_cls`. The keys are
+        strings specifying the argument names and the corresponding value
+        is the argument value to be passed to `sim_cls`
     instance_idx: int
         An integer representing the index of the instance being simulated.
-    instance_size: int
+    size: int
         An integer representing the number of migrations in the simulated
         instance.
     output_dir: str
@@ -341,15 +348,24 @@ def simulate_instance(instance_idx, instance_size, output_dir):
     """
     output_file = os.path.join(
         output_dir, "migrations{}.txt".format(instance_idx))
-    simulator = GaussianSimulator()
-    simulator.run(instance_size, output_file)
+    simulator = sim_cls(**sim_args)
+    simulator.run(size, output_file)
 
 
-def simulate_all_instances(sim_tuples, output_dir):
+def simulate_all_instances(sim_cls, sim_args, sim_tuples, output_dir):
     """An instance is simulated for each instance specified in `sim_tuples`.
+
+    The simulation is done using `sim_cls` with arguments `sim_args`.
 
     Parameters
     ----------
+    sim_cls: Simulator.class
+        A `Simulator` class object specifying the type of simulation being
+        performed.
+    sim_args: dict
+        A dictionary specifying arguments for `sim_cls`. The keys are
+        strings specifying the argument names and the corresponding value
+        is the argument value to be passed to `sim_cls`
     sim_tuples: list
         A list of two element tuples specifying the parameters of each
         instance to be simulated. Both elements of each tuples are integers
@@ -363,19 +379,29 @@ def simulate_all_instances(sim_tuples, output_dir):
 
     """
     for sim_tuple in sim_tuples:
-        simulate_instance(sim_tuple[0], sim_tuple[1], output_dir)
+        simulate_instance(
+            sim_cls, sim_args, sim_tuple[0], sim_tuple[1], output_dir)
 
 
-def create_simulated_instances(instance_sizes, start_idx, output_dir):
+def create_simulated_instances(sim_cls, sim_args,
+                               instance_sizes, start_idx, output_dir):
     """Simulates instances of the sizes specified in `instance_sizes`.
 
     An instance is simulated for each element of `instance_sizes` where
     the number of migrations of the instance is equal to the corresponding
     element of `instance_sizes`. The instances are numbered contiguously
-    starting from `start_idx` and written to `output_dir`.
+    starting from `start_idx` and written to `output_dir`. The simulation
+    is performed by `sim_cls`.
 
     Parameters
     ----------
+    sim_cls: Simulator.class
+        A `Simulator` class object specifying the type of simulation being
+        performed.
+    sim_args: dict
+        A dictionary specifying arguments for `sim_cls`. The keys are
+        strings specifying the argument names and the corresponding value
+        is the argument value to be passed to `sim_cls`
     instance_sizes: list
         A list of integers representing the number of migrations in each
         simulated instance.
@@ -397,8 +423,9 @@ def create_simulated_instances(instance_sizes, start_idx, output_dir):
     for core_num in range(cores):
         sim_tuples = get_sim_tuples_for_core(
             instance_sizes, sims_per_core, core_num, start_idx)
-        procs.append(mp.Process(target=simulate_all_instances,
-                                args=(sim_tuples, output_dir)))
+        procs.append(mp.Process(
+            target=simulate_all_instances,
+            args=(sim_cls, sim_args, sim_tuples, output_dir)))
     initialize_and_join_processes(procs)
 
 
