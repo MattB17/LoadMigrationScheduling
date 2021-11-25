@@ -47,7 +47,7 @@ class LogNormalSimulator(Simulator):
     def __init__(self, mu, sigma):
         self._mu = utils.get_log_mean(mu, sigma)
         self._sigma = utils.get_log_std(mu, sigma)
-        super.__init__()
+        super().__init__()
 
     def _setup_migration(self, migration_idx):
         """Setups a migration for `migration_idx`.
@@ -90,9 +90,7 @@ class LogNormalSimulator(Simulator):
             A string representing the controller line.
 
         """
-        min_cap = self._controllers[controller_idx][1]
-        max_cap = (self._controllers[controller_idx][0] *
-                   self._controllers[controller_idx][1])
+        min_cap, max_cap = self._get_controller_cap_bounds(controller_idx)
         capacity = min(max_cap, min_cap + max(0,
             (1 - np.random.lognormal(self._mu, self._sigma)) *
             (max_cap - min_cap)))

@@ -19,11 +19,12 @@ class Simulator(ABC):
     _num_migrations: int
         An integer representing the number of migrations.
     _controllers: list
-        A list of two element tuples specifying the simulated controllers.
+        A list of three element tuples specifying the simulated controllers.
         The first element is an integer representing the number of migrations
-        with this controller as destination and the second is a float
+        with this controller as destination, the second is a float
         representing the maximum load incurred for a migration to this
-        controller.
+        controller and the third is a float representing the sum of load
+        incurred for a migration to this controller.
     _num_controllers: int
         An integer representing the number of controllers.
     _qos_groups: list
@@ -82,7 +83,8 @@ class Simulator(ABC):
         """
         self._num_controllers = max(
             1, int(np.random.normal(0.3, 0.1) * num_migrations))
-        self._controllers = [[0, 0.0] for _ in range(self._num_controllers)]
+        self._controllers = [[0, 0.0, 0.0]
+                             for _ in range(self._num_controllers)]
 
         self._num_qos_groups = max(
             0, int(np.random.normal(0.7, 0.1) * num_migrations))
@@ -138,6 +140,7 @@ class Simulator(ABC):
         dst = random.randint(1, self._num_controllers) - 1
         self._controllers[dst][0] += 1
         self._controllers[dst][1] = max(load, self._controllers[dst][1])
+        self._controllers[dst][2] += load
         return dst
 
     def _create_migration(self, migration_idx):
@@ -162,6 +165,29 @@ class Simulator(ABC):
         for group in self._assign_migration_to_qos_groups(migration):
             migration.add_qos_group(group)
         return migration
+
+    def _get_controller_cap_bounds(self, controller_idx):
+        """Gets capacity bounds for controller `controller_idx`.
+
+        The lower bound on the capacity is the maximum load of a migration
+        destined to the controller and the upper bound is the sum of the
+        loads of the migrations destined to the controller.
+
+        Parameters
+        ----------
+        controller_idx: int
+            An integer representing the index for the controller.
+
+        Returns
+        -------
+        float, float
+            Two floats representing the lower bound and upper bound on the
+            controller capacity, respectively.
+
+        """
+        lb = self._controllers[controller_idx][1]
+        ub = self._controllers[controller_idx][2]
+        return lb, ub
 
     def _get_migration_line(self, migration):
         """Construct the migration line for `migration` for the output file.

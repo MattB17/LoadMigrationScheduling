@@ -46,7 +46,7 @@ class GaussianSimulator(Simulator):
     """
     def __init__(self, bottleneck_type="low"):
         self._bottleneck_type = bottleneck_type
-        super.__init__()
+        super().__init__()
 
     def _setup_migration(self, migration_idx):
         """Setups a migration for `migration_idx`.
@@ -89,9 +89,7 @@ class GaussianSimulator(Simulator):
             A string representing the controller line.
 
         """
-        min_cap = self._controllers[controller_idx][1]
-        max_cap = (self._controllers[controller_idx][0] *
-                   self._controllers[controller_idx][1])
+        min_cap, max_cap = self._get_controller_cap_bounds(controller_idx)
         capacity = utils.generate_controller_capacity(
             min_cap, max_cap, self._bottleneck_type)
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
