@@ -7,6 +7,7 @@ Welcome to Load Migration Scheduling's documentation!
    :maxdepth: 2
 
    Data/data
+   Sim/simulation
    Model/model
    analysis
    plotting
