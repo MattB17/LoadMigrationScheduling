@@ -221,15 +221,23 @@ two heuristics.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.create_simulated_instances">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">create_simulated_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#create_simulated_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.create_simulated_instances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">create_simulated_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#create_simulated_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.create_simulated_instances" title="Permalink to this definition"></a></dt>
 <dd><p>Simulates instances of the sizes specified in <cite>instance_sizes</cite>.</p>
 <p>An instance is simulated for each element of <cite>instance_sizes</cite> where
 the number of migrations of the instance is equal to the corresponding
 element of <cite>instance_sizes</cite>. The instances are numbered contiguously
-starting from <cite>start_idx</cite> and written to <cite>output_dir</cite>.</p>
+starting from <cite>start_idx</cite> and written to <cite>output_dir</cite>. The simulation
+is performed by <cite>sim_cls</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>sim_cls: Simulator.class</strong></dt><dd><p>A <cite>Simulator</cite> class object specifying the type of simulation being
+performed.</p>
+</dd>
+<dt><strong>sim_args: dict</strong></dt><dd><p>A dictionary specifying arguments for <cite>sim_cls</cite>. The keys are
+strings specifying the argument names and the corresponding value
+is the argument value to be passed to <cite>sim_cls</cite></p>
+</dd>
 <dt><strong>instance_sizes: list</strong></dt><dd><p>A list of integers representing the number of migrations in each
 simulated instance.</p>
 </dd>
@@ -504,11 +512,19 @@ will be sorted.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.simulate_all_instances">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">simulate_all_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_tuples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#simulate_all_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.simulate_all_instances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">simulate_all_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_tuples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#simulate_all_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.simulate_all_instances" title="Permalink to this definition"></a></dt>
 <dd><p>An instance is simulated for each instance specified in <cite>sim_tuples</cite>.</p>
+<p>The simulation is done using <cite>sim_cls</cite> with arguments <cite>sim_args</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>sim_cls: Simulator.class</strong></dt><dd><p>A <cite>Simulator</cite> class object specifying the type of simulation being
+performed.</p>
+</dd>
+<dt><strong>sim_args: dict</strong></dt><dd><p>A dictionary specifying arguments for <cite>sim_cls</cite>. The keys are
+strings specifying the argument names and the corresponding value
+is the argument value to be passed to <cite>sim_cls</cite></p>
+</dd>
 <dt><strong>sim_tuples: list</strong></dt><dd><p>A list of two element tuples specifying the parameters of each
 instance to be simulated. Both elements of each tuples are integers
 specifying the index of the instance and the number of migrations.</p>
@@ -527,16 +543,24 @@ specifying the index of the instance and the number of migrations.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.simulate_instance">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">simulate_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#simulate_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.simulate_instance" title="Permalink to this definition"></a></dt>
-<dd><p>Simulates <cite>instance_idx</cite> having <cite>instance_size</cite> migrations.</p>
-<p>An instance is simulated and written to <cite>output_dir</cite>. The instance number
-is <cite>instance_idx</cite> and it has <cite>instance_size</cite> migrations.</p>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">simulate_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#simulate_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.simulate_instance" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates <cite>instance_idx</cite> having <cite>size</cite> migrations with <cite>sim_cls</cite>.</p>
+<p>An instance is simulated using <cite>sim_cls</cite> with <cite>sim_args</cite> as arguments
+and the result is written to <cite>output_dir</cite>. The instance number is
+<cite>instance_idx</cite> and it has <cite>size</cite> migrations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>sim_cls: Simulator.class</strong></dt><dd><p>A <cite>Simulator</cite> class object specifying the type of simulation being
+performed.</p>
+</dd>
+<dt><strong>sim_args: dict</strong></dt><dd><p>A dictionary specifying arguments for <cite>sim_cls</cite>. The keys are
+strings specifying the argument names and the corresponding value
+is the argument value to be passed to <cite>sim_cls</cite></p>
+</dd>
 <dt><strong>instance_idx: int</strong></dt><dd><p>An integer representing the index of the instance being simulated.</p>
 </dd>
-<dt><strong>instance_size: int</strong></dt><dd><p>An integer representing the number of migrations in the simulated
+<dt><strong>size: int</strong></dt><dd><p>An integer representing the number of migrations in the simulated
 instance.</p>
 </dd>
 <dt><strong>output_dir: str</strong></dt><dd><p>A string identifying the directory to which the instance file will be
