@@ -39,6 +39,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Sim/simulation.html">Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms.html">Scheduling Algorithms</a></li>
@@ -331,6 +332,57 @@ controller.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_log_mean">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_log_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_log_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_log_mean" title="Permalink to this definition"></a></dt>
+<dd><p>The mean for the lognormal distribution based on <cite>mu</cite> and <cite>sigma</cite>.</p>
+<p>The mean is calculated using the formula:</p>
+<p><cite>2*ln(mu) - 0.5*ln(sigma^2 + mu^2)</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mu: float</strong></dt><dd><p>A float representing the mean of the underlying normal distribution.</p>
+</dd>
+<dt><strong>sigma: float</strong></dt><dd><p>A float representing the standard deviation of the underlying normal
+distribution.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the mean for the lognormal distribution.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_log_std">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_log_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_log_std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_log_std" title="Permalink to this definition"></a></dt>
+<dd><p>The lognormal standard deviation based on <cite>mu</cite> and <cite>sigma</cite>.</p>
+<p>The standard deviation is calculated using the formula:</p>
+<p><cite>sqrt(-2*ln(mu) + ln(sigma^2 + mu^2))</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mu: float</strong></dt><dd><p>A float representing the mean of the underlying normal distribution.</p>
+</dd>
+<dt><strong>sigma: float</strong></dt><dd><p>A float representing the standard deviation of the underlying normal
+distribution.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the standard deviation for the lognormal
+distribution.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_qos_constraint_dicts">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_qos_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qos_consts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_qos_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_qos_constraint_dicts" title="Permalink to this definition"></a></dt>
 <dd><p>The constraint dictionaries for the constraints in <cite>qos_consts</cite>.</p>
@@ -418,6 +470,36 @@ indicating results for the optimal solution are added to the header.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.sample_with_log_op">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">sample_with_log_op</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#sample_with_log_op"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.sample_with_log_op" title="Permalink to this definition"></a></dt>
+<dd><p>Samples from a lognormal distribution according to <cite>mu</cite> and <cite>sigma</cite>.</p>
+<p>The sample is taken from a lognormal distribution where the mean and
+standard deviation are calculated from <cite>mu</cite> and <cite>sigma</cite> when converting
+from a normal distribution to a log normal distribution. Specifically,
+the mean becomes:</p>
+<p><cite>2*ln(mu) - 0.5*ln(sigma^2 + mu^2)</cite></p>
+<p>and the standard deviation is given by:</p>
+<p><cite>sqrt(-2*ln(mu) + ln(sigma^2 + mu^2))</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mu: float</strong></dt><dd><p>The desired mean of the distribution.</p>
+</dd>
+<dt><strong>sigma: float</strong></dt><dd><p>The desired standard deviation of the distribution.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing a value sampled from the appropriate lognormal
+distribution.</p>
+</dd>
 </dl>
 </dd>
 </dl>

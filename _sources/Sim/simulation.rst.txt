@@ -8,3 +8,4 @@ Simulation
 
    simulator
    gaussian
+   lognormal
