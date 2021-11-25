@@ -261,7 +261,7 @@ def generate_controller_capacity(min_cap, max_cap, bottleneck_type):
     if bottleneck_type == "low":
         cap_mean = 0.5
     return min(max_cap, min_cap + max(0,
-        np.random.normal(cap_mean, 0.3, 1)[0] * (max_cap - min_cap)))
+        np.random.normal(cap_mean, 0.3) * (max_cap - min_cap)))
 
 
 def generate_qos_capacity(group_size, bottleneck_type):
@@ -290,7 +290,89 @@ def generate_qos_capacity(group_size, bottleneck_type):
     if bottleneck_type == "low":
         cap_mean = 0.5
     return int(min(group_size, max(1.0,
-        np.random.normal(cap_mean, 0.3, 1)[0] * group_size)))
+        np.random.normal(cap_mean, 0.3) * group_size)))
+
+
+def get_log_mean(mu, sigma):
+    """The mean for the lognormal distribution based on `mu` and `sigma`.
+
+    The mean is calculated using the formula:
+
+    `2*ln(mu) - 0.5*ln(sigma^2 + mu^2)`
+
+    Parameters
+    ----------
+    mu: float
+        A float representing the mean of the underlying normal distribution.
+    sigma: float
+        A float representing the standard deviation of the underlying normal
+        distribution.
+
+    Returns
+    -------
+    float
+        A float representing the mean for the lognormal distribution.
+
+    """
+    new_mu = (2 * np.ln(mu)) - (0.5 * np.ln(sigma**2 + mu**2))
+
+
+def get_log_std(mu, sigma):
+    """The lognormal standard deviation based on `mu` and `sigma`.
+
+    The standard deviation is calculated using the formula:
+
+    `sqrt(-2*ln(mu) + ln(sigma^2 + mu^2))`
+
+    Parameters
+    ----------
+    mu: float
+        A float representing the mean of the underlying normal distribution.
+    sigma: float
+        A float representing the standard deviation of the underlying normal
+        distribution.
+
+    Returns
+    -------
+    float
+        A float representing the standard deviation for the lognormal
+        distribution.
+
+    """
+    return np.sqrt((-2 * np.ln(mu)) + np.ln(sigma**2 + mu**2))
+
+
+def sample_with_log_op(mu, sigma):
+    """Samples from a lognormal distribution according to `mu` and `sigma`.
+
+    The sample is taken from a lognormal distribution where the mean and
+    standard deviation are calculated from `mu` and `sigma` when converting
+    from a normal distribution to a log normal distribution. Specifically,
+    the mean becomes:
+
+    `2*ln(mu) - 0.5*ln(sigma^2 + mu^2)`
+
+    and the standard deviation is given by:
+
+    `sqrt(-2*ln(mu) + ln(sigma^2 + mu^2))`
+
+    Parameters
+    ----------
+    mu: float
+        The desired mean of the distribution.
+    sigma: float
+        The desired standard deviation of the distribution.
+
+    Returns
+    -------
+    float
+        A float representing a value sampled from the appropriate lognormal
+        distribution.
+
+    """
+    new_mu = get_log_mean(mu, sigma)
+    new_sigma = get_log_std(mu, sigma)
+    return np.random.lognormal(new_mu, new_sigma)
 
 
 def get_all_files_by_pattern(file_dir, file_pattern):

@@ -81,11 +81,11 @@ class Simulator(ABC):
 
         """
         self._num_controllers = max(
-            1, int(np.random.normal(0.3, 0.1, 1)[0] * num_migrations))
+            1, int(np.random.normal(0.3, 0.1) * num_migrations))
         self._controllers = [[0, 0.0] for _ in range(self._num_controllers)]
 
         self._num_qos_groups = max(
-            0, int(np.random.normal(0.7, 0.1, 1)[0] * num_migrations))
+            0, int(np.random.normal(0.7, 0.1) * num_migrations))
         self._qos_groups = [0 for _ in range(self._num_qos_groups)]
 
     def _assign_migration_to_qos_groups(self, migration):
@@ -109,12 +109,36 @@ class Simulator(ABC):
         """
         groups = set()
         num_groups = min(self._num_qos_groups, max(0,
-            int(np.random.normal(0.3, 0.4, 1)[0] * self._num_qos_groups)))
+            int(np.random.normal(0.3, 0.4) * self._num_qos_groups)))
         group_ids = random.sample(range(self._num_qos_groups), num_groups)
         for group_id in group_ids:
             groups.add("g{}".format(group_id))
             self._qos_groups[group_id] += 1
         return groups
+
+    def _assign_to_controller(self, load):
+        """Picks a destination controller for a migration with load of `load`.
+
+        A destination controller is chosen uniformly at random from the set
+        of destination controllers.
+
+        Parameters
+        ----------
+        load: float
+            A float representing the load of a migration being assigned to a
+            controller.
+
+        Returns
+        -------
+        int
+            An integer representing the index of the controller to which
+            the migration was assigned.
+
+        """
+        dst = random.randint(1, self._num_controllers) - 1
+        self._controllers[dst][0] += 1
+        self._controllers[dst][1] = max(load, self._controllers[dst][1])
+        return dst
 
     def _create_migration(self, migration_idx):
         """Simulates a new migration.

@@ -1,30 +1,30 @@
-"""The GaussianSimulator class is used to simulate load migration
-scheduling instances using the Gaussian distribution.
+"""The LogNormalSimulator class is used to simulate load migration
+scheduling instances using the LogNormal distribution.
 
 """
-import random
 import numpy as np
 from MigrationScheduling import utils
 from MigrationScheduling.Data import Migration
 from MigrationScheduling.Sim.Simulator import Simulator
 
-class GaussianSimulator(Simulator):
+
+class LogNormalSimulator(Simulator):
     """Used to simulate a load migration scheduling instance.
 
     Parameters
     ----------
-    bottleneck_type: str
-        A string representing the bottleneck setting used to generate the
-        capacities for the constraints in the simulated instance. Accepted
-        values are 'high', 'medium', and 'low'. The capacity of the
-        constraints are then calculated using this setting and the individual
-        load on the constraint.
+    mu: float
+        A float representing the underlying mean for the normal distribution.
+    sigma: float
+        A float representing the underlying standard deviation for the normal
+        distribution.
 
     Attributes
     ----------
-    _bottleneck_type: str
-        Represents the bottleneck setting used to generate the capacity of
-        constraints for the simulated instance.
+    _mu: float
+        The underlying mean for the normal distribution.
+    _sigma: float
+        The underlying standard deviation for the normal distribution.
     _migrations: list
         A list of `Migration` objects specifying the simulated migrations.
     _num_migrations: int
@@ -44,8 +44,9 @@ class GaussianSimulator(Simulator):
         An integer representing the number of QoS groups.
 
     """
-    def __init__(self, bottleneck_type="low"):
-        self._bottleneck_type = bottleneck_type
+    def __init__(self, mu, sigma):
+        self._mu = utils.get_log_mean(mu, sigma)
+        self._sigma = utils.get_log_std(mu, sigma)
         super.__init__()
 
     def _setup_migration(self, migration_idx):
@@ -65,12 +66,12 @@ class GaussianSimulator(Simulator):
             A created `Migration` object.
 
         """
-        load = max(1.00, round(np.random.normal(10, 5), 2))
+        load = max(1.00, round(utils.sample_with_log_op(10, 5), 2))
         dst = self._assign_to_controller(load)
         return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
 
     def _get_controller_line(self, controller_idx):
-        """Constructs that controller line for `controller_idx`.
+        """Constructs the controller line for `controller_idx`.
 
         The controller line for `controller_idx` consists of the name of the
         controller and its capacity. This capacity is the amount of load the
@@ -92,9 +93,9 @@ class GaussianSimulator(Simulator):
         min_cap = self._controllers[controller_idx][1]
         max_cap = (self._controllers[controller_idx][0] *
                    self._controllers[controller_idx][1])
-        capacity = utils.generate_controller_capacity(
-            min_cap, max_cap, self._bottleneck_type)
-        return "c{0} {1:.2f}\n".format(controller_idx, capacity)
+        capacity = min(max_cap, min_cap + max(0,
+            (1 - np.random.lognormal(self._mu, self._sigma)) *
+            (max_cap - min_cap)))
 
     def _get_qos_line(self, qos_idx):
         """Constructs the QoS line for `qos_idx`.
@@ -116,6 +117,8 @@ class GaussianSimulator(Simulator):
             A string representing the QoS line.
 
         """
-        capacity = utils.generate_qos_capacity(
-            self._qos_groups[qos_idx], self._bottleneck_type)
+        group_size = self._qos_groups[qos_idx]
+        capacity = int(min(group_size, 1.00 + max(0.00,
+            (1 - np.random.lognormal(self._mu, self._sigma)) *
+            (group_size - 1))))
         return "g{0} {1}\n".format(qos_idx, capacity)
