@@ -119,7 +119,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_log_mean</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_log_std</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
-        <span class="nb">super</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_setup_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Setups a migration for `migration_idx`.</span>
@@ -162,9 +162,7 @@
 <span class="sd">            A string representing the controller line.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">min_cap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">max_cap</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">min_cap</span><span class="p">,</span> <span class="n">max_cap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_controller_cap_bounds</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">)</span>
         <span class="n">capacity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_cap</span><span class="p">,</span> <span class="n">min_cap</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
             <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="p">))</span> <span class="o">*</span>
             <span class="p">(</span><span class="n">max_cap</span> <span class="o">-</span> <span class="n">min_cap</span><span class="p">)))</span>

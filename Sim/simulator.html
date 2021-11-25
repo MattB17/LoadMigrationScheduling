@@ -94,11 +94,12 @@ distributions.</p>
 </dd>
 <dt><strong>_num_migrations: int</strong></dt><dd><p>An integer representing the number of migrations.</p>
 </dd>
-<dt><strong>_controllers: list</strong></dt><dd><p>A list of two element tuples specifying the simulated controllers.
+<dt><strong>_controllers: list</strong></dt><dd><p>A list of three element tuples specifying the simulated controllers.
 The first element is an integer representing the number of migrations
-with this controller as destination and the second is a float
+with this controller as destination, the second is a float
 representing the maximum load incurred for a migration to this
-controller.</p>
+controller and the third is a float representing the sum of load
+incurred for a migration to this controller.</p>
 </dd>
 <dt><strong>_num_controllers: int</strong></dt><dd><p>An integer representing the number of controllers.</p>
 </dd>

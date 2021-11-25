@@ -118,7 +118,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bottleneck_type</span><span class="o">=</span><span class="s2">&quot;low&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bottleneck_type</span> <span class="o">=</span> <span class="n">bottleneck_type</span>
-        <span class="nb">super</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_setup_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Setups a migration for `migration_idx`.</span>
@@ -161,9 +161,7 @@
 <span class="sd">            A string representing the controller line.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">min_cap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">max_cap</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">min_cap</span><span class="p">,</span> <span class="n">max_cap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_controller_cap_bounds</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">)</span>
         <span class="n">capacity</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_controller_capacity</span><span class="p">(</span>
             <span class="n">min_cap</span><span class="p">,</span> <span class="n">max_cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bottleneck_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;c</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1:.2f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
