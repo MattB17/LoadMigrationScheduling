@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import multiprocessing as mp
 from timeit import default_timer as timer
-from MigrationScheduling.Data import Simulator
+from MigrationScheduling.Sim import GaussianSimulator
 from MigrationScheduling.Model import Optimizer
 from MigrationScheduling import algorithms, specs, utils
 
@@ -341,7 +341,7 @@ def simulate_instance(instance_idx, instance_size, output_dir):
     """
     output_file = os.path.join(
         output_dir, "migrations{}.txt".format(instance_idx))
-    simulator = Simulator()
+    simulator = GaussianSimulator()
     simulator.run(instance_size, output_file)
 
 

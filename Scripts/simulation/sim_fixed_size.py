@@ -6,7 +6,7 @@ import sys
 import random
 import numpy as np
 from MigrationScheduling import specs, utils, validation
-from MigrationScheduling.Data import Simulator
+from MigrationScheduling.Sim import GaussianSimulator
 
 uitls.initialize_seeds(specs.SEED_NUM)
 
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     validation.validate_bottleneck_setting(bottleneck_setting)
 
-    simulator = Simulator()
+    simulator = GaussianSimulator()
     curr_idx_small = specs.SMALL_IDX
     curr_idx_large = specs.LARGE_IDX
     for num_migrations in NUM_MIGRATIONS_LIST:

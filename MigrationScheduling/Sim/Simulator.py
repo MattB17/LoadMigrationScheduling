@@ -1,29 +1,19 @@
 """The Simulator class is used to simulate load migration scheduling
-instances.
+instances. It serves as the base class to simulators using specific
+distributions.
 
 """
 import random
 import numpy as np
-from MigrationScheduling import utils
-from MigrationScheduling.Data import Migration
+from abc import ABC, abstractmethod
 
-class Simulator:
-    """Used to simulate a load migration scheduling instance.
 
-    Parameters
-    ----------
-    bottleneck_type: str
-        A string representing the bottleneck setting used to generate the
-        capacities for the constraints in the simulated instance. Accepted
-        values are 'high', 'medium', and 'low'. The capacity of the
-        constraints are then calculated using this setting and the individual
-        load on the constraint.
+
+class Simulator(ABC):
+    """Used to simulate a loda migration scheduling instance.
 
     Attributes
     ----------
-    _bottleneck_type: str
-        Represents the bottleneck setting used to generate the capacity of
-        constraints for the simulated instance.
     _migrations: list
         A list of `Migration` objects specifying the simulated migrations.
     _num_migrations: int
@@ -43,8 +33,7 @@ class Simulator:
         An integer representing the number of QoS groups.
 
     """
-    def __init__(self, bottleneck_type="low"):
-        self._bottleneck_type = bottleneck_type
+    def __init__(self):
         self._migrations = []
         self._num_migrations = 0
         self._controllers = []
@@ -74,7 +63,6 @@ class Simulator:
                             for migration_idx in range(self._num_migrations)]
         self._output_simulated_instance(output_file)
 
-
     def _initialize(self, num_migrations):
         """Initializes the simulator.
 
@@ -92,43 +80,20 @@ class Simulator:
         None
 
         """
-        self._num_controllers = max(1, int(
-            np.random.normal(0.3, 0.1, 1)[0] * num_migrations))
+        self._num_controllers = max(
+            1, int(np.random.normal(0.3, 0.1, 1)[0] * num_migrations))
         self._controllers = [[0, 0.0] for _ in range(self._num_controllers)]
 
-        self._num_qos_groups = max(0, int(
-            np.random.normal(0.7, 0.1, 1)[0] * num_migrations))
+        self._num_qos_groups = max(
+            0, int(np.random.normal(0.7, 0.1, 1)[0] * num_migrations))
         self._qos_groups = [0 for _ in range(self._num_qos_groups)]
-
-    def _setup_migration(self, migration_idx):
-        """Setups a migration for `migration_idx`.
-
-        The setup involves simulating a load for the migration and choosing
-        a random destination controller.
-
-        Parameters
-        ----------
-        migration_idx: int
-            An integer representing the index of the migration being set up.
-
-        Returns
-        -------
-        Migration
-            A created `Migration` object.
-
-        """
-        load = max(1.00, round(np.random.normal(10, 5, 1)[0], 2))
-        dst = random.randint(1, self._num_controllers) - 1
-        self._controllers[dst][0] += 1
-        self._controllers[dst][1] = max(load, self._controllers[dst][1])
-        return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
 
     def _assign_migration_to_qos_groups(self, migration):
         """Simulates the assignment of `migration` to QoS groups.
 
         The simulator samples a random number x of QoS groups to which the
-        migration will be assigned and then the x groups are chosen from the
-        set of all groups uniformly at random.
+        migration will be assigned and then the x groups are chosen the set
+        of all groups uniformly at random.
 
         Parameters
         ----------
@@ -175,10 +140,10 @@ class Simulator:
         return migration
 
     def _get_migration_line(self, migration):
-        """Constructs the migration line for `migration`.
+        """Construct the migration line for `migration` for the output file.
 
         The migration line for `migration` consists of the name of the
-        switch and the name of the destination controller of the migration.
+        switch and the name of the destination controller for the migration.
         This is followed by the load incurred on the controller during the
         migration and the set of QoS groups. All arguments are space
         separated.
@@ -199,57 +164,6 @@ class Simulator:
             migration.get_switch(), migration.get_dst_controller(),
             migration.get_load(), " ".join(migration.get_groups()))
 
-    def _get_controller_line(self, controller_idx):
-        """Constructs that controller line for `controller_idx`.
-
-        The controller line for `controller_idx` consists of the name of the
-        controller and its capacity. This capacity is the amount of load the
-        controller can accomodate from migrations in a single round. All
-        arguments are space separated.
-
-        Parameters
-        ----------
-        controller_idx: int
-            An integer representing the index of the controller for which
-            the line is generated.
-
-        Returns
-        -------
-        str
-            A string representing the controller line.
-
-        """
-        min_cap = self._controllers[controller_idx][1]
-        max_cap = (self._controllers[controller_idx][0] *
-                   self._controllers[controller_idx][1])
-        capacity = utils.generate_controller_capacity(
-            min_cap, max_cap, self._bottleneck_type)
-        return "c{0} {1:.2f}\n".format(controller_idx, capacity)
-
-    def _get_qos_line(self, qos_idx):
-        """Constructs the QoS line for `qos_idx`.
-
-        The QoS line for `qos_idx` consists of the name of the QoS
-        group and its capacity.This capacity is the maximum amount of
-        migrations within this group that can be completed in a single round.
-        All arguments are space separated.
-
-        Parameters
-        ----------
-        qos_idx: int
-            An integer representing the index of the QoS group for which the
-            line is generated.
-
-        Returns
-        -------
-        str
-            A string representing the QoS line.
-
-        """
-        capacity = utils.generate_qos_capacity(
-            self._qos_groups[qos_idx], self._bottleneck_type)
-        return "g{0} {1}\n".format(qos_idx, capacity)
-
     def _output_simulated_instance(self, output_file):
         """Outputs the simulated load migration scheduling instance.
 
@@ -267,7 +181,7 @@ class Simulator:
         None
 
         """
-        with open(output_file, 'w') as migration_file:
+        with open(output_file, "w") as migration_file:
             for migration in self._migrations:
                 migration_file.write(self._get_migration_line(migration))
             for controller_idx in range(self._num_controllers):
@@ -277,3 +191,69 @@ class Simulator:
             for qos_idx in range(self._num_qos_groups):
                 if self._qos_groups[qos_idx] > 0:
                     migration_file.write(self._get_qos_line(qos_idx))
+
+    @abstractmethod
+    def _setup_migration(self, migration_idx):
+        """Sets up a migration for `migration_idx`.
+
+        The setup involves simulating a load for the migration and choosing
+        a random destination controller.
+
+        Parameters
+        ----------
+        migration_idx: int
+            An integer representing the index of the migration being set up.
+
+        Returns
+        -------
+        Migration
+            The created `Migration` object.
+
+        """
+        pass
+
+    @abstractmethod
+    def _get_controller_line(self, controller_idx):
+        """Constructs the controller line for `controller_idx`.
+
+        The controller line for `controller_idx` consists of the name of
+        the controller and its capacity. This capacity is the amount of load
+        the controller can accommodate from migrations in a single round. All
+        arguments are space separated.
+
+        Parameters
+        ----------
+        controller_idx: int
+            An integer representing the index of the controller for which
+            the line is generated.
+
+        Returns
+        -------
+        str
+            A string representing the controller line.
+
+        """
+        pass
+
+    @abstractmethod
+    def _get_qos_line(self, qos_idx):
+        """Constructs the QoS line for `qos_idx`.
+
+        The QoS line for `qos_idx` consists of the name of the QoS group and
+        its capacity. This capacity is the maximum amount of migrations
+        within this group that can be completed in a single round. All
+        arguments are space separated.
+
+        Parameters
+        ----------
+        qos_idx: int
+            An integer representing the index of the QoS group for which the
+            line is generated.
+
+        Returns
+        -------
+        str
+            A string representing the QoS line.
+
+        """
+        pass
