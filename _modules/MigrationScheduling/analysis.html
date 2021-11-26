@@ -252,8 +252,7 @@
     <span class="k">return</span> <span class="n">results_str</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
 
-<div class="viewcode-block" id="get_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">get_results_for_instances</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">instance_files</span><span class="p">,</span>
-                              <span class="n">input_dir</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">):</span>
+<div class="viewcode-block" id="get_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">get_results_for_instances</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">instance_files</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Gets results for all the instances specified in `instance_files`.</span>
 
 <span class="sd">    For each instance in `instance_files` the result string is computed and</span>
@@ -268,9 +267,6 @@
 <span class="sd">        instances to be analyzed.</span>
 <span class="sd">    input_dir: str</span>
 <span class="sd">        A string specifying the directory from which the instances are read.</span>
-<span class="sd">    run_optimizer: bool</span>
-<span class="sd">        A boolean value indicating whether the ILP model will be solved and</span>
-<span class="sd">        included in the result string for each instance.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -279,9 +275,75 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">instance_file</span> <span class="ow">in</span> <span class="n">instance_files</span><span class="p">:</span>
         <span class="n">results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">build_results_string</span><span class="p">(</span>
-            <span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">))</span></div>
+            <span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_file</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="write_results_to_file"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.write_results_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_results_to_file</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">):</span>
+<div class="viewcode-block" id="write_optimal_results"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.write_optimal_results">[docs]</a><span class="k">def</span> <span class="nf">write_optimal_results</span><span class="p">(</span><span class="n">instance_file</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">,</span> <span class="n">result_idx</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Writes the results of solving `instance_file` optimally.</span>
+
+<span class="sd">    The instance specified in `instance_file` is solved optimally and with</span>
+<span class="sd">    the heuristic algorithms and the results are written to `output_dir`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_file: str</span>
+<span class="sd">        A string specifying the name of a file containing the instance to</span>
+<span class="sd">        be solved.</span>
+<span class="sd">    input_dir: str</span>
+<span class="sd">        A string specifying the name of the directory from which the instance</span>
+<span class="sd">        file is read.</span>
+<span class="sd">    result_idx: int</span>
+<span class="sd">        An integer identifying the result file to be created for the instance.</span>
+<span class="sd">    output_dir: str</span>
+<span class="sd">        A string identifying the directory to which the results will be</span>
+<span class="sd">        written.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;results</span><span class="si">{}</span><span class="s2">.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result_idx</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">results_file</span><span class="p">:</span>
+        <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_results_header</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">build_results_string</span><span class="p">(</span>
+            <span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_file</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="solve_instances_optimally"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.solve_instances_optimally">[docs]</a><span class="k">def</span> <span class="nf">solve_instances_optimally</span><span class="p">(</span><span class="n">instance_files</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">,</span>
+                              <span class="n">output_idx</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Finds the optimal solution for each instance in `instance_files`.</span>
+
+<span class="sd">    Each file in `instance_files` is read from `input_dir` and the</span>
+<span class="sd">    corresponding instance is solved optimally and with the heuristic</span>
+<span class="sd">    algorithms. The results are then written to `output_dir`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_files: list</span>
+<span class="sd">        A list of strings specifying the names of the instance files to be</span>
+<span class="sd">        solved optimally.</span>
+<span class="sd">    input_dir: str</span>
+<span class="sd">        A string representing the name of the directory from which the</span>
+<span class="sd">        instances are read.</span>
+<span class="sd">    output_idx: int</span>
+<span class="sd">        An integer representing the starting index for the output files to</span>
+<span class="sd">        identify the instances that generated each output.</span>
+<span class="sd">    output_dir: str</span>
+<span class="sd">        A string representing the name of the directory to which the results</span>
+<span class="sd">        will be written.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">curr_idx</span> <span class="o">=</span> <span class="n">output_idx</span>
+    <span class="k">for</span> <span class="n">instance_file</span> <span class="ow">in</span> <span class="n">instance_files</span><span class="p">:</span>
+        <span class="n">write_optimal_results</span><span class="p">(</span><span class="n">instance_file</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">,</span> <span class="n">curr_idx</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+        <span class="n">curr_idx</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="write_results_to_file"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.write_results_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_results_to_file</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write the results in `results_list` to `output_file`.</span>
 
 <span class="sd">    Parameters</span>
@@ -292,9 +354,6 @@
 <span class="sd">    output_file: str</span>
 <span class="sd">        A string representing the name of the file to which the results will</span>
 <span class="sd">        be written.</span>
-<span class="sd">    run_optimizer: bool</span>
-<span class="sd">        A boolean value indicating whether the ILP model is solved and</span>
-<span class="sd">        included in the results of `results_list`.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -302,18 +361,17 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">results_file</span><span class="p">:</span>
-        <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_results_header</span><span class="p">(</span><span class="n">run_optimizer</span><span class="p">))</span>
+        <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_results_header</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
         <span class="n">results_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">results_list</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calculate_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.calculate_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">calculate_results_for_instances</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_files</span><span class="p">,</span>
-                                    <span class="n">output_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculates the results for each instance in `instance_files`.</span>
+<div class="viewcode-block" id="calculate_heuristic_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.calculate_heuristic_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">calculate_heuristic_results_for_instances</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span>
+                                              <span class="n">instance_files</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the heuristic results for each instance in `instance_files`.</span>
 
 <span class="sd">    For each instance in `instance_files`, the instance is solved with the</span>
-<span class="sd">    vector first fit and current bottleneck first algorithms. If</span>
-<span class="sd">    `run_optimizer` is True, then the ILP model is also solved directly. A</span>
-<span class="sd">    string is generated of the results and the results of all instances are</span>
+<span class="sd">    vector first fit and current bottleneck first algorithms. A string</span>
+<span class="sd">    is generated of the results and the results of all instances are</span>
 <span class="sd">    written to `output_file` with 1 result per line.</span>
 
 <span class="sd">    Parameters</span>
@@ -327,10 +385,6 @@
 <span class="sd">    output_file: str</span>
 <span class="sd">        A string representing the name of the file to which the results will</span>
 <span class="sd">        be written.</span>
-<span class="sd">    run_optimizer: bool</span>
-<span class="sd">        A boolean value indicating whether the ILP model will be solved</span>
-<span class="sd">        directly so that the optimal solution can be included in the results</span>
-<span class="sd">        for each instance.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -345,10 +399,48 @@
         <span class="n">instances</span> <span class="o">=</span> <span class="n">get_instances_for_core</span><span class="p">(</span>
             <span class="n">instance_files</span><span class="p">,</span> <span class="n">instances_per_core</span><span class="p">,</span> <span class="n">core_num</span><span class="p">)</span>
         <span class="n">procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">get_results_for_instances</span><span class="p">,</span>
-                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span>
-                                      <span class="n">input_dir</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">)))</span>
+                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">)))</span>
     <span class="n">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span>
-    <span class="n">write_results_to_file</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">run_optimizer</span><span class="p">)</span></div>
+    <span class="n">write_results_to_file</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">output_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_optimal_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.calculate_optimal_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">calculate_optimal_results_for_instances</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span>
+                                            <span class="n">instance_files</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the optimal results for each instance in `instance_files`.</span>
+
+<span class="sd">    For each instance in `instance_files`, the instance is solved optimally</span>
+<span class="sd">    and with the vector first fit and current bottleneck first algorithms. A</span>
+<span class="sd">    string is generated of the results and the results of all instances are</span>
+<span class="sd">    written to `output_file` with 1 result per line.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_dir: str</span>
+<span class="sd">        A string representing the name of the directory from which the</span>
+<span class="sd">        instance files are read.</span>
+<span class="sd">    instance_files: list</span>
+<span class="sd">        A list of strings representing the names of the files specifying the</span>
+<span class="sd">        instances for which the results are calculated.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the results will</span>
+<span class="sd">        be written.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">procs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cores</span><span class="p">,</span> <span class="n">instances_per_core</span> <span class="o">=</span> <span class="n">get_cores_and_instances_per_core</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">instance_files</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">core_num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cores</span><span class="p">):</span>
+        <span class="n">instances</span> <span class="o">=</span> <span class="n">get_instances_for_core</span><span class="p">(</span>
+            <span class="n">instance_files</span><span class="p">,</span> <span class="n">instances_per_core</span><span class="p">,</span> <span class="n">core_num</span><span class="p">)</span>
+        <span class="n">output_idx</span> <span class="o">=</span> <span class="n">core_num</span> <span class="o">*</span> <span class="n">instances_per_core</span>
+        <span class="n">procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">solve_instances_optimally</span><span class="p">,</span>
+                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">instances</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">,</span>
+                                      <span class="n">output_idx</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)))</span>
+    <span class="n">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_sim_tuples_for_core"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_sim_tuples_for_core">[docs]</a><span class="k">def</span> <span class="nf">get_sim_tuples_for_core</span><span class="p">(</span><span class="n">instance_sizes</span><span class="p">,</span> <span class="n">sims_per_core</span><span class="p">,</span>

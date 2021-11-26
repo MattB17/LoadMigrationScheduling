@@ -151,13 +151,12 @@ algorithms are run.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MigrationScheduling.analysis.calculate_results_for_instances">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#calculate_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.calculate_results_for_instances" title="Permalink to this definition"></a></dt>
-<dd><p>Calculates the results for each instance in <cite>instance_files</cite>.</p>
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.calculate_heuristic_results_for_instances">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_heuristic_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#calculate_heuristic_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.calculate_heuristic_results_for_instances" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the heuristic results for each instance in <cite>instance_files</cite>.</p>
 <p>For each instance in <cite>instance_files</cite>, the instance is solved with the
-vector first fit and current bottleneck first algorithms. If
-<cite>run_optimizer</cite> is True, then the ILP model is also solved directly. A
-string is generated of the results and the results of all instances are
+vector first fit and current bottleneck first algorithms. A string
+is generated of the results and the results of all instances are
 written to <cite>output_file</cite> with 1 result per line.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -171,9 +170,35 @@ instances for which the results are calculated.</p>
 <dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the results will
 be written.</p>
 </dd>
-<dt><strong>run_optimizer: bool</strong></dt><dd><p>A boolean value indicating whether the ILP model will be solved
-directly so that the optimal solution can be included in the results
-for each instance.</p>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.calculate_optimal_results_for_instances">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_optimal_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#calculate_optimal_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.calculate_optimal_results_for_instances" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the optimal results for each instance in <cite>instance_files</cite>.</p>
+<p>For each instance in <cite>instance_files</cite>, the instance is solved optimally
+and with the vector first fit and current bottleneck first algorithms. A
+string is generated of the results and the results of all instances are
+written to <cite>output_file</cite> with 1 result per line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_dir: str</strong></dt><dd><p>A string representing the name of the directory from which the
+instance files are read.</p>
+</dd>
+<dt><strong>instance_files: list</strong></dt><dd><p>A list of strings representing the names of the files specifying the
+instances for which the results are calculated.</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the results will
+be written.</p>
 </dd>
 </dl>
 </dd>
@@ -376,7 +401,7 @@ outperforms <cite>heuristic2</cite>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.get_results_for_instances">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_results_for_instances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_results_for_instances" title="Permalink to this definition"></a></dt>
 <dd><p>Gets results for all the instances specified in <cite>instance_files</cite>.</p>
 <p>For each instance in <cite>instance_files</cite> the result string is computed and
 appended to <cite>results_list</cite>.</p>
@@ -389,9 +414,6 @@ appended to <cite>results_list</cite>.</p>
 instances to be analyzed.</p>
 </dd>
 <dt><strong>input_dir: str</strong></dt><dd><p>A string specifying the directory from which the instances are read.</p>
-</dd>
-<dt><strong>run_optimizer: bool</strong></dt><dd><p>A boolean value indicating whether the ILP model will be solved and
-included in the result string for each instance.</p>
 </dd>
 </dl>
 </dd>
@@ -611,8 +633,70 @@ written.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.solve_instances_optimally">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">solve_instances_optimally</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#solve_instances_optimally"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.solve_instances_optimally" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the optimal solution for each instance in <cite>instance_files</cite>.</p>
+<p>Each file in <cite>instance_files</cite> is read from <cite>input_dir</cite> and the
+corresponding instance is solved optimally and with the heuristic
+algorithms. The results are then written to <cite>output_dir</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_files: list</strong></dt><dd><p>A list of strings specifying the names of the instance files to be
+solved optimally.</p>
+</dd>
+<dt><strong>input_dir: str</strong></dt><dd><p>A string representing the name of the directory from which the
+instances are read.</p>
+</dd>
+<dt><strong>output_idx: int</strong></dt><dd><p>An integer representing the starting index for the output files to
+identify the instances that generated each output.</p>
+</dd>
+<dt><strong>output_dir: str</strong></dt><dd><p>A string representing the name of the directory to which the results
+will be written.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.write_optimal_results">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_optimal_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_optimal_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_optimal_results" title="Permalink to this definition"></a></dt>
+<dd><p>Writes the results of solving <cite>instance_file</cite> optimally.</p>
+<p>The instance specified in <cite>instance_file</cite> is solved optimally and with
+the heuristic algorithms and the results are written to <cite>output_dir</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>instance_file: str</strong></dt><dd><p>A string specifying the name of a file containing the instance to
+be solved.</p>
+</dd>
+<dt><strong>input_dir: str</strong></dt><dd><p>A string specifying the name of the directory from which the instance
+file is read.</p>
+</dd>
+<dt><strong>result_idx: int</strong></dt><dd><p>An integer identifying the result file to be created for the instance.</p>
+</dd>
+<dt><strong>output_dir: str</strong></dt><dd><p>A string identifying the directory to which the results will be
+written.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.write_results_to_file">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_results_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_results_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_results_to_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_results_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_results_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_results_to_file" title="Permalink to this definition"></a></dt>
 <dd><p>Write the results in <cite>results_list</cite> to <cite>output_file</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -622,9 +706,6 @@ that have been analyzed.</p>
 </dd>
 <dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the results will
 be written.</p>
-</dd>
-<dt><strong>run_optimizer: bool</strong></dt><dd><p>A boolean value indicating whether the ILP model is solved and
-included in the results of <cite>results_list</cite>.</p>
 </dd>
 </dl>
 </dd>
