@@ -36,6 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Sim/simulation.html">Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Model/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Scheduling Algorithms</a></li>
@@ -106,8 +107,8 @@
         <span class="n">y_max</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="n">result_cols</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="add_plot_formatting"><a class="viewcode-back" href="../../plotting.html#MigrationScheduling.plotting.add_plot_formatting">[docs]</a><span class="k">def</span> <span class="nf">add_plot_formatting</span><span class="p">(</span><span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Performs plot formatting.</span>
+<div class="viewcode-block" id="add_plot_formatting"><a class="viewcode-back" href="../../plotting.html#MigrationScheduling.plotting.add_plot_formatting">[docs]</a><span class="k">def</span> <span class="nf">add_plot_formatting</span><span class="p">(</span><span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs plot formatting and outputs the plot to `output_file`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -115,6 +116,9 @@
 <span class="sd">        A string representing the title for the x axis.</span>
 <span class="sd">    y_title: str</span>
 <span class="sd">        A string representing the title for the y axis.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the plot will</span>
+<span class="sd">        be output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -124,10 +128,10 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">x_title</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">y_title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot_result_vals"><a class="viewcode-back" href="../../plotting.html#MigrationScheduling.plotting.plot_result_vals">[docs]</a><span class="k">def</span> <span class="nf">plot_result_vals</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">result_cols</span><span class="p">,</span> <span class="n">x_title</span><span class="p">,</span>
-                     <span class="n">y_title</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bound_y</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_results"><a class="viewcode-back" href="../../plotting.html#MigrationScheduling.plotting.plot_results">[docs]</a><span class="k">def</span> <span class="nf">plot_results</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">result_cols</span><span class="p">,</span> <span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prints the values of `results_df` according to `result_cols`.</span>
 
 <span class="sd">    A plot is created having a line for each column of `results_col` from</span>
@@ -143,12 +147,9 @@
 <span class="sd">        A string representing the title for the x axis.</span>
 <span class="sd">    y_title: str</span>
 <span class="sd">        A string representing the title for the y axis.</span>
-<span class="sd">    log_scale: bool</span>
-<span class="sd">        A boolean value indicating whether the y axis should be on a</span>
-<span class="sd">        logarithmic scale. The default value is False.</span>
-<span class="sd">    bound_y: bool</span>
-<span class="sd">        A boolean value indicating whether explicit bounds should be</span>
-<span class="sd">        calculated for the y axis. The default value is False.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the plot will</span>
+<span class="sd">        be output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -160,8 +161,79 @@
         <span class="n">col_name</span> <span class="o">=</span> <span class="n">result_col</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">results_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">results_df</span><span class="p">[</span><span class="n">result_col</span><span class="p">],</span>
                  <span class="n">specs</span><span class="o">.</span><span class="n">STYLE_MAP</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">col_name</span><span class="p">)</span>
-    <span class="n">adjust_y_axis</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">result_cols</span><span class="p">,</span> <span class="n">log_scale</span><span class="p">,</span> <span class="n">bound_y</span><span class="p">)</span>
-    <span class="n">add_plot_formatting</span><span class="p">(</span><span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">)</span></div>
+    <span class="n">add_plot_formatting</span><span class="p">(</span><span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="plot_runtimes"><a class="viewcode-back" href="../../plotting.html#MigrationScheduling.plotting.plot_runtimes">[docs]</a><span class="k">def</span> <span class="nf">plot_runtimes</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">x_var</span><span class="p">,</span> <span class="n">time_vars</span><span class="p">,</span>
+                  <span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plots the runtimes for `results_df` across values of `x_var`.</span>
+
+<span class="sd">    Each variable in `time_vars` is plotted against `x_var` based on the</span>
+<span class="sd">    values in `results_df`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_df: pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame containing the data for plotting.</span>
+<span class="sd">    x_var: str</span>
+<span class="sd">        A string representing the name of a column in `results_df` which will</span>
+<span class="sd">        be used as the variable on the x-axis in the resulting plot.</span>
+<span class="sd">    time_vars: list</span>
+<span class="sd">        A list of strings representing the names of the columns in</span>
+<span class="sd">        `results_df` corresponding to runtimes that will be plotted.</span>
+<span class="sd">    x_title: str</span>
+<span class="sd">        A string representing the title for the plot&#39;s x axis.</span>
+<span class="sd">    y_title: str</span>
+<span class="sd">        A string representing the title for the plot&#39;s y axis.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the plot will</span>
+<span class="sd">        be output.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time_df</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">get_time_df</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">x_var</span><span class="p">,</span> <span class="n">time_vars</span><span class="p">)</span>
+    <span class="n">plot_results</span><span class="p">(</span><span class="n">time_df</span><span class="p">,</span> <span class="n">time_vars</span><span class="p">,</span> <span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_results_comparison"><a class="viewcode-back" href="../../plotting.html#MigrationScheduling.plotting.plot_results_comparison">[docs]</a><span class="k">def</span> <span class="nf">plot_results_comparison</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">result_cols</span><span class="p">,</span> <span class="n">compare_col</span><span class="p">,</span>
+                            <span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plots the comparison of `results_cols` to `compare_col`.</span>
+
+<span class="sd">    Each column in `result_cols` is standardized by `compare_col` based on</span>
+<span class="sd">    the values in `results_df`. Each standardized column is then plotted</span>
+<span class="sd">    against the index of `results_df`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_df: pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame containing the data for plotting.</span>
+<span class="sd">    result_cols: list</span>
+<span class="sd">        A list of strings representing the names of the columns being</span>
+<span class="sd">        compared.</span>
+<span class="sd">    compare_col: str</span>
+<span class="sd">        A string representing the name of the column used to standardize</span>
+<span class="sd">        the results for comparison.</span>
+<span class="sd">    x_title: str</span>
+<span class="sd">        A string representing the title for the plot&#39;s x axis.</span>
+<span class="sd">    y_title: str</span>
+<span class="sd">        A string representing the title for the plot&#39;s y axis.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the plot will</span>
+<span class="sd">        be output.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">std_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_standardized&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">result_cols</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result_cols</span><span class="p">)):</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="n">std_cols</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">results_df</span><span class="p">[</span><span class="n">result_cols</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="o">/</span> <span class="n">results_df</span><span class="p">[</span><span class="n">compare_col</span><span class="p">])</span>
+    <span class="n">plot_results</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">std_cols</span><span class="p">,</span> <span class="n">x_title</span><span class="p">,</span> <span class="n">y_title</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

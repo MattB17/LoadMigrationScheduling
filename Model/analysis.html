@@ -283,6 +283,40 @@ on each core.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_heuristic_discrepancy_df">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_heuristic_discrepancy_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic_cols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_heuristic_discrepancy_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_heuristic_discrepancy_df" title="Permalink to this definition"></a></dt>
+<dd><p>A df of the discrepancies between <cite>heuristic_cols</cite> and <cite>opt_col</cite>.</p>
+<p>Calculates the percentage of instances for each heuristic in
+<cite>heuristic_cols</cite> that deviate from the optimal value in <cite>opt_col</cite> based
+on the results in <cite>results_df</cite>. The percentages are grouped by value of
+the optimal solution. That is, for an optimal value <cite>x</cite> the percentages
+are calculated across all instances that have an optimal value of <cite>x</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame containing the results from which the
+discrepancies are calculated.</p>
+</dd>
+<dt><strong>opt_col: str</strong></dt><dd><p>A string representing the name of the column in <cite>results_df</cite> holding
+the values of the optimal solutions.</p>
+</dd>
+<dt><strong>heuristic_cols: list</strong></dt><dd><p>A list of strings representing the names of the heuristics for which
+the discrepancies are calculated.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pd.DataFrame</dt><dd><p>A pandas DataFrame containing the percentage of instances where the
+heuristic solution value is different than the optimal value. Results
+are grouped by optimal value and reported for each heuristic.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.get_instances_for_core">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_instances_for_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instances_per_core</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_instances_for_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_instances_for_core" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the instances from <cite>instance_files</cite> to be analyzed on <cite>core_num</cite>.</p>

@@ -657,6 +657,44 @@
     <span class="n">stats_dict</span><span class="p">[</span><span class="n">max_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method2</span><span class="p">,</span> <span class="n">method1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">max2_over_1</span>
     <span class="n">stats_dict</span><span class="p">[</span><span class="n">mean_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method2</span><span class="p">,</span> <span class="n">method1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mean2_over_1</span>
     <span class="k">return</span> <span class="n">stats_dict</span></div>
+
+
+<div class="viewcode-block" id="get_heuristic_discrepancy_df"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_heuristic_discrepancy_df">[docs]</a><span class="k">def</span> <span class="nf">get_heuristic_discrepancy_df</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">opt_col</span><span class="p">,</span> <span class="n">heuristic_cols</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A df of the discrepancies between `heuristic_cols` and `opt_col`.</span>
+
+<span class="sd">    Calculates the percentage of instances for each heuristic in</span>
+<span class="sd">    `heuristic_cols` that deviate from the optimal value in `opt_col` based</span>
+<span class="sd">    on the results in `results_df`. The percentages are grouped by value of</span>
+<span class="sd">    the optimal solution. That is, for an optimal value `x` the percentages</span>
+<span class="sd">    are calculated across all instances that have an optimal value of `x`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results_df: pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame containing the results from which the</span>
+<span class="sd">        discrepancies are calculated.</span>
+<span class="sd">    opt_col: str</span>
+<span class="sd">        A string representing the name of the column in `results_df` holding</span>
+<span class="sd">        the values of the optimal solutions.</span>
+<span class="sd">    heuristic_cols: list</span>
+<span class="sd">        A list of strings representing the names of the heuristics for which</span>
+<span class="sd">        the discrepancies are calculated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A pandas DataFrame containing the percentage of instances where the</span>
+<span class="sd">        heuristic solution value is different than the optimal value. Results</span>
+<span class="sd">        are grouped by optimal value and reported for each heuristic.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">disc_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_disc&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">heuristic_cols</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">heuristic_cols</span><span class="p">)):</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="n">disc_cols</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">results_df</span><span class="p">[</span><span class="n">heuristic_cols</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="n">results_df</span><span class="p">[</span><span class="n">opt_col</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">disc_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[[</span><span class="n">opt_col</span><span class="p">]</span> <span class="o">+</span> <span class="n">disc_cols</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">opt_col</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">disc_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">heuristic_cols</span>
+    <span class="k">return</span> <span class="n">disc_df</span></div>
 </pre></div>
 
            </div>

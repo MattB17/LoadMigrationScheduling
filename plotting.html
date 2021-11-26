@@ -39,6 +39,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Sim/simulation.html">Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Model/model.html">Model</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms.html">Scheduling Algorithms</a></li>
@@ -77,14 +78,17 @@
 results of experiments.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.plotting.add_plot_formatting">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.plotting.</span></span><span class="sig-name descname"><span class="pre">add_plot_formatting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/plotting.html#add_plot_formatting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.plotting.add_plot_formatting" title="Permalink to this definition"></a></dt>
-<dd><p>Performs plot formatting.</p>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.plotting.</span></span><span class="sig-name descname"><span class="pre">add_plot_formatting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/plotting.html#add_plot_formatting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.plotting.add_plot_formatting" title="Permalink to this definition"></a></dt>
+<dd><p>Performs plot formatting and outputs the plot to <cite>output_file</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x_title: str</strong></dt><dd><p>A string representing the title for the x axis.</p>
 </dd>
 <dt><strong>y_title: str</strong></dt><dd><p>A string representing the title for the y axis.</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the plot will
+be output.</p>
 </dd>
 </dl>
 </dd>
@@ -125,8 +129,8 @@ should be computed for the y axis. The default value is False.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MigrationScheduling.plotting.plot_result_vals">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_result_vals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/plotting.html#plot_result_vals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.plotting.plot_result_vals" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MigrationScheduling.plotting.plot_results">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/plotting.html#plot_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.plotting.plot_results" title="Permalink to this definition"></a></dt>
 <dd><p>Prints the values of <cite>results_df</cite> according to <cite>result_cols</cite>.</p>
 <p>A plot is created having a line for each column of <cite>results_col</cite> from
 <cite>results_df</cite> and the x-values are the indices of <cite>results_df</cite>.</p>
@@ -141,11 +145,77 @@ should be computed for the y axis. The default value is False.</p>
 </dd>
 <dt><strong>y_title: str</strong></dt><dd><p>A string representing the title for the y axis.</p>
 </dd>
-<dt><strong>log_scale: bool</strong></dt><dd><p>A boolean value indicating whether the y axis should be on a
-logarithmic scale. The default value is False.</p>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the plot will
+be output.</p>
 </dd>
-<dt><strong>bound_y: bool</strong></dt><dd><p>A boolean value indicating whether explicit bounds should be
-calculated for the y axis. The default value is False.</p>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.plotting.plot_results_comparison">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_results_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/plotting.html#plot_results_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.plotting.plot_results_comparison" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the comparison of <cite>results_cols</cite> to <cite>compare_col</cite>.</p>
+<p>Each column in <cite>result_cols</cite> is standardized by <cite>compare_col</cite> based on
+the values in <cite>results_df</cite>. Each standardized column is then plotted
+against the index of <cite>results_df</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame containing the data for plotting.</p>
+</dd>
+<dt><strong>result_cols: list</strong></dt><dd><p>A list of strings representing the names of the columns being
+compared.</p>
+</dd>
+<dt><strong>compare_col: str</strong></dt><dd><p>A string representing the name of the column used to standardize
+the results for comparison.</p>
+</dd>
+<dt><strong>x_title: str</strong></dt><dd><p>A string representing the title for the plot’s x axis.</p>
+</dd>
+<dt><strong>y_title: str</strong></dt><dd><p>A string representing the title for the plot’s y axis.</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the plot will
+be output.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.plotting.plot_runtimes">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_runtimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/plotting.html#plot_runtimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.plotting.plot_runtimes" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the runtimes for <cite>results_df</cite> across values of <cite>x_var</cite>.</p>
+<p>Each variable in <cite>time_vars</cite> is plotted against <cite>x_var</cite> based on the
+values in <cite>results_df</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame containing the data for plotting.</p>
+</dd>
+<dt><strong>x_var: str</strong></dt><dd><p>A string representing the name of a column in <cite>results_df</cite> which will
+be used as the variable on the x-axis in the resulting plot.</p>
+</dd>
+<dt><strong>time_vars: list</strong></dt><dd><p>A list of strings representing the names of the columns in
+<cite>results_df</cite> corresponding to runtimes that will be plotted.</p>
+</dd>
+<dt><strong>x_title: str</strong></dt><dd><p>A string representing the title for the plot’s x axis.</p>
+</dd>
+<dt><strong>y_title: str</strong></dt><dd><p>A string representing the title for the plot’s y axis.</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the plot will
+be output.</p>
 </dd>
 </dl>
 </dd>
