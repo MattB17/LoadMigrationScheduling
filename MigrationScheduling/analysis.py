@@ -180,8 +180,7 @@ def build_results_string(input_dir, instance_file, run_optimizer):
     return results_str + "\n"
 
 
-def get_results_for_instances(results_list, instance_files,
-                              input_dir, run_optimizer):
+def get_results_for_instances(results_list, instance_files, input_dir):
     """Gets results for all the instances specified in `instance_files`.
 
     For each instance in `instance_files` the result string is computed and
@@ -196,9 +195,6 @@ def get_results_for_instances(results_list, instance_files,
         instances to be analyzed.
     input_dir: str
         A string specifying the directory from which the instances are read.
-    run_optimizer: bool
-        A boolean value indicating whether the ILP model will be solved and
-        included in the result string for each instance.
 
     Returns
     -------
@@ -207,9 +203,75 @@ def get_results_for_instances(results_list, instance_files,
     """
     for instance_file in instance_files:
         results_list.append(build_results_string(
-            input_dir, instance_file, run_optimizer))
+            input_dir, instance_file, False))
 
-def write_results_to_file(results_list, output_file, run_optimizer):
+def write_optimal_results(instance_file, input_dir, result_idx, output_dir):
+    """Writes the results of solving `instance_file` optimally.
+
+    The instance specified in `instance_file` is solved optimally and with
+    the heuristic algorithms and the results are written to `output_dir`.
+
+    Parameters
+    ----------
+    instance_file: str
+        A string specifying the name of a file containing the instance to
+        be solved.
+    input_dir: str
+        A string specifying the name of the directory from which the instance
+        file is read.
+    result_idx: int
+        An integer identifying the result file to be created for the instance.
+    output_dir: str
+        A string identifying the directory to which the results will be
+        written.
+
+    Returns
+    -------
+    None
+
+    """
+    output_file = os.path.join(
+        output_dir, "results{}.txt".format(result_idx))
+    with open(output_file, 'w') as results_file:
+        results_file.write(utils.get_results_header(True))
+        results_file.write(build_results_string(
+            input_dir, instance_file, True))
+
+def solve_instances_optimally(instance_files, input_dir,
+                              output_idx, output_dir):
+    """Finds the optimal solution for each instance in `instance_files`.
+
+    Each file in `instance_files` is read from `input_dir` and the
+    corresponding instance is solved optimally and with the heuristic
+    algorithms. The results are then written to `output_dir`.
+
+    Parameters
+    ----------
+    instance_files: list
+        A list of strings specifying the names of the instance files to be
+        solved optimally.
+    input_dir: str
+        A string representing the name of the directory from which the
+        instances are read.
+    output_idx: int
+        An integer representing the starting index for the output files to
+        identify the instances that generated each output.
+    output_dir: str
+        A string representing the name of the directory to which the results
+        will be written.
+
+    Returns
+    -------
+    None
+
+    """
+    curr_idx = output_idx
+    for instance_file in instance_files:
+        write_optimal_results(instance_file, input_dir, curr_idx, output_dir)
+        curr_idx += 1
+
+
+def write_results_to_file(results_list, output_file):
     """Write the results in `results_list` to `output_file`.
 
     Parameters
@@ -220,9 +282,6 @@ def write_results_to_file(results_list, output_file, run_optimizer):
     output_file: str
         A string representing the name of the file to which the results will
         be written.
-    run_optimizer: bool
-        A boolean value indicating whether the ILP model is solved and
-        included in the results of `results_list`.
 
     Returns
     -------
@@ -230,18 +289,17 @@ def write_results_to_file(results_list, output_file, run_optimizer):
 
     """
     with open(output_file, 'w') as results_file:
-        results_file.write(utils.get_results_header(run_optimizer))
+        results_file.write(utils.get_results_header(False))
         results_file.writelines(results_list)
 
 
-def calculate_results_for_instances(input_dir, instance_files,
-                                    output_file, run_optimizer):
-    """Calculates the results for each instance in `instance_files`.
+def calculate_heuristic_results_for_instances(input_dir,
+                                              instance_files, output_file):
+    """Gets the heuristic results for each instance in `instance_files`.
 
     For each instance in `instance_files`, the instance is solved with the
-    vector first fit and current bottleneck first algorithms. If
-    `run_optimizer` is True, then the ILP model is also solved directly. A
-    string is generated of the results and the results of all instances are
+    vector first fit and current bottleneck first algorithms. A string
+    is generated of the results and the results of all instances are
     written to `output_file` with 1 result per line.
 
     Parameters
@@ -255,10 +313,6 @@ def calculate_results_for_instances(input_dir, instance_files,
     output_file: str
         A string representing the name of the file to which the results will
         be written.
-    run_optimizer: bool
-        A boolean value indicating whether the ILP model will be solved
-        directly so that the optimal solution can be included in the results
-        for each instance.
 
     Returns
     -------
@@ -273,10 +327,48 @@ def calculate_results_for_instances(input_dir, instance_files,
         instances = get_instances_for_core(
             instance_files, instances_per_core, core_num)
         procs.append(mp.Process(target=get_results_for_instances,
-                                args=(results, instances,
-                                      input_dir, run_optimizer)))
+                                args=(results, instances, input_dir)))
     initialize_and_join_processes(procs)
-    write_results_to_file(list(results), output_file, run_optimizer)
+    write_results_to_file(list(results), output_file)
+
+
+def calculate_optimal_results_for_instances(input_dir,
+                                            instance_files, output_dir):
+    """Gets the optimal results for each instance in `instance_files`.
+
+    For each instance in `instance_files`, the instance is solved optimally
+    and with the vector first fit and current bottleneck first algorithms. A
+    string is generated of the results and the results of all instances are
+    written to `output_file` with 1 result per line.
+
+    Parameters
+    ----------
+    input_dir: str
+        A string representing the name of the directory from which the
+        instance files are read.
+    instance_files: list
+        A list of strings representing the names of the files specifying the
+        instances for which the results are calculated.
+    output_file: str
+        A string representing the name of the file to which the results will
+        be written.
+
+    Returns
+    -------
+    None
+
+    """
+    procs = []
+    cores, instances_per_core = get_cores_and_instances_per_core(
+        len(instance_files))
+    for core_num in range(cores):
+        instances = get_instances_for_core(
+            instance_files, instances_per_core, core_num)
+        output_idx = core_num * instances_per_core
+        procs.append(mp.Process(target=solve_instances_optimally,
+                                args=(instances, input_dir,
+                                      output_idx, output_dir)))
+    initialize_and_join_processes(procs)
 
 
 def get_sim_tuples_for_core(instance_sizes, sims_per_core,
