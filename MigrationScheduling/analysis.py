@@ -585,3 +585,41 @@ def compare_heuristic_results(results_df, method1, method2):
     stats_dict[max_str.format(method2, method1)] = max2_over_1
     stats_dict[mean_str.format(method2, method1)] = mean2_over_1
     return stats_dict
+
+
+def get_heuristic_discrepancy_df(results_df, opt_col, heuristic_cols):
+    """A df of the discrepancies between `heuristic_cols` and `opt_col`.
+
+    Calculates the percentage of instances for each heuristic in
+    `heuristic_cols` that deviate from the optimal value in `opt_col` based
+    on the results in `results_df`. The percentages are grouped by value of
+    the optimal solution. That is, for an optimal value `x` the percentages
+    are calculated across all instances that have an optimal value of `x`.
+
+    Parameters
+    ----------
+    results_df: pd.DataFrame
+        A pandas DataFrame containing the results from which the
+        discrepancies are calculated.
+    opt_col: str
+        A string representing the name of the column in `results_df` holding
+        the values of the optimal solutions.
+    heuristic_cols: list
+        A list of strings representing the names of the heuristics for which
+        the discrepancies are calculated.
+
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame containing the percentage of instances where the
+        heuristic solution value is different than the optimal value. Results
+        are grouped by optimal value and reported for each heuristic.
+
+    """
+    disc_cols = ["{}_disc".format(col_name) for col_name in heuristic_cols]
+    for idx in range(len(heuristic_cols)):
+        results_df[disc_cols[idx]] = np.where(
+            results_df[heuristic_cols[idx]] > results_df[opt_col], 1, 0)
+    disc_df = results_df[[opt_col] + disc_cols].groupby(opt_col).mean()
+    disc_df.columns = heuristic_cols
+    return disc_df

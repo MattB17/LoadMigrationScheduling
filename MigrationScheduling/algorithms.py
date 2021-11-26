@@ -66,8 +66,9 @@ def get_bottleneck_constraint(constraints_dict):
     bottleneck_const = None
     bottleneck_const_name = None
     for const_name, const_dict in constraints_dict.items():
-        if not bottleneck_const or const_dict.get_load_factor() > max_load:
-            max_load = const_dict.get_load_factor()
+        load_factor = const_dict.get_load_factor()
+        if not bottleneck_const or load_factor > max_load:
+            max_load = load_factor
             bottleneck_const = const_dict
             bottleneck_const_name = const_name
     return bottleneck_const_name, bottleneck_const
