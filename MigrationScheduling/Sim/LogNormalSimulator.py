@@ -92,7 +92,7 @@ class LogNormalSimulator(Simulator):
         """
         min_cap, max_cap = self._get_controller_cap_bounds(controller_idx)
         capacity = min(max_cap, min_cap + max(0,
-            (1 - np.random.lognormal(self._mu, self._sigma)) *
+            (np.random.lognormal(self._mu, self._sigma)) *
             (max_cap - min_cap)))
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
@@ -118,6 +118,6 @@ class LogNormalSimulator(Simulator):
         """
         group_size = self._qos_groups[qos_idx]
         capacity = int(min(group_size, 1.00 + max(0.00,
-            (1 - np.random.lognormal(self._mu, self._sigma)) *
+            (np.random.lognormal(self._mu, self._sigma)) *
             (group_size - 1))))
         return "g{0} {1}\n".format(qos_idx, capacity)
