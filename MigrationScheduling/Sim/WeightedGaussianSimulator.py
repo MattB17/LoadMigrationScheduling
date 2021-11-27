@@ -1,5 +1,11 @@
-"""The GaussianSimulator class is used to simulate load migration
-scheduling instances using the Gaussian distribution.
+"""The `WeightedGaussianSimulator` class is used to simulate load migration
+scheduling instances using a set of Gaussian distributions that are sampled
+from based on a random number.
+
+Three distributions are used representing a low bottleneck setting, a medium
+bottleneck setting, and a high bottleneck setting. Each constraint samples
+from one of the 3 distributions in the proportions given by `low_prop` and
+`med_prop`.
 
 """
 import random
@@ -8,23 +14,27 @@ from MigrationScheduling import utils
 from MigrationScheduling.Data import Migration
 from MigrationScheduling.Sim.Simulator import Simulator
 
-class GaussianSimulator(Simulator):
-    """Used to simulate a load migration scheduling instance.
+
+class WeightedGaussianSimulator(Simulator):
+    """Used to simulate a load migration instance with weighted gaussians.
 
     Parameters
     ----------
-    bottleneck_type: str
-        A string representing the bottleneck setting used to generate the
-        capacities for the constraints in the simulated instance. Accepted
-        values are 'high', 'medium', and 'low'. The capacity of the
-        constraints are then calculated using this setting and the individual
-        load on the constraint.
+    low_prop: float
+        A float in the range [0, 1] representing the proportion of times the
+        low bottleneck distribution is sampled from.
+    med_prop: float
+        A float in the range [0, 1] representing the proportion of times the
+        medium bottleneck distribution is sampled from.
 
     Attributes
     ----------
-    _bottleneck_type: str
-        Represents the bottleneck setting used to generate the capacity of
-        constraints for the simulated instance.
+    _low_prop: float
+        The proportion of times the low bottleneck distribution is sampled
+        from.
+    _med_prop: float
+        The proportion of times the medium bottleneck distribution is sampled
+        from.
     _migrations: list
         A list of `Migration` objects specifying the simulated migrations.
     _num_migrations: int
@@ -44,8 +54,9 @@ class GaussianSimulator(Simulator):
         An integer representing the number of QoS groups.
 
     """
-    def __init__(self, bottleneck_type="low"):
-        self._bottleneck_type = bottleneck_type
+    def __init__(self, low_prop=0.6, med_prop=0.3):
+        self._low_prop = low_prop
+        self._med_prop = med_prop
         super().__init__()
 
     def _setup_migration(self, migration_idx):
@@ -90,8 +101,8 @@ class GaussianSimulator(Simulator):
 
         """
         min_cap, max_cap = self._get_controller_cap_bounds(controller_idx)
-        capacity = utils.gaussian_controller_capacity(
-            min_cap, max_cap, self._bottleneck_type)
+        capacity = utils.weighted_controller_capacity(
+            min_cap, max_cap, self._low_prop, self._med_prop)
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
     def _get_qos_line(self, qos_idx):
@@ -114,6 +125,6 @@ class GaussianSimulator(Simulator):
             A string representing the QoS line.
 
         """
-        capacity = utils.gaussian_qos_capacity(
-            self._qos_groups[qos_idx], self._bottleneck_type)
+        capacity = utils.weighted_qos_capacity(
+            self._qos_groups[qos_idx], self._low_prop, self._med_prop)
         return "g{0} {1}\n".format(qos_idx, capacity)

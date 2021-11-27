@@ -232,11 +232,12 @@ def get_constraints_dict(instance_data):
     return {**control_dict, **qos_dict}
 
 
-def generate_controller_capacity(min_cap, max_cap, bottleneck_type):
-    """Generates the capacity for a controller in [`min_cap`, `max_cap`].
+def gaussian_controller_capacity(min_cap, max_cap, bottleneck_type):
+    """The gaussian capacity for a controller in [`min_cap`, `max_cap`].
 
     The controller capacity is picked from the range [`min_cap`, `max_cap`]
-    based on `bottleneck_type`.
+    based on `bottleneck_type` by sampling from the appropriate gaussian
+    distribution.
 
     Parameters
     ----------
@@ -263,11 +264,79 @@ def generate_controller_capacity(min_cap, max_cap, bottleneck_type):
     return min(max_cap, min_cap + max(0,
         np.random.normal(cap_mean, 0.3) * (max_cap - min_cap)))
 
+def weighted_controller_capacity(min_cap, max_cap, low_prop, med_prop):
+    """The weighted capacity for a controller in [`min_cap`, `max_cap`].
 
-def generate_qos_capacity(group_size, bottleneck_type):
-    """Generates the capacity for a QoS group of size `group_size`.
+    The controller capacity is picked from the range [`min_cap`, `max_cap`]
+    based on `bottleneck_type` by sampling from one of 3 gaussian
+    distributions depending on `low_prop` and `med_prop`.
 
-    The capacity is a factor of `group_size` and `bottleneck_type`.
+    Parameters
+    ----------
+    min_cap: float
+        A float representing the minimum controller capacity.
+    max_cap: float
+        A float representing the maximum controller capacity.
+    low_prop: float
+        A float in the range [0, 1] representing the proportion of samples
+        taken from the low bottleneck gaussian distribution.
+    med_prop: float
+        A float in the range [0, 1] representing the proportion of samples
+        taken from the medium bottleneck gaussian distribution.
+
+    Returns
+    -------
+    float
+        A float representing the capacity for the controller.
+
+    """
+    weight = random.uniform(0, 1)
+    if weight > low_prop + med_prop:
+        return min_cap
+    cap_mean = 0.5
+    if weight > low_prop:
+        cap_mean = 0.2
+    return min(max_cap, min_cap + max(0,
+        np.random.normal(cap_mean, 0.3) * (max_cap - min_cap)))
+
+
+def weighted_qos_capacity(group_size, low_prop, med_prop):
+    """The weighted capacity for a QoS group of size `group_size`.
+
+    The capacity is a factor of `group_size` and is sampled from the
+    appropriate Gaussian distribution depending on `low_prop` and `med_prop`.
+
+    Parameters
+    ----------
+    group_size: int
+        An integer representing the number of migrations in the QoS group.
+    low_prop: float
+        A float in the range [0, 1] representing the proportion of samples
+        taken from the low bottleneck gaussian distribution.
+    med_prop: float
+        A float in the range [0, 1] representing the proportion of samples
+        taken from the medium bottleneck gaussian distribution.
+
+    Returns
+    -------
+    int
+        An integer representing the capacity for the QoS group.
+
+    """
+    weight = random.uniform(0, 1)
+    if weight > low_prop + med_prop:
+        return 1
+    cap_mean = 0.5
+    if weight > low_prop:
+        cap_mean = 0.2
+    return int(min(group_size, max(1.0,
+        np.random.normal(cap_mean, 0.3) * group_size)))
+
+def gaussian_qos_capacity(group_size, bottleneck_type):
+    """The gaussian capacity for a QoS group of size `group_size`.
+
+    The capacity is a factor of `group_size` and `bottleneck_type` and is
+    sampled from the appropriate Gaussian distribution.
 
     Parameters
     ----------
