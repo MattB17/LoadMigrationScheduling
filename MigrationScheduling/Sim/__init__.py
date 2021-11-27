@@ -4,3 +4,4 @@ instances.
 """
 from MigrationScheduling.Sim.GaussianSimulator import GaussianSimulator
 from MigrationScheduling.Sim.LogNormalSimulator import LogNormalSimulator
+from MigrationScheduling.Sim.WeightedGaussianSimulator import WeightedGaussianSimulator
