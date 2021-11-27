@@ -45,8 +45,8 @@ class LogNormalSimulator(Simulator):
 
     """
     def __init__(self, mu, sigma):
-        self._mu = utils.get_log_mean(mu, sigma)
-        self._sigma = utils.get_log_std(mu, sigma)
+        self._mu = mu
+        self._sigma = sigma
         super().__init__()
 
     def _setup_migration(self, migration_idx):
@@ -66,7 +66,7 @@ class LogNormalSimulator(Simulator):
             A created `Migration` object.
 
         """
-        load = max(1.00, round(utils.sample_with_log_op(10, 5), 2))
+        load = max(1.00, round(np.random.lognormal(2.5, 0.5), 2))
         dst = self._assign_to_controller(load)
         return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
 
@@ -92,7 +92,7 @@ class LogNormalSimulator(Simulator):
         """
         min_cap, max_cap = self._get_controller_cap_bounds(controller_idx)
         capacity = min(max_cap, min_cap + max(0,
-            (np.random.lognormal(self._mu, self._sigma)) *
+            (1 - np.random.lognormal(self._mu, self._sigma)) *
             (max_cap - min_cap)))
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
@@ -118,6 +118,6 @@ class LogNormalSimulator(Simulator):
         """
         group_size = self._qos_groups[qos_idx]
         capacity = int(min(group_size, 1.00 + max(0.00,
-            (np.random.lognormal(self._mu, self._sigma)) *
+            (1 - np.random.lognormal(self._mu, self._sigma)) *
             (group_size - 1))))
         return "g{0} {1}\n".format(qos_idx, capacity)
