@@ -1,6 +1,7 @@
 import os
 import gurobipy as gp
 from gurobipy import GRB
+from MigrationScheduling import algorithms
 from MigrationScheduling.Model import Optimizer
 
 DIR = os.path.dirname(
@@ -77,3 +78,15 @@ def test_optimizer():
         os.path.join("instances", "migrations2.txt")))
     optVal = optimizer.build_ip_model(verbose=False)
     assert round(optVal, 2) == round(m.objVal, 2)
+
+def test_vff_heuristic():
+    optimizer = Optimizer()
+    optimizer.get_model_data(os.path.join(DIR,
+        os.path.join("instances", "migrations2.txt")))
+    vff_val = algorithms.vector_first_fit(optimizer.instance_data())
+
+    # the VFF solution has value 3:
+    # - migrations 0, 1, 2, 4, and 5 are scheduled in round 1
+    # - migrations 3, 6, and 9 are scheduled in round 2
+    # - migrations 7 and 8 are scheduled in round 3
+    assert vff_val == 3
