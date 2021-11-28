@@ -2,7 +2,6 @@
 about a round for the load migration scheduling problem.
 
 """
-import copy
 
 class Round:
     """Stores the information related to a scheduling round.
@@ -39,9 +38,70 @@ class Round:
     """
     def __init__(self, round_num, controller_caps, qos_caps):
         self._round_num = round_num
-        self._rem_controller_caps = copy.deepcopy(controller_caps)
-        self._rem_qos_caps = copy.deepcopy(qos_caps)
+        self._rem_controller_caps = {
+            controller : cap for controller, cap in controller_caps.items()}
+        self._rem_qos_caps = {
+            qos_group : cap for qos_group, cap in qos_caps.items()}
         self._migrations = set()
+
+    def get_round_number(self):
+        """The round number.
+
+        Returns
+        -------
+        int
+            An integer representing the round number.
+
+        """
+        return self._round_num
+
+    def get_remaining_controller_capacities(self):
+        """The remaining capacity of controllers in the round.
+
+        The remaining capacity for each controller is its original capacity
+        minus the sum of the loads of the migrations scheduled in the round
+        that are destined to that controller.
+
+        Returns
+        -------
+        dict
+            A dictionary of remaining controller capacities. The keys are
+            strings representing the names of the controllers and the
+            corresponding value is a float representing the remaining
+            capacity for that controller in the round.
+
+        """
+        return self._rem_controller_caps
+
+    def get_remaining_qos_capacities(self):
+        """The remaining capacity of QoS groups in the round.
+
+        The remaining capacity for each QoS group is its original capacity
+        minus the number of migrations scheduled in that round that belong
+        to that QoS group.
+
+        Returns
+        -------
+        dict
+            A dictionary of remaining QoS group capacities. The keys are
+            strings representing the names of the QoS groups and the
+            corresponding value is an integer representing the remaining
+            capacity of the QoS group in the round.
+
+        """
+        return self._rem_qos_caps
+
+    def get_scheduled_migrations(self):
+        """The migrations that have been scheduled in the round.
+
+        Returns
+        -------
+        set
+            A set of `Migration` objects representing the migrations that
+            have been scheduled in the round.
+
+        """
+        return self._migrations
 
     def can_schedule_migration(self, migration):
         """Indicates if `migration` can be scheduled in the round.
@@ -190,5 +250,8 @@ class Round:
         None
 
         """
-        print("Migrations completed in round {0}: {1}".format(
-            self._round_num, " ".join(self._migrations)))
+        if self._migrations:
+            print("Migrations completed in round {0}: {1}".format(
+                self._round_num, " ".join(self._migrations)))
+        else:
+            print("No migrations scheduled in round")
