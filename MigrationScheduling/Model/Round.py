@@ -141,10 +141,10 @@ class Round:
         None
 
         """
-        self._migrations.add(migration.get_switch())
         self._reduce_controller_cap(migration.get_dst_controller(),
                                     migration.get_load())
         self._reduce_qos_caps(migration.get_groups())
+        self._migrations.add(migration.get_switch())
 
     def _within_controller_cap(self, controller, migration_load):
         """Whether `migration_load` is within the capacity of `controller`.
@@ -251,7 +251,8 @@ class Round:
 
         """
         if self._migrations:
-            print("Migrations completed in round {0}: {1}".format(
+            print("Migrations completed in round {0}: {1}.".format(
                 self._round_num, " ".join(self._migrations)))
         else:
-            print("No migrations scheduled in round")
+            print("No migrations scheduled in round {}.".format(
+                self._round_num))
