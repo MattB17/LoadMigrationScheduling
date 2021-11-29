@@ -167,12 +167,13 @@ def schedule_migration_in_earliest_round(rounds, num_rounds, migration,
 
     """
     round_count = num_rounds
+    curr_rounds = [round for round in rounds]
     schedule_round = find_scheduling_round(rounds, round_count, migration)
     if schedule_round == round_count:
-        rounds.append(Round(round_count, controller_caps, qos_caps))
+        curr_rounds.append(Round(round_count, controller_caps, qos_caps))
         round_count += 1
-    rounds[schedule_round].schedule_migration(migration)
-    return rounds, round_count
+    curr_rounds[schedule_round].schedule_migration(migration)
+    return curr_rounds, round_count
 
 
 def calculate_migration_load(migration, exclude_const, consts_dict):
