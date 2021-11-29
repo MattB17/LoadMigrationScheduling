@@ -91,8 +91,8 @@ def select_candidate_migrations(constraint_dict, num_candidates):
     Returns
     -------
     collection
-        A collection of `Migration` objects representing the candidate
-        migrations.
+        A collection of strings representing the names of the switches for
+        the candidate migrations.
 
     """
     if (num_candidates == -1 or
