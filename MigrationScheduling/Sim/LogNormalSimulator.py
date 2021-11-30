@@ -66,7 +66,7 @@ class LogNormalSimulator(Simulator):
             A created `Migration` object.
 
         """
-        load = max(1.00, round(np.random.lognormal(2.5, 0.5), 2))
+        load = round(np.random.lognormal(1, 1), 2)
         dst = self._assign_to_controller(load)
         return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
 
