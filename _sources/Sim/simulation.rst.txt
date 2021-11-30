@@ -9,3 +9,4 @@ Simulation
    simulator
    gaussian
    lognormal
+   weighted_gaussian

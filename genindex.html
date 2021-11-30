@@ -168,11 +168,11 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#MigrationScheduling.utils.gaussian_controller_capacity">gaussian_controller_capacity() (in module MigrationScheduling.utils)</a>
+</li>
+      <li><a href="utils.html#MigrationScheduling.utils.gaussian_qos_capacity">gaussian_qos_capacity() (in module MigrationScheduling.utils)</a>
+</li>
       <li><a href="Sim/gaussian.html#MigrationScheduling.Sim.GaussianSimulator">GaussianSimulator (class in MigrationScheduling.Sim)</a>
-</li>
-      <li><a href="utils.html#MigrationScheduling.utils.generate_controller_capacity">generate_controller_capacity() (in module MigrationScheduling.utils)</a>
-</li>
-      <li><a href="utils.html#MigrationScheduling.utils.generate_qos_capacity">generate_qos_capacity() (in module MigrationScheduling.utils)</a>
 </li>
       <li><a href="utils.html#MigrationScheduling.utils.get_all_files_by_pattern">get_all_files_by_pattern() (in module MigrationScheduling.utils)</a>
 </li>
@@ -210,6 +210,10 @@
 </li>
       <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_cores_and_instances_per_core">get_cores_and_instances_per_core() (in module MigrationScheduling.analysis)</a>
 </li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_deterioration_ratios">get_deterioration_ratios() (in module MigrationScheduling.analysis)</a>
+</li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_deterioration_stats">get_deterioration_stats() (in module MigrationScheduling.analysis)</a>
+</li>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_dst_controller">get_dst_controller() (MigrationScheduling.Data.Migration method)</a>
 </li>
       <li><a href="Data/qos_constraint.html#MigrationScheduling.Data.QosConstraint.get_group">get_group() (MigrationScheduling.Data.QosConstraint method)</a>
@@ -220,9 +224,13 @@
 </li>
       <li><a href="Data/migration.html#MigrationScheduling.Data.Migration.get_groups">get_groups() (MigrationScheduling.Data.Migration method)</a>
 </li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_heuristic_discrepancy_df">get_heuristic_discrepancy_df() (in module MigrationScheduling.analysis)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_heuristic_discrepancy_df">get_heuristic_discrepancy_df() (in module MigrationScheduling.analysis)</a>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_improvement_ratios">get_improvement_ratios() (in module MigrationScheduling.analysis)</a>
+</li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_improvement_stats">get_improvement_stats() (in module MigrationScheduling.analysis)</a>
 </li>
       <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_instances_for_core">get_instances_for_core() (in module MigrationScheduling.analysis)</a>
 </li>
@@ -233,10 +241,6 @@
 </li>
       </ul></li>
       <li><a href="Data/constraint_dict.html#MigrationScheduling.Data.ConstraintDict.get_load_factor">get_load_factor() (MigrationScheduling.Data.ConstraintDict method)</a>
-</li>
-      <li><a href="utils.html#MigrationScheduling.utils.get_log_mean">get_log_mean() (in module MigrationScheduling.utils)</a>
-</li>
-      <li><a href="utils.html#MigrationScheduling.utils.get_log_std">get_log_std() (in module MigrationScheduling.utils)</a>
 </li>
       <li><a href="Model/parser.html#MigrationScheduling.Model.Parser.get_migrations">get_migrations() (MigrationScheduling.Model.Parser method)</a>
 </li>
@@ -252,11 +256,17 @@
 </li>
       <li><a href="utils.html#MigrationScheduling.utils.get_qos_group_cap_dict">get_qos_group_cap_dict() (in module MigrationScheduling.utils)</a>
 </li>
+      <li><a href="Model/round.html#MigrationScheduling.Model.Round.get_remaining_controller_capacities">get_remaining_controller_capacities() (MigrationScheduling.Model.Round method)</a>
+</li>
+      <li><a href="Model/round.html#MigrationScheduling.Model.Round.get_remaining_qos_capacities">get_remaining_qos_capacities() (MigrationScheduling.Model.Round method)</a>
+</li>
       <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_results_for_instances">get_results_for_instances() (in module MigrationScheduling.analysis)</a>
 </li>
       <li><a href="utils.html#MigrationScheduling.utils.get_results_header">get_results_header() (in module MigrationScheduling.utils)</a>
 </li>
-      <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_round_reduction_stats">get_round_reduction_stats() (in module MigrationScheduling.analysis)</a>
+      <li><a href="Model/round.html#MigrationScheduling.Model.Round.get_round_number">get_round_number() (MigrationScheduling.Model.Round method)</a>
+</li>
+      <li><a href="Model/round.html#MigrationScheduling.Model.Round.get_scheduled_migrations">get_scheduled_migrations() (MigrationScheduling.Model.Round method)</a>
 </li>
       <li><a href="Model/analysis.html#MigrationScheduling.analysis.get_sim_tuples_for_core">get_sim_tuples_for_core() (in module MigrationScheduling.analysis)</a>
 </li>
@@ -442,6 +452,13 @@
 </li>
       </ul></li>
       <li>
+    MigrationScheduling.Sim.WeightedGaussianSimulator
+
+      <ul>
+        <li><a href="Sim/weighted_gaussian.html#module-MigrationScheduling.Sim.WeightedGaussianSimulator">module</a>
+</li>
+      </ul></li>
+      <li>
     MigrationScheduling.utils
 
       <ul>
@@ -494,6 +511,8 @@
         <li><a href="Sim/lognormal.html#module-MigrationScheduling.Sim.LogNormalSimulator">MigrationScheduling.Sim.LogNormalSimulator</a>
 </li>
         <li><a href="Sim/simulator.html#module-MigrationScheduling.Sim.Simulator">MigrationScheduling.Sim.Simulator</a>
+</li>
+        <li><a href="Sim/weighted_gaussian.html#module-MigrationScheduling.Sim.WeightedGaussianSimulator">MigrationScheduling.Sim.WeightedGaussianSimulator</a>
 </li>
         <li><a href="utils.html#module-MigrationScheduling.utils">MigrationScheduling.utils</a>
 </li>
@@ -558,8 +577,6 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utils.html#MigrationScheduling.utils.sample_with_log_op">sample_with_log_op() (in module MigrationScheduling.utils)</a>
-</li>
       <li><a href="Model/round.html#MigrationScheduling.Model.Round.schedule_migration">schedule_migration() (MigrationScheduling.Model.Round method)</a>
 </li>
       <li><a href="algorithms.html#MigrationScheduling.algorithms.schedule_migration_in_earliest_round">schedule_migration_in_earliest_round() (in module MigrationScheduling.algorithms)</a>
@@ -616,10 +633,16 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model/analysis.html#MigrationScheduling.analysis.write_optimal_results">write_optimal_results() (in module MigrationScheduling.analysis)</a>
+      <li><a href="utils.html#MigrationScheduling.utils.weighted_controller_capacity">weighted_controller_capacity() (in module MigrationScheduling.utils)</a>
+</li>
+      <li><a href="utils.html#MigrationScheduling.utils.weighted_qos_capacity">weighted_qos_capacity() (in module MigrationScheduling.utils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Sim/weighted_gaussian.html#MigrationScheduling.Sim.WeightedGaussianSimulator">WeightedGaussianSimulator (class in MigrationScheduling.Sim)</a>
+</li>
+      <li><a href="Model/analysis.html#MigrationScheduling.analysis.write_optimal_results">write_optimal_results() (in module MigrationScheduling.analysis)</a>
+</li>
       <li><a href="Model/analysis.html#MigrationScheduling.analysis.write_results_to_file">write_results_to_file() (in module MigrationScheduling.analysis)</a>
 </li>
   </ul></td>

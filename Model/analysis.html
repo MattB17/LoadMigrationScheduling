@@ -216,10 +216,11 @@ be written.</p>
 <dd><p>Compares <cite>method1</cite> and <cite>method2</cite> based on <cite>results_df</cite>.</p>
 <p>A dictionary is created recording statistics of the comparison between
 <cite>method1</cite> and <cite>method2</cite> in <cite>results_df</cite>. The statistics calculated
-are the percent of time <cite>method1</cite> is less than <cite>method2</cite>, the
-maximum improvement compared to <cite>method2</cite> and the average improvement
-over <cite>method2</cite>. The same is calculated for <cite>method2</cite> compared to
-<cite>method1</cite>.</p>
+are the percent of instances where <cite>method1</cite> is less than <cite>method2</cite>, as
+well as the minimum and average ratio of <cite>method1</cite> to <cite>method2</cite> for those
+instances. Likewise, the percent of instances where <cite>method1</cite> is greater
+than <cite>method2</cite>, as well as the maximum and average ratio of <cite>method1</cite> to
+<cite>method2</cite> for those instances.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -308,6 +309,67 @@ on each core.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_deterioration_ratios">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_deterioration_ratios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_deterioration_ratios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_deterioration_ratios" title="Permalink to this definition"></a></dt>
+<dd><p>Gets round deterioration ratios of <cite>method1</cite> over <cite>method2</cite>.</p>
+<p>The round deterioration ratios are calculated using <cite>results_df</cite> and
+represent the statistics for the times that <cite>method1</cite> completes in
+more rounds than <cite>method2</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame of experimental results for the methods.</p>
+</dd>
+<dt><strong>method1: str</strong></dt><dd><p>A string representing the method of interest.</p>
+</dd>
+<dt><strong>method2: str</strong></dt><dd><p>A string representing the method being compared against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float, float</dt><dd><p>A float denoting the maximum of <cite>method1</cite> over <cite>method2</cite> in
+<cite>results_df</cite> and a float representing the average of that ratio.
+Both ratios are restricted to the instances where <cite>method1</cite> requires
+more rounds that <cite>method2</cite></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_deterioration_stats">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_deterioration_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_deterioration_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_deterioration_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the deterioration statistics of <cite>method1</cite> over <cite>method2</cite>.</p>
+<p>The deterioration statistics of <cite>method1</cite> over <cite>method2</cite> are based on
+<cite>results_df</cite> and represent statistics for the instances where <cite>method1</cite>
+is worse than <cite>method2</cite>. These statistics are the percent of instances
+in which <cite>method1</cite> is worse than <cite>method2</cite> as well as the maximum and
+mean ratio of the two methods in these instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame of experimental results for the methods.</p>
+</dd>
+<dt><strong>method1: str</strong></dt><dd><p>A string representing the method of interest.</p>
+</dd>
+<dt><strong>method2: str</strong></dt><dd><p>A string representing the method being compared against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary recording the deterioration statistics of <cite>method1</cite> over
+<cite>method2</cite>. The keys are strings representing the names of the various
+statistics and the corresponding value is the value of the statistic.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.get_heuristic_discrepancy_df">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_heuristic_discrepancy_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic_cols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_heuristic_discrepancy_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_heuristic_discrepancy_df" title="Permalink to this definition"></a></dt>
 <dd><p>A df of the discrepancies between <cite>heuristic_cols</cite> and <cite>opt_col</cite>.</p>
@@ -335,6 +397,67 @@ the discrepancies are calculated.</p>
 <dt>pd.DataFrame</dt><dd><p>A pandas DataFrame containing the percentage of instances where the
 heuristic solution value is different than the optimal value. Results
 are grouped by optimal value and reported for each heuristic.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_improvement_ratios">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_improvement_ratios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_improvement_ratios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_improvement_ratios" title="Permalink to this definition"></a></dt>
+<dd><p>Gets round improvement ratios of <cite>method1</cite> over <cite>method2</cite>.</p>
+<p>The round improvement ratios are calculated using <cite>results_df</cite> and
+represent the statistics for the times that <cite>method1</cite> completes in
+fewer rounds than <cite>method2</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame of experimental results for the methods.</p>
+</dd>
+<dt><strong>method1: str</strong></dt><dd><p>A string representing the method of interest.</p>
+</dd>
+<dt><strong>method2: str</strong></dt><dd><p>A string representing the method being compared against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float, float</dt><dd><p>A float denoting the minimum of <cite>method1</cite> over <cite>method2</cite> in
+<cite>results_df</cite> and a float representing the average of that ratio.
+Both ratios are restricted to the instances where <cite>method1</cite>
+represents an improvement over <cite>method2</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_improvement_stats">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_improvement_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_improvement_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_improvement_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the improvement statistics of <cite>method1</cite> over <cite>method2</cite>.</p>
+<p>The improvement statistics of <cite>method1</cite> over <cite>method2</cite> are based on
+<cite>results_df</cite> and represent statistics for the instances where <cite>method1</cite>
+is better than <cite>method2</cite>. These statistics are the percent of instances
+in which <cite>method1</cite> is better than <cite>method2</cite> as well as the minimum and
+mean ratio of the two methods in these instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame of experimental results for the methods.</p>
+</dd>
+<dt><strong>method1: str</strong></dt><dd><p>A string representing the method of interest.</p>
+</dd>
+<dt><strong>method2: str</strong></dt><dd><p>A string representing the method being compared against.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>A dictionary recording the improvement statistics of <cite>method1</cite> over
+<cite>method2</cite>. The keys are strings representing the names of the various
+statistics and the corresponding value is the value of the statistic.</p>
 </dd>
 </dl>
 </dd>
@@ -420,35 +543,6 @@ instances to be analyzed.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="MigrationScheduling.analysis.get_round_reduction_stats">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">get_round_reduction_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#get_round_reduction_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.get_round_reduction_stats" title="Permalink to this definition"></a></dt>
-<dd><p>Gets round reduction statistics of <cite>method1</cite> over <cite>method2</cite>.</p>
-<p>The round reduction statistics are calculated using <cite>results_df</cite> and
-represent the statistics for the times that <cite>method1</cite> completes in
-fewer rounds than <cite>method2</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>results_df: pd.DataFrame</strong></dt><dd><p>A pandas DataFrame of experimental results for the methods.</p>
-</dd>
-<dt><strong>method1: str</strong></dt><dd><p>A string representing the method of interest.</p>
-</dd>
-<dt><strong>method2: str</strong></dt><dd><p>A string representing the method being compared against.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>int, float</dt><dd><p>An integer denoting the maximum improvement of <cite>method1</cite> over
-<cite>method2</cite> in <cite>results_df</cite> and a float representing the average
-improvement of <cite>method1</cite> over <cite>method2</cite>.</p>
-</dd>
 </dl>
 </dd>
 </dl>

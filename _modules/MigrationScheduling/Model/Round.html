@@ -36,9 +36,13 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Sim/simulation.html">Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Validation</a></li>
 </ul>
 
         </div>
@@ -70,7 +74,6 @@
 <span class="sd">about a round for the load migration scheduling problem.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">copy</span>
 
 <div class="viewcode-block" id="Round"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round">[docs]</a><span class="k">class</span> <span class="nc">Round</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Stores the information related to a scheduling round.</span>
@@ -107,9 +110,70 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">round_num</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_round_num</span> <span class="o">=</span> <span class="n">round_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">controller_caps</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">qos_caps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">controller</span> <span class="p">:</span> <span class="n">cap</span> <span class="k">for</span> <span class="n">controller</span><span class="p">,</span> <span class="n">cap</span> <span class="ow">in</span> <span class="n">controller_caps</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">qos_group</span> <span class="p">:</span> <span class="n">cap</span> <span class="k">for</span> <span class="n">qos_group</span><span class="p">,</span> <span class="n">cap</span> <span class="ow">in</span> <span class="n">qos_caps</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Round.get_round_number"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.get_round_number">[docs]</a>    <span class="k">def</span> <span class="nf">get_round_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The round number.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            An integer representing the round number.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_round_num</span></div>
+
+<div class="viewcode-block" id="Round.get_remaining_controller_capacities"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.get_remaining_controller_capacities">[docs]</a>    <span class="k">def</span> <span class="nf">get_remaining_controller_capacities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The remaining capacity of controllers in the round.</span>
+
+<span class="sd">        The remaining capacity for each controller is its original capacity</span>
+<span class="sd">        minus the sum of the loads of the migrations scheduled in the round</span>
+<span class="sd">        that are destined to that controller.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            A dictionary of remaining controller capacities. The keys are</span>
+<span class="sd">            strings representing the names of the controllers and the</span>
+<span class="sd">            corresponding value is a float representing the remaining</span>
+<span class="sd">            capacity for that controller in the round.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rem_controller_caps</span></div>
+
+<div class="viewcode-block" id="Round.get_remaining_qos_capacities"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.get_remaining_qos_capacities">[docs]</a>    <span class="k">def</span> <span class="nf">get_remaining_qos_capacities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The remaining capacity of QoS groups in the round.</span>
+
+<span class="sd">        The remaining capacity for each QoS group is its original capacity</span>
+<span class="sd">        minus the number of migrations scheduled in that round that belong</span>
+<span class="sd">        to that QoS group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            A dictionary of remaining QoS group capacities. The keys are</span>
+<span class="sd">            strings representing the names of the QoS groups and the</span>
+<span class="sd">            corresponding value is an integer representing the remaining</span>
+<span class="sd">            capacity of the QoS group in the round.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span></div>
+
+<div class="viewcode-block" id="Round.get_scheduled_migrations"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.get_scheduled_migrations">[docs]</a>    <span class="k">def</span> <span class="nf">get_scheduled_migrations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The migrations that have been scheduled in the round.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set of `Migration` objects representing the migrations that</span>
+<span class="sd">            have been scheduled in the round.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span></div>
 
 <div class="viewcode-block" id="Round.can_schedule_migration"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.can_schedule_migration">[docs]</a>    <span class="k">def</span> <span class="nf">can_schedule_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Indicates if `migration` can be scheduled in the round.</span>
@@ -149,10 +213,10 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_controller_cap</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span>
                                     <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_qos_caps</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">())</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_qos_caps</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">())</span></div>
 
     <span class="k">def</span> <span class="nf">_within_controller_cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">migration_load</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Whether `migration_load` is within the capacity of `controller`.</span>
@@ -258,8 +322,12 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Migrations completed in round </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_round_num</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="p">)))</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Migrations completed in round </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_round_num</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No migrations scheduled in round </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_round_num</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>

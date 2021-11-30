@@ -163,8 +163,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    collection</span>
-<span class="sd">        A collection of `Migration` objects representing the candidate</span>
-<span class="sd">        migrations.</span>
+<span class="sd">        A collection of strings representing the names of the switches for</span>
+<span class="sd">        the candidate migrations.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">num_candidates</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span>
@@ -239,12 +239,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">round_count</span> <span class="o">=</span> <span class="n">num_rounds</span>
+    <span class="n">curr_rounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span> <span class="k">for</span> <span class="nb">round</span> <span class="ow">in</span> <span class="n">rounds</span><span class="p">]</span>
     <span class="n">schedule_round</span> <span class="o">=</span> <span class="n">find_scheduling_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">round_count</span><span class="p">,</span> <span class="n">migration</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">schedule_round</span> <span class="o">==</span> <span class="n">round_count</span><span class="p">:</span>
-        <span class="n">rounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Round</span><span class="p">(</span><span class="n">round_count</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">))</span>
+        <span class="n">curr_rounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Round</span><span class="p">(</span><span class="n">round_count</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">))</span>
         <span class="n">round_count</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">rounds</span><span class="p">,</span> <span class="n">round_count</span></div>
+    <span class="n">curr_rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">curr_rounds</span><span class="p">,</span> <span class="n">round_count</span></div>
 
 
 <div class="viewcode-block" id="calculate_migration_load"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.calculate_migration_load">[docs]</a><span class="k">def</span> <span class="nf">calculate_migration_load</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">exclude_const</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">):</span>

@@ -117,8 +117,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_log_mean</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_log_std</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">sigma</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_setup_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_idx</span><span class="p">):</span>
@@ -138,7 +138,7 @@
 <span class="sd">            A created `Migration` object.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">load</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">sample_with_log_op</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">load</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
         <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_to_controller</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Migration</span><span class="p">(</span><span class="s2">&quot;s</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">migration_idx</span><span class="p">),</span> <span class="s2">&quot;c</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst</span><span class="p">),</span> <span class="n">load</span><span class="p">)</span>
 

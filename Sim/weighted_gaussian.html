@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Log Normal Simulator &mdash; Load Migration Scheduling  documentation</title>
+  <title>Weighted Gaussian Simulator &mdash; Load Migration Scheduling  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Weighted Gaussian Simulator" href="weighted_gaussian.html" />
-    <link rel="prev" title="Gaussian Simulator" href="gaussian.html" /> 
+    <link rel="next" title="Model" href="../Model/model.html" />
+    <link rel="prev" title="Log Normal Simulator" href="lognormal.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,8 +42,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="simulation.html">Simulation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="simulator.html">Simulator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gaussian.html">Gaussian Simulator</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Log Normal Simulator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="weighted_gaussian.html">Weighted Gaussian Simulator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lognormal.html">Log Normal Simulator</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Weighted Gaussian Simulator</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../Model/model.html">Model</a></li>
@@ -69,9 +69,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="simulation.html">Simulation</a> &raquo;</li>
-      <li>Log Normal Simulator</li>
+      <li>Weighted Gaussian Simulator</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/Sim/lognormal.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/Sim/weighted_gaussian.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -79,29 +79,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-MigrationScheduling.Sim.LogNormalSimulator">
-<span id="log-normal-simulator"></span><h1>Log Normal Simulator<a class="headerlink" href="#module-MigrationScheduling.Sim.LogNormalSimulator" title="Permalink to this headline"></a></h1>
-<p>The LogNormalSimulator class is used to simulate load migration
-scheduling instances using the LogNormal distribution.</p>
+  <section id="module-MigrationScheduling.Sim.WeightedGaussianSimulator">
+<span id="weighted-gaussian-simulator"></span><h1>Weighted Gaussian Simulator<a class="headerlink" href="#module-MigrationScheduling.Sim.WeightedGaussianSimulator" title="Permalink to this headline"></a></h1>
+<p>The <cite>WeightedGaussianSimulator</cite> class is used to simulate load migration
+scheduling instances using a set of Gaussian distributions that are sampled
+from based on a random number.</p>
+<p>Three distributions are used representing a low bottleneck setting, a medium
+bottleneck setting, and a high bottleneck setting. Each constraint samples
+from one of the 3 distributions in the proportions given by <cite>low_prop</cite> and
+<cite>med_prop</cite>.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="MigrationScheduling.Sim.LogNormalSimulator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MigrationScheduling.Sim.</span></span><span class="sig-name descname"><span class="pre">LogNormalSimulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Sim/LogNormalSimulator.html#LogNormalSimulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Sim.LogNormalSimulator" title="Permalink to this definition"></a></dt>
-<dd><p>Used to simulate a load migration scheduling instance.</p>
+<dt class="sig sig-object py" id="MigrationScheduling.Sim.WeightedGaussianSimulator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MigrationScheduling.Sim.</span></span><span class="sig-name descname"><span class="pre">WeightedGaussianSimulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">med_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Sim/WeightedGaussianSimulator.html#WeightedGaussianSimulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Sim.WeightedGaussianSimulator" title="Permalink to this definition"></a></dt>
+<dd><p>Used to simulate a load migration instance with weighted gaussians.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>mu: float</strong></dt><dd><p>A float representing the underlying mean for the normal distribution.</p>
+<dt><strong>low_prop: float</strong></dt><dd><p>A float in the range [0, 1] representing the proportion of times the
+low bottleneck distribution is sampled from.</p>
 </dd>
-<dt><strong>sigma: float</strong></dt><dd><p>A float representing the underlying standard deviation for the normal
-distribution.</p>
+<dt><strong>med_prop: float</strong></dt><dd><p>A float in the range [0, 1] representing the proportion of times the
+medium bottleneck distribution is sampled from.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Attributes</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>_mu: float</strong></dt><dd><p>The underlying mean for the normal distribution.</p>
+<dt><strong>_low_prop: float</strong></dt><dd><p>The proportion of times the low bottleneck distribution is sampled
+from.</p>
 </dd>
-<dt><strong>_sigma: float</strong></dt><dd><p>The underlying standard deviation for the normal distribution.</p>
+<dt><strong>_med_prop: float</strong></dt><dd><p>The proportion of times the medium bottleneck distribution is sampled
+from.</p>
 </dd>
 <dt><strong>_migrations: list</strong></dt><dd><p>A list of <cite>Migration</cite> objects specifying the simulated migrations.</p>
 </dd>
@@ -140,8 +148,8 @@ to each QoS group.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="gaussian.html" class="btn btn-neutral float-left" title="Gaussian Simulator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="weighted_gaussian.html" class="btn btn-neutral float-right" title="Weighted Gaussian Simulator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lognormal.html" class="btn btn-neutral float-left" title="Log Normal Simulator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Model/model.html" class="btn btn-neutral float-right" title="Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
