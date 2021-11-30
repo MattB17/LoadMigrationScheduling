@@ -602,10 +602,10 @@ def get_proportion_better(results_df, heuristic1, heuristic2):
     return 100 * outperform_indicator.mean()
 
 
-def get_round_reduction_stats(results_df, method1, method2):
-    """Gets round reduction statistics of `method1` over `method2`.
+def get_improvement_ratios(results_df, method1, method2):
+    """Gets round improvement ratios of `method1` over `method2`.
 
-    The round reduction statistics are calculated using `results_df` and
+    The round improvement ratios are calculated using `results_df` and
     represent the statistics for the times that `method1` completes in
     fewer rounds than `method2`.
 
@@ -620,15 +620,120 @@ def get_round_reduction_stats(results_df, method1, method2):
 
     Returns
     -------
-    int, float
-        An integer denoting the maximum improvement of `method1` over
-        `method2` in `results_df` and a float representing the average
-        improvement of `method1` over `method2`.
+    float, float
+        A float denoting the minimum of `method1` over `method2` in
+        `results_df` and a float representing the average of that ratio.
+        Both ratios are restricted to the instances where `method1`
+        represents an improvement over `method2`.
 
     """
-    improvement_vals = results_df[method2] - results_df[method1]
+    improvement_vals = results_df[method1] / results_df[method2]
+    return (improvement_vals.min(),
+            improvement_vals[improvement_vals < 1].mean())
+
+def get_deterioration_ratios(results_df, method1, method2):
+    """Gets round deterioration ratios of `method1` over `method2`.
+
+    The round deterioration ratios are calculated using `results_df` and
+    represent the statistics for the times that `method1` completes in
+    more rounds than `method2`.
+
+    Parameters
+    ----------
+    results_df: pd.DataFrame
+        A pandas DataFrame of experimental results for the methods.
+    method1: str
+        A string representing the method of interest.
+    method2: str
+        A string representing the method being compared against.
+
+    Returns
+    -------
+    float, float
+        A float denoting the maximum of `method1` over `method2` in
+        `results_df` and a float representing the average of that ratio.
+        Both ratios are restricted to the instances where `method1` requires
+        more rounds that `method2`
+
+    """
+    improvement_vals = results_df[method1] / results_df[method2]
     return (improvement_vals.max(),
-            improvement_vals[improvement_vals > 0].mean())
+            improvement_vals[improvement_vals > 1].mean())
+
+def get_improvement_stats(results_df, method1, method2):
+    """Gets the improvement statistics of `method1` over `method2`.
+
+    The improvement statistics of `method1` over `method2` are based on
+    `results_df` and represent statistics for the instances where `method1`
+    is better than `method2`. These statistics are the percent of instances
+    in which `method1` is better than `method2` as well as the minimum and
+    mean ratio of the two methods in these instances.
+
+    Parameters
+    ----------
+    results_df: pd.DataFrame
+        A pandas DataFrame of experimental results for the methods.
+    method1: str
+        A string representing the method of interest.
+    method2: str
+        A string representing the method being compared against.
+
+    Returns
+    -------
+    dict
+        A dictionary recording the improvement statistics of `method1` over
+        `method2`. The keys are strings representing the names of the various
+        statistics and the corresponding value is the value of the statistic.
+
+    """
+    improve_stats = {}
+    percent_str = "% of instances with {0} < {1}".format(method1, method2)
+    min_str = "min {0} / {1}".format(method1, method2)
+    mean_str = "improvement mean {0} / {1}".format(method1, method2)
+    improve_stats[percent_str] = get_proportion_better(
+        results_df, method1, method2)
+    min_val, mean_val = get_improvement_ratios(results_df, method1, method2)
+    improve_stats[min_str] = min_val
+    improve_stats[mean_str] = mean_val
+    return improve_stats
+
+
+def get_deterioration_stats(results_df, method1, method2):
+    """Gets the deterioration statistics of `method1` over `method2`.
+
+    The deterioration statistics of `method1` over `method2` are based on
+    `results_df` and represent statistics for the instances where `method1`
+    is worse than `method2`. These statistics are the percent of instances
+    in which `method1` is worse than `method2` as well as the maximum and
+    mean ratio of the two methods in these instances.
+
+    Parameters
+    ----------
+    results_df: pd.DataFrame
+        A pandas DataFrame of experimental results for the methods.
+    method1: str
+        A string representing the method of interest.
+    method2: str
+        A string representing the method being compared against.
+
+    Returns
+    -------
+    dict
+        A dictionary recording the deterioration statistics of `method1` over
+        `method2`. The keys are strings representing the names of the various
+        statistics and the corresponding value is the value of the statistic.
+
+    """
+    deter_stats = {}
+    percent_str = "% of instances with {0} > {1}".format(method1, method2)
+    max_str = "max {0} / {1}".format(method1, method2)
+    mean_str = "deterioration mean {0} / {1}".format(method1, method2)
+    deter_stats[percent_str] = get_proportion_better(
+        results_df, method2, method1)
+    max_val, mean_val = get_deterioration_ratios(results_df, method1, method2)
+    deter_stats[max_str] = max_val
+    deter_stats[mean_str] = mean_val
+    return deter_stats
 
 
 def compare_heuristic_results(results_df, method1, method2):
@@ -636,10 +741,11 @@ def compare_heuristic_results(results_df, method1, method2):
 
     A dictionary is created recording statistics of the comparison between
     `method1` and `method2` in `results_df`. The statistics calculated
-    are the percent of time `method1` is less than `method2`, the
-    maximum improvement compared to `method2` and the average improvement
-    over `method2`. The same is calculated for `method2` compared to
-    `method1`.
+    are the percent of instances where `method1` is less than `method2`, as
+    well as the minimum and average ratio of `method1` to `method2` for those
+    instances. Likewise, the percent of instances where `method1` is greater
+    than `method2`, as well as the maximum and average ratio of `method1` to
+    `method2` for those instances.
 
     Parameters
     ----------
@@ -660,23 +766,8 @@ def compare_heuristic_results(results_df, method1, method2):
         two heuristics.
 
     """
-    stats_dict = {}
-    percent_str = '{0} outperforms {1} percentage'
-    stats_dict[percent_str.format(method1, method2)] = get_proportion_better(
-        results_df, method1, method2)
-    stats_dict[percent_str.format(method2, method1)] = get_proportion_better(
-        results_df, method2, method1)
-    max_str = '{0} max round reduction over {1}'
-    mean_str = '{0} mean round reduction over {1}'
-    max1_over_2, mean1_over_2 = get_round_reduction_stats(
-        results_df, method1, method2)
-    stats_dict[max_str.format(method1, method2)] = max1_over_2
-    stats_dict[mean_str.format(method1, method2)] = mean1_over_2
-    max2_over_1, mean2_over_1 = get_round_reduction_stats(
-        results_df, method2, method1)
-    stats_dict[max_str.format(method2, method1)] = max2_over_1
-    stats_dict[mean_str.format(method2, method1)] = mean2_over_1
-    return stats_dict
+    return {**get_improvement_stats(results_df, method1, method2),
+            **get_deterioration_stats(results_df, method1, method2)}
 
 
 def get_heuristic_discrepancy_df(results_df, opt_col, heuristic_cols):
