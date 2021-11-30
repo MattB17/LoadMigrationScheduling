@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MigrationScheduling.Sim.LogNormalSimulator &mdash; Load Migration Scheduling  documentation</title>
+  <title>MigrationScheduling.Sim.BoundedParetoSimulator &mdash; Load Migration Scheduling  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -60,7 +60,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>MigrationScheduling.Sim.LogNormalSimulator</li>
+      <li>MigrationScheduling.Sim.BoundedParetoSimulator</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,34 +69,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for MigrationScheduling.Sim.LogNormalSimulator</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;The LogNormalSimulator class is used to simulate load migration</span>
-<span class="sd">scheduling instances using the LogNormal distribution.</span>
+  <h1>Source code for MigrationScheduling.Sim.BoundedParetoSimulator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The `BoundedParetoSimulator` class is used to simulate load migration</span>
+<span class="sd">scheduling instances using the Bounded Pareto distribution.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">sympy.stats</span> <span class="k">as</span> <span class="nn">syms</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">Migration</span>
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Sim.Simulator</span> <span class="kn">import</span> <span class="n">Simulator</span>
 
-
-<div class="viewcode-block" id="LogNormalSimulator"><a class="viewcode-back" href="../../../Sim/lognormal.html#MigrationScheduling.Sim.LogNormalSimulator">[docs]</a><span class="k">class</span> <span class="nc">LogNormalSimulator</span><span class="p">(</span><span class="n">Simulator</span><span class="p">):</span>
+<div class="viewcode-block" id="BoundedParetoSimulator"><a class="viewcode-back" href="../../../Sim/bounded_pareto.html#MigrationScheduling.Sim.BoundedParetoSimulator">[docs]</a><span class="k">class</span> <span class="nc">BoundedParetoSimulator</span><span class="p">(</span><span class="n">Simulator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Used to simulate a load migration scheduling instance.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    mu: float</span>
-<span class="sd">        A float representing the underlying mean for the normal distribution.</span>
-<span class="sd">    sigma: float</span>
-<span class="sd">        A float representing the underlying standard deviation for the normal</span>
+<span class="sd">    alpha: float</span>
+<span class="sd">        A positive float representing the alpha value for the Pareto</span>
 <span class="sd">        distribution.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    _mu: float</span>
-<span class="sd">        The underlying mean for the normal distribution.</span>
-<span class="sd">    _sigma: float</span>
-<span class="sd">        The underlying standard deviation for the normal distribution.</span>
+<span class="sd">    _alpha: float</span>
+<span class="sd">        The alpha value (shape parameter) for the Pareto distribution.</span>
 <span class="sd">    _migrations: list</span>
 <span class="sd">        A list of `Migration` objects specifying the simulated migrations.</span>
 <span class="sd">    _num_migrations: int</span>
@@ -116,9 +112,8 @@
 <span class="sd">        An integer representing the number of QoS groups.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">mu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span> <span class="o">=</span> <span class="n">alpha</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_setup_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_idx</span><span class="p">):</span>
@@ -138,12 +133,12 @@
 <span class="sd">            A created `Migration` object.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">load</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">load</span> <span class="o">=</span> <span class="n">syms</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">syms</span><span class="o">.</span><span class="n">BoundedPareto</span><span class="p">(</span><span class="s1">&#39;load&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
         <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_to_controller</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Migration</span><span class="p">(</span><span class="s2">&quot;s</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">migration_idx</span><span class="p">),</span> <span class="s2">&quot;c</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst</span><span class="p">),</span> <span class="n">load</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_controller_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller_idx</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Constructs the controller line for `controller_idx`.</span>
+        <span class="sd">&quot;&quot;&quot;Constructs that controller line for `controller_idx`.</span>
 
 <span class="sd">        The controller line for `controller_idx` consists of the name of the</span>
 <span class="sd">        controller and its capacity. This capacity is the amount of load the</span>
@@ -162,10 +157,12 @@
 <span class="sd">            A string representing the controller line.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">min_cap</span><span class="p">,</span> <span class="n">max_cap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_controller_cap_bounds</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">)</span>
-        <span class="n">capacity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_cap</span><span class="p">,</span> <span class="n">min_cap</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
-            <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="p">))</span> <span class="o">*</span>
-            <span class="p">(</span><span class="n">max_cap</span> <span class="o">-</span> <span class="n">min_cap</span><span class="p">)))</span>
+        <span class="n">min_cap</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_controller_cap_bounds</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">min_cap</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mf">100.0</span><span class="p">:</span>
+            <span class="n">capacity</span> <span class="o">=</span> <span class="n">min_cap</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">capacity</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">+</span> <span class="n">min_cap</span><span class="o">-</span> <span class="n">syms</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">syms</span><span class="o">.</span><span class="n">BoundedPareto</span><span class="p">(</span>
+                <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span><span class="p">,</span> <span class="n">min_cap</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">))</span>
         <span class="k">return</span> <span class="s2">&quot;c</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1:.2f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">controller_idx</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_qos_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qos_idx</span><span class="p">):</span>
@@ -189,9 +186,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">group_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span><span class="p">[</span><span class="n">qos_idx</span><span class="p">]</span>
-        <span class="n">capacity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">group_size</span><span class="p">,</span> <span class="mf">1.00</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.00</span><span class="p">,</span>
-            <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="p">))</span> <span class="o">*</span>
-            <span class="p">(</span><span class="n">group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))))</span>
+        <span class="k">if</span> <span class="n">group_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">capacity</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">capacity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">group_size</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">group_size</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">syms</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+                <span class="n">syms</span><span class="o">.</span><span class="n">BoundedPareto</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">group_size</span><span class="p">))),</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">return</span> <span class="s2">&quot;g</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qos_idx</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span></div>
 </pre></div>
 

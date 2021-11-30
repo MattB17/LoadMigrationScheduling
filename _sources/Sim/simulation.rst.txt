@@ -10,3 +10,4 @@ Simulation
    gaussian
    lognormal
    weighted_gaussian
+   bounded_pareto
