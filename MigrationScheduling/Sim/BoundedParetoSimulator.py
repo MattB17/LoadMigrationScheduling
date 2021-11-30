@@ -85,10 +85,12 @@ class BoundedParetoSimulator(Simulator):
             A string representing the controller line.
 
         """
-        min_cap, max_cap = self._get_controller_cap_bounds(controller_idx)
-        capacity = max_cap - syms.sample(
-            syms.BoundedPareto('alpha', self._alpha,
-                               min_cap, max_cap - min_cap))
+        min_cap, _ = self._get_controller_cap_bounds(controller_idx)
+        if round(min_cap, 1) == 100.0:
+            capacity = min_cap
+        else:
+            capacity = 100.0 + min_cap- syms.sample(syms.BoundedPareto(
+                'alpha', self._alpha, min_cap, 100.0))
         return "c{0} {1:.2f}\n".format(controller_idx, capacity)
 
     def _get_qos_line(self, qos_idx):
@@ -112,6 +114,9 @@ class BoundedParetoSimulator(Simulator):
 
         """
         group_size = self._qos_groups[qos_idx]
-        capacity = group_size - (syms.sample(
-            syms.BoundedPareto('beta', self._alpha, 1, group_size)) - 1)
+        if group_size == 1:
+            capacity = 1
+        else:
+            capacity = min(group_size, max(int(group_size + 1 - syms.sample(
+                syms.BoundedPareto('beta', self._alpha, 1, group_size))), 1))
         return "g{0} {1}\n".format(qos_idx, capacity)
