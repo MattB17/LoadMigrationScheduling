@@ -40,7 +40,7 @@ def test_with_multi_migrations(mock_calc, mock_data):
                    'g3': MagicMock(),
                    'g7': MagicMock()}
     assert get_bottleneck_migration(
-        {'s3', 's9', 's11'}, 'g3', mock_data, consts_dict) == migrations[1]
+        ['s3', 's9', 's11'], 'g3', mock_data, consts_dict) == migrations[1]
     migration_calls = [call('s3'), call('s9'), call('s11')]
     assert mock_data.get_migration.call_count == 3
     mock_data.get_migration.assert_has_calls(migration_calls)
