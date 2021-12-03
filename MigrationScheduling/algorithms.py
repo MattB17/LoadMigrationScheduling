@@ -238,8 +238,6 @@ def get_bottleneck_migration(migrations, bottleneck_const_name,
         from `migrations`.
 
     """
-    if isinstance(migrations, list) and len(migrations) == 1:
-        return instance_data.get_migration(migrations[0])
     bottleneck_migration = None
     max_load = 0
     for migration_name in migrations:
