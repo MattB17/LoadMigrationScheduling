@@ -218,6 +218,34 @@ be written.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.analysis.combine_optimal_results_files">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">combine_optimal_results_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#combine_optimal_results_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.combine_optimal_results_files" title="Permalink to this definition"></a></dt>
+<dd><p>Combines the results in <cite>results_files</cite> and writes to <cite>output_file</cite>.</p>
+<p>The results are read from each file in <cite>results_file</cite> and combined into
+one file which is then written to <cite>output_file</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_dir: str</strong></dt><dd><p>A string representing the directory from which the result files are
+read.</p>
+</dd>
+<dt><strong>results_files: list</strong></dt><dd><p>A list of strings representing the names of the result files to be
+combined.</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the combined
+results will be output.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.compare_heuristic_results">
 <span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">compare_heuristic_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#compare_heuristic_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.compare_heuristic_results" title="Permalink to this definition"></a></dt>
 <dd><p>Compares <cite>method1</cite> and <cite>method2</cite> based on <cite>results_df</cite>.</p>
@@ -798,7 +826,7 @@ written.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.write_results_to_file">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_results_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_results_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_results_to_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_results_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_results_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_results_to_file" title="Permalink to this definition"></a></dt>
 <dd><p>Write the results in <cite>results_list</cite> to <cite>output_file</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -808,6 +836,9 @@ that have been analyzed.</p>
 </dd>
 <dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the results will
 be written.</p>
+</dd>
+<dt><strong>with_opt: bool</strong></dt><dd><p>A boolean value indicating whether the results include the solution
+value of the optimal solution. The default value is False.</p>
 </dd>
 </dl>
 </dd>

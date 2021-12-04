@@ -348,7 +348,7 @@
         <span class="n">write_optimal_results</span><span class="p">(</span><span class="n">instance_file</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">,</span> <span class="n">curr_idx</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_results_to_file"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.write_results_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_results_to_file</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<div class="viewcode-block" id="write_results_to_file"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.write_results_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_results_to_file</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">with_opt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write the results in `results_list` to `output_file`.</span>
 
 <span class="sd">    Parameters</span>
@@ -359,6 +359,9 @@
 <span class="sd">    output_file: str</span>
 <span class="sd">        A string representing the name of the file to which the results will</span>
 <span class="sd">        be written.</span>
+<span class="sd">    with_opt: bool</span>
+<span class="sd">        A boolean value indicating whether the results include the solution</span>
+<span class="sd">        value of the optimal solution. The default value is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -366,7 +369,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">results_file</span><span class="p">:</span>
-        <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_results_header</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
+        <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_results_header</span><span class="p">(</span><span class="n">with_opt</span><span class="p">))</span>
         <span class="n">results_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">results_list</span><span class="p">)</span></div>
 
 
@@ -409,7 +412,7 @@
                                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span>
                                       <span class="n">file_pattern</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">)))</span>
     <span class="n">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span>
-    <span class="n">write_results_to_file</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">output_file</span><span class="p">)</span></div>
+    <span class="n">write_results_to_file</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">output_file</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="calculate_optimal_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.calculate_optimal_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">calculate_optimal_results_for_instances</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">,</span>
@@ -600,6 +603,37 @@
             <span class="n">target</span><span class="o">=</span><span class="n">simulate_all_instances</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">sim_cls</span><span class="p">,</span> <span class="n">sim_args</span><span class="p">,</span> <span class="n">sim_tuples</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)))</span>
     <span class="n">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="combine_optimal_results_files"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.combine_optimal_results_files">[docs]</a><span class="k">def</span> <span class="nf">combine_optimal_results_files</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">results_files</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Combines the results in `results_files` and writes to `output_file`.</span>
+
+<span class="sd">    The results are read from each file in `results_file` and combined into</span>
+<span class="sd">    one file which is then written to `output_file`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_dir: str</span>
+<span class="sd">        A string representing the directory from which the result files are</span>
+<span class="sd">        read.</span>
+<span class="sd">    results_files: list</span>
+<span class="sd">        A list of strings representing the names of the result files to be</span>
+<span class="sd">        combined.</span>
+<span class="sd">    output_file: str</span>
+<span class="sd">        A string representing the name of the file to which the combined</span>
+<span class="sd">        results will be output.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result_file</span> <span class="ow">in</span> <span class="n">results_files</span><span class="p">:</span>
+        <span class="n">result_line</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_opt_results_from_file</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">result_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result_line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_line</span><span class="p">)</span>
+    <span class="n">write_results_to_file</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="load_results_df"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.load_results_df">[docs]</a><span class="k">def</span> <span class="nf">load_results_df</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">sort_col</span><span class="p">):</span>

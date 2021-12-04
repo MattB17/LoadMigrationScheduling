@@ -511,6 +511,33 @@
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">file_name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">file_pattern</span><span class="p">):])</span></div>
 
 
+<div class="viewcode-block" id="get_opt_results_from_file"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_opt_results_from_file">[docs]</a><span class="k">def</span> <span class="nf">get_opt_results_from_file</span><span class="p">(</span><span class="n">file_dir</span><span class="p">,</span> <span class="n">result_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Retrieves the optimal results from `result_file`.</span>
+
+<span class="sd">    The results for running the heuristic methods and solving the ILP for</span>
+<span class="sd">    a particular instance are retrieved from `result_file`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_dir: str</span>
+<span class="sd">        A string representing the directory from which the file is read.</span>
+<span class="sd">    result_file: str</span>
+<span class="sd">        A string representing the name of the file containing the heuristic</span>
+<span class="sd">        and optimal results for an instance.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        A string representing the results read from `result_file`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_dir</span><span class="p">,</span> <span class="n">result_file</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_file</span><span class="p">:</span>
+        <span class="n">results_str</span> <span class="o">=</span> <span class="n">read_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results_str</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">results_str</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+
+
 <div class="viewcode-block" id="initialize_seeds"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.initialize_seeds">[docs]</a><span class="k">def</span> <span class="nf">initialize_seeds</span><span class="p">(</span><span class="n">seed_num</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initializes the random seeds for reproducibility of experiments.</span>
 
