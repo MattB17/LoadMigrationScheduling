@@ -439,6 +439,33 @@ def extract_file_idx(instance_file, file_pattern):
     return int(file_name[len(file_pattern):])
 
 
+def get_opt_results_from_file(file_dir, result_file):
+    """Retrieves the optimal results from `result_file`.
+
+    The results for running the heuristic methods and solving the ILP for
+    a particular instance are retrieved from `result_file`.
+
+    Parameters
+    ----------
+    file_dir: str
+        A string representing the directory from which the file is read.
+    result_file: str
+        A string representing the name of the file containing the heuristic
+        and optimal results for an instance.
+
+    Returns
+    -------
+    str
+        A string representing the results read from `result_file`.
+
+    """
+    with open(os.path.join(file_dir, result_file), 'r') as read_file:
+        results_str = read_file.readlines()
+    if len(results_str) >= 2:
+        return results_str[1]
+    return ""
+
+
 def initialize_seeds(seed_num):
     """Initializes the random seeds for reproducibility of experiments.
 

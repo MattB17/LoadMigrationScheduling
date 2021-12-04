@@ -276,7 +276,7 @@ def solve_instances_optimally(instance_files, input_dir,
         write_optimal_results(instance_file, input_dir, curr_idx, output_dir)
 
 
-def write_results_to_file(results_list, output_file):
+def write_results_to_file(results_list, output_file, with_opt=False):
     """Write the results in `results_list` to `output_file`.
 
     Parameters
@@ -287,6 +287,9 @@ def write_results_to_file(results_list, output_file):
     output_file: str
         A string representing the name of the file to which the results will
         be written.
+    with_opt: bool
+        A boolean value indicating whether the results include the solution
+        value of the optimal solution. The default value is False.
 
     Returns
     -------
@@ -294,7 +297,7 @@ def write_results_to_file(results_list, output_file):
 
     """
     with open(output_file, 'w') as results_file:
-        results_file.write(utils.get_results_header(False))
+        results_file.write(utils.get_results_header(with_opt))
         results_file.writelines(results_list)
 
 
@@ -337,7 +340,7 @@ def calculate_heuristic_results_for_instances(input_dir, file_pattern,
                                 args=(results, instances,
                                       file_pattern, input_dir)))
     initialize_and_join_processes(procs)
-    write_results_to_file(list(results), output_file)
+    write_results_to_file(list(results), output_file, False)
 
 
 def calculate_optimal_results_for_instances(input_dir, file_pattern,
@@ -528,6 +531,37 @@ def create_simulated_instances(sim_cls, sim_args,
             target=simulate_all_instances,
             args=(sim_cls, sim_args, sim_tuples, output_dir)))
     initialize_and_join_processes(procs)
+
+
+def combine_optimal_results_files(input_dir, results_files, output_file):
+    """Combines the results in `results_files` and writes to `output_file`.
+
+    The results are read from each file in `results_file` and combined into
+    one file which is then written to `output_file`.
+
+    Parameters
+    ----------
+    input_dir: str
+        A string representing the directory from which the result files are
+        read.
+    results_files: list
+        A list of strings representing the names of the result files to be
+        combined.
+    output_file: str
+        A string representing the name of the file to which the combined
+        results will be output.
+
+    Returns
+    -------
+    None
+
+    """
+    results = []
+    for result_file in results_files:
+        result_line = utils.get_opt_results_from_file(input_dir, result_file)
+        if result_line != "":
+            results.append(result_line)
+    write_results_to_file(results, output_file, True)
 
 
 def load_results_df(results_file, sort_col):
