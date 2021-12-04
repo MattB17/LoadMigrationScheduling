@@ -477,11 +477,39 @@
 <span class="sd">        A string representing the header for the results file.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">header_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;num_migrations num_controllers num_groups &quot;</span> <span class="o">+</span>
-                  <span class="s2">&quot;vff vff_time cbf cbf_time&quot;</span><span class="p">)</span>
+    <span class="n">header_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;instance_idx num_migrations num_controllers &quot;</span> <span class="o">+</span>
+                  <span class="s2">&quot;num_groups vff vff_time cbf cbf_time&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">run_optimizer</span><span class="p">:</span>
         <span class="n">header_str</span> <span class="o">+=</span> <span class="s2">&quot; opt opt_time&quot;</span>
     <span class="k">return</span> <span class="n">header_str</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="extract_file_idx"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.extract_file_idx">[docs]</a><span class="k">def</span> <span class="nf">extract_file_idx</span><span class="p">(</span><span class="n">instance_file</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extracts the index from `instance_file` based on `file_pattern`.</span>
+
+<span class="sd">    `instance_file` is in form &quot;&lt;pattern&gt;&lt;idx&gt;.&lt;ext&gt;&quot; where &lt;pattern&gt; is the</span>
+<span class="sd">    file pattern, &lt;idx&gt; is the file index, and &lt;ext&gt; is the file extension.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    instance_file: str</span>
+<span class="sd">        A string representing the name of the file from which the index is</span>
+<span class="sd">        extracted.</span>
+<span class="sd">    file_pattern: str</span>
+<span class="sd">        A string representing the file pattern used to identify the point in</span>
+<span class="sd">        the file name at which to extract the index.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        An integer representing the file index from `instance_file`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">instance_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_pattern</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">file_name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">file_pattern</span><span class="p">):])</span></div>
+
 
 <div class="viewcode-block" id="initialize_seeds"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.initialize_seeds">[docs]</a><span class="k">def</span> <span class="nf">initialize_seeds</span><span class="p">(</span><span class="n">seed_num</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initializes the random seeds for reproducibility of experiments.</span>
