@@ -22,8 +22,8 @@ if __name__ == "__main__":
     output_file = os.path.join(output_dir, "results.txt")
     if optimize:
         analysis.calculate_optimal_results_for_instances(
-            input_dir, instance_files, output_dir)
+            input_dir, file_pattern, instance_files, output_dir)
     else:
         output_file = os.path.join(output_dir, "results.txt")
         analysis.calculate_heuristic_results_for_instances(
-            input_dir, instance_files, output_file)
+            input_dir, file_pattern, instance_files, output_file)

@@ -405,11 +405,39 @@ def get_results_header(run_optimizer=True):
         A string representing the header for the results file.
 
     """
-    header_str = ("num_migrations num_controllers num_groups " +
-                  "vff vff_time cbf cbf_time")
+    header_str = ("instance_idx num_migrations num_controllers " +
+                  "num_groups vff vff_time cbf cbf_time")
     if run_optimizer:
         header_str += " opt opt_time"
     return header_str + "\n"
+
+
+def extract_file_idx(instance_file, file_pattern):
+    """Extracts the index from `instance_file` based on `file_pattern`.
+
+    `instance_file` is in form "<pattern><idx>.<ext>" where <pattern> is the
+    file pattern, <idx> is the file index, and <ext> is the file extension.
+
+    Parameters
+    ----------
+    instance_file: str
+        A string representing the name of the file from which the index is
+        extracted.
+    file_pattern: str
+        A string representing the file pattern used to identify the point in
+        the file name at which to extract the index.
+
+    Returns
+    -------
+    int
+        An integer representing the file index from `instance_file`.
+
+    """
+    file_name = instance_file.split(".")[0]
+    if len(file_name) == len(file_pattern):
+        return -1
+    return int(file_name[len(file_pattern):])
+
 
 def initialize_seeds(seed_num):
     """Initializes the random seeds for reproducibility of experiments.

@@ -201,7 +201,6 @@ def calculate_migration_load(migration, exclude_const, consts_dict):
         {migration.get_dst_controller()})
     if exclude_const in migration_consts:
         migration_consts.remove(exclude_const)
-    print(migration_consts)
     for const_name in migration_consts:
         load = max(load, consts_dict[const_name].get_load_factor())
     return load

@@ -144,7 +144,7 @@ def build_optimal_string(optimizer):
     return "{0} {1}".format(opt, opt_time)
 
 
-def build_results_string(input_dir, instance_file, run_optimizer):
+def build_results_string(input_dir, instance_file, output_idx, run_optimizer):
     """Builds the results string for the instance given in `instance_file`.
 
     The results string is a space separated string specifying the size of the
@@ -157,7 +157,10 @@ def build_results_string(input_dir, instance_file, run_optimizer):
         A string specifying the name of the directory from which the
         instance will be read.
     instance_file: str
-        A string specifying the name of the file containing the instance.
+        A string specifying the name of a file containing the instance to
+        be solved.
+    output_idx: int
+        An integer identifying the index of the instance being output.
     run_optimizer: bool
         A bool specifying whether the optimizer will be run to find the
         optimal solution of the instance. Otherwise, just the heuristic
@@ -171,8 +174,8 @@ def build_results_string(input_dir, instance_file, run_optimizer):
     """
     optimizer = Optimizer()
     optimizer.get_model_data(os.path.join(input_dir, instance_file))
-    results_str = "{0} {1}".format(
-        optimizer.get_size_string(),
+    results_str = "{0} {1} {2}".format(
+        output_idx, optimizer.get_size_string(),
         build_heuristics_string(optimizer.instance_data()))
     if run_optimizer:
         results_str = "{0} {1}".format(
@@ -180,7 +183,8 @@ def build_results_string(input_dir, instance_file, run_optimizer):
     return results_str + "\n"
 
 
-def get_results_for_instances(results_list, instance_files, input_dir):
+def get_results_for_instances(results_list, instance_files,
+                              file_pattern, input_dir):
     """Gets results for all the instances specified in `instance_files`.
 
     For each instance in `instance_files` the result string is computed and
@@ -193,6 +197,8 @@ def get_results_for_instances(results_list, instance_files, input_dir):
     instance_files: list
         A list of strings representing the names of files specifying the
         instances to be analyzed.
+    file_pattern: str
+        A string representing the pattern used for the instance files.
     input_dir: str
         A string specifying the directory from which the instances are read.
 
@@ -202,8 +208,9 @@ def get_results_for_instances(results_list, instance_files, input_dir):
 
     """
     for instance_file in instance_files:
+        output_idx = utils.extract_file_idx(instance_file, file_pattern)
         results_list.append(build_results_string(
-            input_dir, instance_file, False))
+            input_dir, instance_file, output_idx, False))
 
 def write_optimal_results(instance_file, input_dir, result_idx, output_dir):
     """Writes the results of solving `instance_file` optimally.
@@ -235,10 +242,10 @@ def write_optimal_results(instance_file, input_dir, result_idx, output_dir):
     with open(output_file, 'w') as results_file:
         results_file.write(utils.get_results_header(True))
         results_file.write(build_results_string(
-            input_dir, instance_file, True))
+            input_dir, instance_file, result_idx, True))
 
 def solve_instances_optimally(instance_files, input_dir,
-                              output_idx, output_dir):
+                              file_pattern, output_dir):
     """Finds the optimal solution for each instance in `instance_files`.
 
     Each file in `instance_files` is read from `input_dir` and the
@@ -253,9 +260,8 @@ def solve_instances_optimally(instance_files, input_dir,
     input_dir: str
         A string representing the name of the directory from which the
         instances are read.
-    output_idx: int
-        An integer representing the starting index for the output files to
-        identify the instances that generated each output.
+    file_pattern: str
+        A string identifying the pattern of the instance files.
     output_dir: str
         A string representing the name of the directory to which the results
         will be written.
@@ -265,10 +271,9 @@ def solve_instances_optimally(instance_files, input_dir,
     None
 
     """
-    curr_idx = output_idx
     for instance_file in instance_files:
+        curr_idx = utils.extract_file_idx(instance_file, file_pattern)
         write_optimal_results(instance_file, input_dir, curr_idx, output_dir)
-        curr_idx += 1
 
 
 def write_results_to_file(results_list, output_file):
@@ -293,7 +298,7 @@ def write_results_to_file(results_list, output_file):
         results_file.writelines(results_list)
 
 
-def calculate_heuristic_results_for_instances(input_dir,
+def calculate_heuristic_results_for_instances(input_dir, file_pattern,
                                               instance_files, output_file):
     """Gets the heuristic results for each instance in `instance_files`.
 
@@ -307,6 +312,8 @@ def calculate_heuristic_results_for_instances(input_dir,
     input_dir: str
         A string representing the name of the directory from which the
         instance files are read.
+    file_pattern: str
+        A string identifying the pattern of the instance files.
     instance_files: list
         A list of strings representing the names of the files specifying the
         instances for which the results are calculated.
@@ -327,12 +334,13 @@ def calculate_heuristic_results_for_instances(input_dir,
         instances = get_instances_for_core(
             instance_files, instances_per_core, core_num)
         procs.append(mp.Process(target=get_results_for_instances,
-                                args=(results, instances, input_dir)))
+                                args=(results, instances,
+                                      file_pattern, input_dir)))
     initialize_and_join_processes(procs)
     write_results_to_file(list(results), output_file)
 
 
-def calculate_optimal_results_for_instances(input_dir,
+def calculate_optimal_results_for_instances(input_dir, file_pattern,
                                             instance_files, output_dir):
     """Gets the optimal results for each instance in `instance_files`.
 
@@ -346,6 +354,8 @@ def calculate_optimal_results_for_instances(input_dir,
     input_dir: str
         A string representing the name of the directory from which the
         instance files are read.
+    file_pattern: str
+        A string identifying the pattern of the instance files.
     instance_files: list
         A list of strings representing the names of the files specifying the
         instances for which the results are calculated.
@@ -364,10 +374,9 @@ def calculate_optimal_results_for_instances(input_dir,
     for core_num in range(cores):
         instances = get_instances_for_core(
             instance_files, instances_per_core, core_num)
-        output_idx = core_num * instances_per_core
         procs.append(mp.Process(target=solve_instances_optimally,
                                 args=(instances, input_dir,
-                                      output_idx, output_dir)))
+                                      file_pattern, output_dir)))
     initialize_and_join_processes(procs)
 
 
