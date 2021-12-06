@@ -434,9 +434,10 @@ def extract_file_idx(instance_file, file_pattern):
 
     """
     file_name = instance_file.split(".")[0]
-    if len(file_name) == len(file_pattern):
+    try:
+        return int(file_name[len(file_pattern):])
+    except:
         return -1
-    return int(file_name[len(file_pattern):])
 
 
 def get_opt_results_from_file(file_dir, result_file):
