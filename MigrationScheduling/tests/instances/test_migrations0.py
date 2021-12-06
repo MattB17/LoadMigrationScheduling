@@ -4,8 +4,8 @@ from gurobipy import GRB
 from MigrationScheduling import algorithms
 from MigrationScheduling.Model import Optimizer
 
-DIR = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DIR = os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # indices of network objects
 SWITCH_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]

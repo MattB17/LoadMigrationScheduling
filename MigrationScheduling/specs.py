@@ -30,3 +30,6 @@ COLOR_MAP = {"VFF": "red", "CBF": "black", "OPT": "blue"}
 
 # a map representing the styles to use for plotting
 STYLE_MAP = {"VFF": "r^", "CBF": "k+", "OPT": 'b-.'}
+
+# the set of valid bottlenek settings
+BOTTLENECK_SETTINGS = {'low', 'medium', 'high'}

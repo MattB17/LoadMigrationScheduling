@@ -3,6 +3,7 @@ that objects are initialized properly or signal errors if not.
 
 """
 from MigrationScheduling import exceptions as exc
+from MigrationScheduling import specs
 
 
 def validate_name(proposed_name, first_letter, object_type):
@@ -63,5 +64,5 @@ def validate_bottleneck_setting(supplied_setting):
     None
 
     """
-    if supplied_setting not in {"low", "medium", "high"}:
+    if supplied_setting not in specs.BOTTLENECK_SETTINGS:
         raise exc.IncorrectBottleneckSetting(supplied_setting)
