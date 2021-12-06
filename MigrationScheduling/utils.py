@@ -264,6 +264,37 @@ def gaussian_controller_capacity(min_cap, max_cap, bottleneck_type):
     return min(max_cap, min_cap + max(0,
         np.random.normal(cap_mean, 0.3) * (max_cap - min_cap)))
 
+
+def gaussian_qos_capacity(group_size, bottleneck_type):
+    """The gaussian capacity for a QoS group of size `group_size`.
+
+    The capacity is a factor of `group_size` and `bottleneck_type` and is
+    sampled from the appropriate Gaussian distribution.
+
+    Parameters
+    ----------
+    group_size: int
+        An integer representing the number of migrations in the QoS group.
+    bottleneck_type: str
+        A string representing the bottleneck setting used to generate the
+        group capacity. Accepted values are 'high', 'medium', and 'low'.
+        The capacity is calculated relative to the group size.
+
+    Returns
+    -------
+    int
+        An integer representing the capacity for the QoS group.
+
+    """
+    if bottleneck_type == "high":
+        return 1
+    cap_mean = 0.2
+    if bottleneck_type == "low":
+        cap_mean = 0.5
+    return int(min(group_size, max(1.0,
+        np.random.normal(cap_mean, 0.3) * group_size)))
+
+
 def weighted_controller_capacity(min_cap, max_cap, low_prop, med_prop):
     """The weighted capacity for a controller in [`min_cap`, `max_cap`].
 
@@ -329,35 +360,6 @@ def weighted_qos_capacity(group_size, low_prop, med_prop):
     cap_mean = 0.5
     if weight > low_prop:
         cap_mean = 0.2
-    return int(min(group_size, max(1.0,
-        np.random.normal(cap_mean, 0.3) * group_size)))
-
-def gaussian_qos_capacity(group_size, bottleneck_type):
-    """The gaussian capacity for a QoS group of size `group_size`.
-
-    The capacity is a factor of `group_size` and `bottleneck_type` and is
-    sampled from the appropriate Gaussian distribution.
-
-    Parameters
-    ----------
-    group_size: int
-        An integer representing the number of migrations in the QoS group.
-    bottleneck_type: str
-        A string representing the bottleneck setting used to generate the
-        group capacity. Accepted values are 'high', 'medium', and 'low'.
-        The capacity is calculated relative to the group size.
-
-    Returns
-    -------
-    int
-        An integer representing the capacity for the QoS group.
-
-    """
-    if bottleneck_type == "high":
-        return 1
-    cap_mean = 0.2
-    if bottleneck_type == "low":
-        cap_mean = 0.5
     return int(min(group_size, max(1.0,
         np.random.normal(cap_mean, 0.3) * group_size)))
 
