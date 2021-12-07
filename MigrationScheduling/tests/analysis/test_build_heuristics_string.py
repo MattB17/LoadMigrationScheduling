@@ -15,6 +15,7 @@ def test_build_heuristics_string(mock_timer, mock_vff, mock_cbf):
     mock_data = MagicMock()
     result_str = build_heuristics_string(mock_data)
     results = [float(x) for x in result_str.split(" ")]
+    assert len(results) == 4
     assert round(results[0], 0) == 8
     assert round(results[1], 1) == 1.2
     assert round(results[2], 0) == 7
