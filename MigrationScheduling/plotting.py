@@ -55,7 +55,8 @@ def add_plot_formatting(x_title, y_title, output_file):
     """
     plt.legend()
     plt.xlabel(x_title)
-    plt.ylabel(y_title)
+    if len(y_title):
+        plt.ylabel(y_title)
     plt.savefig(output_file)
     plt.show()
 
@@ -84,7 +85,7 @@ def plot_results(results_df, result_cols, x_title, y_title, output_file):
     None
 
     """
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(10, 7))
     for result_col in result_cols:
         col_name = result_col.split("_")[0].upper()
         plt.plot(results_df.index, results_df[result_col],
