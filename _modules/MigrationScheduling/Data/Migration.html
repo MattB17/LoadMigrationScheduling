@@ -36,7 +36,9 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Sim/simulation.html">Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utility Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions</a></li>
@@ -82,6 +84,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    switch: str</span>
 <span class="sd">        A string identifying the switch to be migrated.</span>
+<span class="sd">    src_controller: str</span>
+<span class="sd">        A string identifying the source controller.</span>
 <span class="sd">    dst_controller: str</span>
 <span class="sd">        A string identifying the destination controller.</span>
 <span class="sd">    load: float</span>
@@ -91,6 +95,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    _switch: str</span>
 <span class="sd">        The name of the switch.</span>
+<span class="sd">    _src_controller: str</span>
+<span class="sd">        The name of the source controller.</span>
 <span class="sd">    _dst_controller: str</span>
 <span class="sd">        The name of the destination controller.</span>
 <span class="sd">    _load: float</span>
@@ -105,9 +111,10 @@
 <span class="sd">        form `sx` where `x` is an integer representing the switch ID.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch</span><span class="p">,</span> <span class="n">dst_controller</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch</span><span class="p">,</span> <span class="n">src_controller</span><span class="p">,</span> <span class="n">dst_controller</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
         <span class="n">val</span><span class="o">.</span><span class="n">validate_name</span><span class="p">(</span><span class="n">switch</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s2">&quot;Switch&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switch</span> <span class="o">=</span> <span class="n">switch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src_controller</span> <span class="o">=</span> <span class="n">src_controller</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span> <span class="o">=</span> <span class="n">dst_controller</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load</span> <span class="o">=</span> <span class="n">load</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -143,6 +150,18 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">InvalidName</span><span class="p">(</span><span class="s2">&quot;Switch names should be in the form &quot;</span> <span class="o">+</span>
                                   <span class="s2">&quot;&#39;sx&#39; where &#39;x&#39; is the switch ID&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Migration.get_src_controller"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_src_controller">[docs]</a>    <span class="k">def</span> <span class="nf">get_src_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The controller from which the switch is migrated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A string representing the name of the source controller for</span>
+<span class="sd">            the migration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src_controller</span></div>
 
 <div class="viewcode-block" id="Migration.get_dst_controller"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.get_dst_controller">[docs]</a>    <span class="k">def</span> <span class="nf">get_dst_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The controller to which the switch should be migrated.</span>
@@ -223,9 +242,11 @@
 <span class="sd">            A string representing the migration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mig_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Migrate switch </span><span class="si">{0}</span><span class="s2"> to controller </span><span class="si">{1}</span><span class="s2"> with load of &quot;</span> <span class="o">+</span>
-                  <span class="s2">&quot;</span><span class="si">{2:.2f}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span><span class="p">,</span>
-                                       <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
+        <span class="n">mig_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Migrate switch </span><span class="si">{0}</span><span class="s2"> from controller </span><span class="si">{1}</span><span class="s2"> to controller &quot;</span> <span class="o">+</span>
+                  <span class="s2">&quot;</span><span class="si">{2}</span><span class="s2"> with load of </span><span class="si">{3:.2f}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switch</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_src_controller</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
             <span class="n">mig_str</span> <span class="o">+=</span> <span class="s2">&quot;QoS groups: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
