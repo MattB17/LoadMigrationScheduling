@@ -12,6 +12,8 @@ class Migration:
     ----------
     switch: str
         A string identifying the switch to be migrated.
+    src_controller: str
+        A string identifying the source controller.
     dst_controller: str
         A string identifying the destination controller.
     load: float
@@ -21,6 +23,8 @@ class Migration:
     ----------
     _switch: str
         The name of the switch.
+    _src_controller: str
+        The name of the source controller.
     _dst_controller: str
         The name of the destination controller.
     _load: float
@@ -35,9 +39,10 @@ class Migration:
         form `sx` where `x` is an integer representing the switch ID.
 
     """
-    def __init__(self, switch, dst_controller, load):
+    def __init__(self, switch, src_controller, dst_controller, load):
         val.validate_name(switch, 's', "Switch")
         self._switch = switch
+        self._src_controller = src_controller
         self._dst_controller = dst_controller
         self._load = load
         self._groups = set()
@@ -73,6 +78,18 @@ class Migration:
         except:
             raise exc.InvalidName("Switch names should be in the form " +
                                   "'sx' where 'x' is the switch ID")
+
+    def get_src_controller(self):
+        """The controller from which the switch is migrated.
+
+        Returns
+        -------
+        str
+            A string representing the name of the source controller for
+            the migration.
+
+        """
+        return self._src_controller
 
     def get_dst_controller(self):
         """The controller to which the switch should be migrated.
@@ -153,9 +170,11 @@ class Migration:
             A string representing the migration.
 
         """
-        mig_str = ("Migrate switch {0} to controller {1} with load of " +
-                  "{2:.2f}.\n").format(self._switch, self._dst_controller,
-                                       self._load)
+        mig_str = ("Migrate switch {0} from controller {1} to controller " +
+                  "{2} with load of {3:.2f}.\n").format(self._switch,
+                                                        self._src_controller,
+                                                        self._dst_controller,
+                                                        self._load)
         if self._groups:
             mig_str += "QoS groups: {}.".format(" ".join(self._groups))
         else:

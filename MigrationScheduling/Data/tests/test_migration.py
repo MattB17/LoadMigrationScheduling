@@ -10,13 +10,14 @@ VAL_STR = "MigrationScheduling.validation.validate_name"
 @pytest.fixture(scope="function")
 def migration():
     with patch(VAL_STR, side_effect=None) as mock_val:
-        migration = Migration('s0', 'c3', 3.5)
+        migration = Migration('s0', 'c1', 'c3', 3.5)
     mock_val.assert_called_once_with('s0', 's', "Switch")
     return migration
 
 
 def test_instantiation(migration):
     assert migration.get_switch() == 's0'
+    assert migration.get_src_controller() == 'c1'
     assert migration.get_dst_controller() == 'c3'
     assert migration.get_load() == 3.5
     assert migration.get_groups() == set()
@@ -24,7 +25,7 @@ def test_instantiation(migration):
 @patch(VAL_STR, side_effect=exc.InvalidName(""))
 def test_invalid_name(mock_validate):
     with pytest.raises(exc.InvalidName):
-        Migration('sw56', 'c1', 0.1)
+        Migration('sw56', 'c0', 'c1', 0.1)
 
 
 def test_adding_groups(migration):
@@ -46,12 +47,14 @@ def test_is_in_group_gives_true(migration):
 
 def test_str_method_no_qos_groups(migration):
     migration_str = migration.__str__()
-    assert migration_str == ("Migrate switch s0 to controller c3 with " +
-                            "load of 3.50.\nNo QoS groups.")
+    assert migration_str == ("Migrate switch s0 from controller c1 to "
+                             "controller c3 with load of 3.50.\n"
+                             "No QoS groups.")
 
 def test_str_method_with_qos_groups(migration):
     migration._groups = {'g2', 'g5'}
-    first_part = "Migrate switch s0 to controller c3 with load of 3.50.\n"
+    first_part = ("Migrate switch s0 from controller c1 to controller c3 "
+                  "with load of 3.50.\n")
     second_part_1 = "QoS groups: g2 g5."
     second_part_2 = "QoS groups: g5 g2."
     migration_str = migration.__str__()

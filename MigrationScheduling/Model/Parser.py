@@ -174,7 +174,8 @@ class Parser:
 
         """
         migration = Migration(
-            migration_data[0], migration_data[1], float(migration_data[2]))
+            migration_data[0], migration_data[1],
+            migration_data[1], float(migration_data[2]))
         curr_idx = 3
         n = len(migration_data)
         while (curr_idx < n):
