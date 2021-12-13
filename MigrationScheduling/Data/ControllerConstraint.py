@@ -22,8 +22,10 @@ class ControllerConstraint:
         The name of the controller to which the constraints apply.
     _capacity: float
         The capacity value used in the constraint.
-    _switches: set
+    _in_switches: set
         The collection of switches to be migrated to the controller.
+    _out_switches: set
+        The collection of switches to be migrated from the controller.
 
     Raises
     ------
@@ -37,7 +39,8 @@ class ControllerConstraint:
         val.validate_name(controller, 'c', "Controller")
         self._controller = controller
         self._capacity = capacity
-        self._switches = set()
+        self._in_switches = set()
+        self._out_switches = set()
 
     def get_controller(self):
         """The name of the controller to which the constraints apply.
@@ -61,7 +64,7 @@ class ControllerConstraint:
         """
         return self._capacity
 
-    def get_switches(self):
+    def get_in_switches(self):
         """The collection of switches to be migrated to the controller.
 
         Returns
@@ -70,7 +73,34 @@ class ControllerConstraint:
             A set representing the switches to be migrated to the controller.
 
         """
-        return self._switches
+        return self._in_switches
+
+    def get_out_switches(self):
+        """The collection of switches to be migrated from the controller.
+
+        Returns
+        -------
+        set
+            A set representing the switches to be migrated from the
+            controller.
+
+        """
+        return self._out_switches
+
+    def get_switches(self):
+        """The collection of switches that use the controller for migration.
+
+        A switch uses the controller for migration if the controller is either
+        the source or destination of the migration.
+
+        Returns
+        -------
+        set
+            A set representing the switches that use the controller for
+            migration.
+
+        """
+        return self._in_switches.union(self._out_switches)
 
     def get_controller_idx(self):
         """The index of the controller corresponding to the constraint.
@@ -84,7 +114,7 @@ class ControllerConstraint:
         """
         return int(self._controller[1:])
 
-    def add_switch(self, switch_name):
+    def add_in_switch(self, switch_name):
         """Adds `switch_name` as a switch to be migrated to the controller.
 
         Parameters
@@ -97,7 +127,22 @@ class ControllerConstraint:
         None
 
         """
-        self._switches.add(switch_name)
+        self._in_switches.add(switch_name)
+
+    def add_out_switch(self, switch_name):
+        """Adds `switch_name` as a switch to be migrated from the controller.
+
+        Parameters
+        ----------
+        switch_name: str
+            The name of a switch to be migrated from the controller.
+
+        Returns
+        -------
+        None
+
+        """
+        self._out_switches.add(switch_name)
 
     def __str__(self):
         """A string representation of the controller constraint.
@@ -111,7 +156,10 @@ class ControllerConstraint:
         cont_str = ("Constraint for controller {0} " +
                     "with a capacity of {1:.2f}.\n").format(
                     self._controller, self._capacity)
-        if self._switches:
-            cont_str += "Destination for switches: {}".format(
-                " ".join(self._switches))
+        if self._out_switches:
+            cont_str += "Source for switches: {}\n".format(
+                " ".join(self._out_switches))
+        if self._in_switches:
+            cont_str += "Destination for switches: {}\n".format(
+                " ".join(self._in_switches))
         return cont_str

@@ -205,8 +205,10 @@ class Parser:
         constraint = ControllerConstraint(
             controller_data[0], float(controller_data[1]))
         for migration in self._migrations.values():
-            if migration.get_dst_controller() == controller_data[0]:
-                constraint.add_switch(migration.get_switch())
+            if migration.get_src_controller() == controller_data[0]:
+                constraint.add_out_switch(migration.get_switch())
+            elif migration.get_dst_controller() == controller_data[0]:
+                constraint.add_in_switch(migration.get_switch())
         self._controller_constraints.add(constraint)
 
     def _add_qos_constraint(self, qos_data):
