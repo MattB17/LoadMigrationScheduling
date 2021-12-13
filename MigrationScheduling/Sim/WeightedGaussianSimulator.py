@@ -63,7 +63,7 @@ class WeightedGaussianSimulator(Simulator):
         """Setups a migration for `migration_idx`.
 
         The setup involves simulating a load for the migration and choosing
-        a random destination controller.
+        a random source and destination controller.
 
         Parameters
         ----------
@@ -77,8 +77,7 @@ class WeightedGaussianSimulator(Simulator):
 
         """
         load = max(1.00, round(np.random.lognormal(2.5, 0.5), 2))
-        dst = self._assign_to_controller(load)
-        return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
+        return self._construct_migration_from_load(migration_idx, load)
 
     def _get_controller_line(self, controller_idx):
         """Constructs that controller line for `controller_idx`.

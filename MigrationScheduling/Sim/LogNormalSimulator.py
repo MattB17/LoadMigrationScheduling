@@ -53,7 +53,7 @@ class LogNormalSimulator(Simulator):
         """Setups a migration for `migration_idx`.
 
         The setup involves simulating a load for the migration and choosing
-        a random destination controller.
+        a random source and destination controller.
 
         Parameters
         ----------
@@ -67,8 +67,7 @@ class LogNormalSimulator(Simulator):
 
         """
         load = round(np.random.lognormal(1, 1), 2)
-        dst = self._assign_to_controller(load)
-        return Migration("s{}".format(migration_idx), "c{}".format(dst), load)
+        return self._construct_migration_from_load(migration_idx, load)
 
     def _get_controller_line(self, controller_idx):
         """Constructs the controller line for `controller_idx`.

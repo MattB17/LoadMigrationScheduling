@@ -118,11 +118,11 @@ class Simulator(ABC):
             self._qos_groups[group_id] += 1
         return groups
 
-    def _assign_to_controller(self, load):
-        """Picks a destination controller for a migration with load of `load`.
+    def _assign_to_controllers(self, load):
+        """Picks controllers for a migration with load of `load`.
 
-        A destination controller is chosen uniformly at random from the set
-        of destination controllers.
+        A source and destination controller is chosen uniformly at random
+        from the set of controllers.
 
         Parameters
         ----------
@@ -132,16 +132,41 @@ class Simulator(ABC):
 
         Returns
         -------
-        int
-            An integer representing the index of the controller to which
-            the migration was assigned.
+        int, int
+            Two integer representing the index of the controller serving as
+            the source and destination controllers for the migration,
+            respectively.
 
         """
-        dst = random.randint(1, self._num_controllers) - 1
+        src, dst = random.sample(range(self._num_controllers, 2))
         self._controllers[dst][0] += 1
         self._controllers[dst][1] = max(load, self._controllers[dst][1])
         self._controllers[dst][2] += load
-        return dst
+        return src, dst
+
+    def _construct_migration_from_load(self, migration_idx, load):
+        """Constructs a migration from `load` based on `migration_idx`.
+
+        A source and destination controller is chosen for the migration and
+        a `Migration` object is constructed for `migration_idx`.
+
+        Parameters
+        ----------
+        migration_idx: int
+            An integer representing the index of the migration.
+        load: float
+            A float representing the load incurred for the migration.
+
+        Returns
+        -------
+        Migration
+            A `Migration` object representing the migration for
+            `migration_idx`.
+
+        """
+        src, dst = self._assign_to_controllers(load)
+        return Migration("s{}".format(migration_idx),
+                         "c{}".format(src), "c{}".format(dst), load)
 
     def _create_migration(self, migration_idx):
         """Simulates a new migration.
@@ -247,7 +272,7 @@ class Simulator(ABC):
         """Sets up a migration for `migration_idx`.
 
         The setup involves simulating a load for the migration and choosing
-        a random destination controller.
+        a random source and destination controller.
 
         Parameters
         ----------
