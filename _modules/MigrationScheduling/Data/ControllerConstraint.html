@@ -36,6 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Sim/simulation.html">Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
@@ -93,8 +94,10 @@
 <span class="sd">        The name of the controller to which the constraints apply.</span>
 <span class="sd">    _capacity: float</span>
 <span class="sd">        The capacity value used in the constraint.</span>
-<span class="sd">    _switches: set</span>
+<span class="sd">    _in_switches: set</span>
 <span class="sd">        The collection of switches to be migrated to the controller.</span>
+<span class="sd">    _out_switches: set</span>
+<span class="sd">        The collection of switches to be migrated from the controller.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -108,7 +111,8 @@
         <span class="n">val</span><span class="o">.</span><span class="n">validate_name</span><span class="p">(</span><span class="n">controller</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s2">&quot;Controller&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_controller</span> <span class="o">=</span> <span class="n">controller</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_in_switches</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_out_switches</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ControllerConstraint.get_controller"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_controller">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The name of the controller to which the constraints apply.</span>
@@ -132,7 +136,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span></div>
 
-<div class="viewcode-block" id="ControllerConstraint.get_switches"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerConstraint.get_in_switches"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_in_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_in_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The collection of switches to be migrated to the controller.</span>
 
 <span class="sd">        Returns</span>
@@ -141,7 +145,34 @@
 <span class="sd">            A set representing the switches to be migrated to the controller.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_switches</span></div>
+
+<div class="viewcode-block" id="ControllerConstraint.get_out_switches"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_out_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_out_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The collection of switches to be migrated from the controller.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set representing the switches to be migrated from the</span>
+<span class="sd">            controller.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_out_switches</span></div>
+
+<div class="viewcode-block" id="ControllerConstraint.get_switches"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The collection of switches that use the controller for migration.</span>
+
+<span class="sd">        A switch uses the controller for migration if the controller is either</span>
+<span class="sd">        the source or destination of the migration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set</span>
+<span class="sd">            A set representing the switches that use the controller for</span>
+<span class="sd">            migration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_switches</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_out_switches</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ControllerConstraint.get_controller_idx"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.get_controller_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The index of the controller corresponding to the constraint.</span>
@@ -155,7 +186,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controller</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
 
-<div class="viewcode-block" id="ControllerConstraint.add_switch"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.add_switch">[docs]</a>    <span class="k">def</span> <span class="nf">add_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerConstraint.add_in_switch"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.add_in_switch">[docs]</a>    <span class="k">def</span> <span class="nf">add_in_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds `switch_name` as a switch to be migrated to the controller.</span>
 
 <span class="sd">        Parameters</span>
@@ -168,7 +199,22 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_in_switches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ControllerConstraint.add_out_switch"><a class="viewcode-back" href="../../../Data/controller_constraint.html#MigrationScheduling.Data.ControllerConstraint.add_out_switch">[docs]</a>    <span class="k">def</span> <span class="nf">add_out_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">switch_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds `switch_name` as a switch to be migrated from the controller.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        switch_name: str</span>
+<span class="sd">            The name of a switch to be migrated from the controller.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_out_switches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switch_name</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A string representation of the controller constraint.</span>
@@ -182,9 +228,12 @@
         <span class="n">cont_str</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Constraint for controller </span><span class="si">{0}</span><span class="s2"> &quot;</span> <span class="o">+</span>
                     <span class="s2">&quot;with a capacity of </span><span class="si">{1:.2f}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_controller</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">:</span>
-            <span class="n">cont_str</span> <span class="o">+=</span> <span class="s2">&quot;Destination for switches: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switches</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_out_switches</span><span class="p">:</span>
+            <span class="n">cont_str</span> <span class="o">+=</span> <span class="s2">&quot;Source for switches: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_out_switches</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_switches</span><span class="p">:</span>
+            <span class="n">cont_str</span> <span class="o">+=</span> <span class="s2">&quot;Destination for switches: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_in_switches</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">cont_str</span></div>
 </pre></div>
 
