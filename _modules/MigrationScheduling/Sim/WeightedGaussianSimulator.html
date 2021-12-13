@@ -135,7 +135,7 @@
         <span class="sd">&quot;&quot;&quot;Setups a migration for `migration_idx`.</span>
 
 <span class="sd">        The setup involves simulating a load for the migration and choosing</span>
-<span class="sd">        a random destination controller.</span>
+<span class="sd">        a random source and destination controller.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -149,8 +149,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">load</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_to_controller</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Migration</span><span class="p">(</span><span class="s2">&quot;s</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">migration_idx</span><span class="p">),</span> <span class="s2">&quot;c</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst</span><span class="p">),</span> <span class="n">load</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_migration_from_load</span><span class="p">(</span><span class="n">migration_idx</span><span class="p">,</span> <span class="n">load</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_controller_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller_idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructs that controller line for `controller_idx`.</span>

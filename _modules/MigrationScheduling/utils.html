@@ -179,7 +179,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">total_load</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">migration</span> <span class="ow">in</span> <span class="n">migrations</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()</span> <span class="o">==</span> <span class="n">controller_name</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">migration</span><span class="o">.</span><span class="n">uses_controller</span><span class="p">(</span><span class="n">controller_name</span><span class="p">):</span>
             <span class="n">total_load</span> <span class="o">+=</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">total_load</span></div>
 

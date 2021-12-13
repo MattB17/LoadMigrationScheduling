@@ -187,6 +187,27 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span></div>
 
+<div class="viewcode-block" id="Migration.uses_controller"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.uses_controller">[docs]</a>    <span class="k">def</span> <span class="nf">uses_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Whether the switch uses `controller_name` during the migration.</span>
+
+<span class="sd">        The switch uses `controller_name` if it is the name of the source</span>
+<span class="sd">        or destination controller.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        controller_name: str</span>
+<span class="sd">            A string representing the name of the controller being checked.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the switch uses `controller_name` during the migration.</span>
+<span class="sd">            Otherwise, False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_src_controller</span> <span class="o">==</span> <span class="n">controller_name</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dst_controller</span> <span class="o">==</span> <span class="n">controller_name</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="Migration.add_qos_group"><a class="viewcode-back" href="../../../Data/migration.html#MigrationScheduling.Data.Migration.add_qos_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_qos_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds `group_name` to the collection of QoS groups for the switch.</span>
 
