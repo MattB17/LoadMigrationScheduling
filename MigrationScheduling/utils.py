@@ -107,7 +107,7 @@ def calculate_load_on_controller(controller_name, migrations):
     """
     total_load = 0
     for migration in migrations:
-        if migration.get_dst_controller() == controller_name:
+        if migration.uses_controller(controller_name):
             total_load += migration.get_load()
     return total_load
 

@@ -28,6 +28,12 @@ def test_invalid_name(mock_validate):
         Migration('sw56', 'c0', 'c1', 0.1)
 
 
+def test_uses_controller(migration):
+    assert migration.uses_controller('c1')
+    assert migration.uses_controller('c3')
+    assert not migration.uses_controller('c9')
+
+
 def test_adding_groups(migration):
     migration.add_qos_group('g2')
     migration.add_qos_group('g5')

@@ -115,6 +115,27 @@ class Migration:
         """
         return self._load
 
+    def uses_controller(self, controller_name):
+        """Whether the switch uses `controller_name` during the migration.
+
+        The switch uses `controller_name` if it is the name of the source
+        or destination controller.
+
+        Parameters
+        ----------
+        controller_name: str
+            A string representing the name of the controller being checked.
+
+        Returns
+        -------
+        bool
+            True if the switch uses `controller_name` during the migration.
+            Otherwise, False.
+
+        """
+        return ((self._src_controller == controller_name) or
+                (self._dst_controller == controller_name))
+
     def add_qos_group(self, group_name):
         """Adds `group_name` to the collection of QoS groups for the switch.
 
