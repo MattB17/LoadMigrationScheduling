@@ -8,50 +8,56 @@ DIR = os.path.dirname(os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # indices of network objects
-SWITCH_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-ROUND_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-CONTROLLER_IDS = [0, 2, 3, 4, 5, 6]
-GROUP_IDS = [0, 1, 2, 3, 4, 5, 6]
+SWITCH_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+ROUND_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+CONTROLLER_IDS = [0, 1, 2, 3, 4]
+GROUP_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 # switch loads
-LOADS = {0: 299.72,
-         1: 112.63,
-         2: 314.46,
-         3: 71.78,
-         4: 346.62,
-         5: 272.62,
-         6: 123.08,
-         7: 280.35,
-         8: 343.59,
-         9: 296.22}
+LOADS = {0: 13.24,
+         1: 8.83,
+         2: 17.9,
+         3: 7.65,
+         4: 7.68,
+         5: 11.21,
+         6: 1.38,
+         7: 4.94,
+         8: 5.46,
+         9: 17.33,
+         10: 10.34,
+         11: 7.28,
+         12: 4.25,
+         13: 7.00,
+         14: 6.99}
 
 # controller capacities
-CONTROLLER_CAPS = {0: 123.08,
-                   2: 544.57,
-                   3: 71.78,
-                   4: 817.72,
-                   5: 272.62,
-                   6: 372.52}
+CONTROLLER_CAPS = {0: 50.19,
+                   1: 23.19,
+                   2: 51.41,
+                   3: 11.78,
+                   4: 38.35}
 
 # group capacities
-GROUP_CAPS = {0: 3, 1: 2, 2: 2, 3: 2, 4: 2, 5: 3, 6: 5}
+GROUP_CAPS = {0: 1, 1: 1, 2: 2, 3: 5, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 9: 2}
 
 # switches migrating to each destination controller
-DST_CONTROLLERS = {0: {6},
-                   2: {4, 9},
-                   3: {3},
-                   4: {0, 1, 7},
-                   5: {5},
-                   6: {2, 8}}
+DST_CONTROLLERS = {0: {2, 3},
+                   1: {13, 14},
+                   2: {4, 6, 8, 9, 11, 12},
+                   3: {5},
+                   4: {0, 1, 7, 10}}
 
 # group membership
-GROUPS = {0: {3, 7, 8},
-          1: {3, 4, 8},
-          2: {3, 4, 6, 7, 8},
-          3: {0, 2, 6},
-          4: {0, 1, 3, 7},
-          5: {0, 7, 8},
-          6: {1, 3, 6, 7, 8}}
+GROUPS = {0: {0, 7, 14},
+          1: {0, 1, 2, 3, 4, 7, 11, 14},
+          2: {0, 3, 12, 14},
+          3: {0, 1, 2, 7, 9, 11, 14},
+          4: {0, 2, 13, 14},
+          5: {0, 3, 12, 14},
+          6: {0, 2, 3, 14},
+          7: {7, 12, 14},
+          8: {0, 2, 14},
+          9: {0, 2, 3, 9, 11, 12, 14}}
 
 
 def test_optimizer():
@@ -85,8 +91,13 @@ def test_vff_heuristic():
         os.path.join("instances", "migrations2.txt")))
     vff_val = algorithms.vector_first_fit(optimizer.instance_data())
 
-    # the VFF solution has value 3:
-    # - migrations 0, 1, 2, 4, and 5 are scheduled in round 1
-    # - migrations 3, 6, and 9 are scheduled in round 2
-    # - migrations 7 and 8 are scheduled in round 3
-    assert vff_val == 3
+    # the VFF solution has value 8:
+    # - migrations 0, 5, 6, 8, 9, 10, and 13 are scheduled in round 1
+    # - migrations 1, and 12 are scheduled in round 2
+    # - migration 2 is scheduled in round 3
+    # - migration 3 is scheduled in round 4
+    # - migration 4 is scheduled in round 5
+    # - migration 7 is scheduled in round 6
+    # - migration 11 is scheduled in round 7
+    # - migration 14 is scheduled in round 8
+    assert vff_val == 8

@@ -10,23 +10,23 @@ DIR = os.path.dirname(os.path.dirname(
 # indices of network objects
 SWITCH_IDS = [0, 1, 2, 3, 4]
 ROUND_IDS = [0, 1, 2, 3, 4]
-CONTROLLER_IDS = [0, 2, 3]
-GROUP_IDS = [0, 2]
+CONTROLLER_IDS = [0, 1]
+GROUP_IDS = [0, 1, 2]
 
 # switch loads
-LOADS = {0: 354.32, 1: 334.94, 2: 36.31, 3: 14.9, 4: 73.56}
+LOADS = {0: 13.24, 1: 8.83, 2: 17.9, 3: 7.65, 4: 7.68}
 
 # controller capacities
-CONTROLLER_CAPS = {0: 354.32, 2: 14.9, 3: 810.15}
+CONTROLLER_CAPS = {0: 39.31, 1: 17.90}
 
 # group capacities
-GROUP_CAPS = {0: 1, 2: 1}
+GROUP_CAPS = {0: 1, 1: 1, 2: 1}
 
 # switches migrating to each destination controller
-DST_CONTROLLERS = {0: {0}, 2: {3}, 3: {1, 2, 4}}
+DST_CONTROLLERS = {0: {}, 1: {0, 1, 2, 3, 4}}
 
 # group membership
-GROUPS = {0: {2, 3}, 2: {3}}
+GROUPS = {0: {3}, 1: {0}, 2: {0, 2}}
 
 def test_optimizer():
     # direct modelling
@@ -39,7 +39,8 @@ def test_optimizer():
                   for i in SWITCH_IDS for r in ROUND_IDS), "bounds")
     m.addConstrs((sum(LOADS[i] * x_vars[i, r] for i in DST_CONTROLLERS[j])
                   <= CONTROLLER_CAPS[j]
-                  for j in CONTROLLER_IDS for r in ROUND_IDS),
+                  for j in CONTROLLER_IDS for r in ROUND_IDS
+                  if len(DST_CONTROLLERS[j]) > 0),
                   "controller_cap")
     m.addConstrs((sum(x_vars[i, r] for i in GROUPS[l]) <= GROUP_CAPS[l]
                   for l in GROUP_IDS for r in ROUND_IDS),
@@ -60,6 +61,8 @@ def test_vff_heuristic():
     vff_val = algorithms.vector_first_fit(optimizer.instance_data())
 
     # vff solution value is 2:
-    # - migrations 0, 1, 2, and 4 are scheduled in round 1
-    # - migration 3 is scheduled in round 2
-    assert vff_val == 2
+    # - migration 0 is scheduled in round 1
+    # - migrations 1 and 3 are scheduled in round 2
+    # - migration 2 is scheduled in round 3
+    # - migration 4 is scheduled in round 4
+    assert vff_val == 4

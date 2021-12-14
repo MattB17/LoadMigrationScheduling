@@ -22,12 +22,12 @@ CONTROLLER_CAPS = {i: 1 for i in range(5)}
 # group capacities
 GROUP_CAPS = {i: 1 for i in range(4)}
 
-# switches migrating to each destination controller
+# set of switches migrating to given destination controller
 DST_CONTROLLERS = {0: {2},
                    1: {0, 7},
                    2: {3, 4},
-                   3: {5, 6, 8},
-                   4: {1, 9}}
+                   3: {6, 8},
+                   4: {1, 5, 9}}
 
 # group membership
 GROUPS = {0: {0, 1, 5, 8},
@@ -46,7 +46,8 @@ def test_optimizer():
                   for i in SWITCH_IDS for r in ROUND_IDS), "bounds")
     m.addConstrs((sum(LOADS[i] * x_vars[i, r] for i in DST_CONTROLLERS[j])
                   <= CONTROLLER_CAPS[j]
-                  for j in CONTROLLER_IDS for r in ROUND_IDS),
+                  for j in CONTROLLER_IDS for r in ROUND_IDS
+                  if len(DST_CONTROLLERS[j]) > 0),
                   "controller_cap")
     m.addConstrs((sum(x_vars[i, r] for i in GROUPS[l]) <= GROUP_CAPS[l]
                   for l in GROUP_IDS for r in ROUND_IDS),
