@@ -78,6 +78,7 @@
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">MigrationScheduling.Data</span> <span class="kn">import</span> <span class="n">Migration</span>
 
 
 
@@ -154,7 +155,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_controllers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-            <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">*</span> <span class="n">num_migrations</span><span class="p">))</span>
+            <span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">*</span> <span class="n">num_migrations</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
                              <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_controllers</span><span class="p">)]</span>
 
@@ -190,6 +191,34 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_qos_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">groups</span>
 
+    <span class="k">def</span> <span class="nf">_add_load_to_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller_idx</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds `load` to the controller identified by `controller_idx`.</span>
+
+<span class="sd">        `load` represents the load of a migration being added to the</span>
+<span class="sd">        controller identified by `controller_idx`. The number of migrations</span>
+<span class="sd">        belonging to the controller is incremented by 1 and the maximum load</span>
+<span class="sd">        and sum of loads for migrations belonging to the controller are</span>
+<span class="sd">        updated based on `load`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        controller_idx: int</span>
+<span class="sd">            An integer denoting the controller to which the load is being</span>
+<span class="sd">            added.</span>
+<span class="sd">        load: float</span>
+<span class="sd">            A float representing the load being added to the controller.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="n">load</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">controller_idx</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">load</span>
+
+
     <span class="k">def</span> <span class="nf">_assign_to_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Picks controllers for a migration with load of `load`.</span>
 
@@ -210,10 +239,9 @@
 <span class="sd">            respectively.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_controllers</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">load</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_controllers</span><span class="p">[</span><span class="n">dst</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">load</span>
+        <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_controllers</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_load_to_controller</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">load</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_load_to_controller</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">load</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span>
 
     <span class="k">def</span> <span class="nf">_construct_migration_from_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration_idx</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
@@ -307,9 +335,10 @@
 <span class="sd">            A string representing the migration line.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2"> </span><span class="si">{3}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span>
-            <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">(),</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2"> </span><span class="si">{3}</span><span class="s2"> </span><span class="si">{4}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_src_controller</span><span class="p">(),</span>
+            <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">(),</span>
+            <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">()))</span>
 
     <span class="k">def</span> <span class="nf">_output_simulated_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Outputs the simulated load migration scheduling instance.</span>
