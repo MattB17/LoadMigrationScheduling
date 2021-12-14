@@ -78,7 +78,7 @@
 algorithms.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.calculate_load_on_controller">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_load_on_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#calculate_load_on_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.calculate_load_on_controller" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_load_on_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#calculate_load_on_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.calculate_load_on_controller" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the load that <cite>migrations</cite> impose on <cite>controller_name</cite>.</p>
 <p>The load imposed by <cite>migrations</cite> on <cite>controller_name</cite> is the sum of the
 migration loads for the subset of migrations that are destined to
@@ -90,12 +90,16 @@ migration loads for the subset of migrations that are destined to
 </dd>
 <dt><strong>migrations: collection</strong></dt><dd><p>A collection of <cite>Migration</cite> objects used to calculate the load.</p>
 </dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resiliency should be considered.
+The default value is False.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>float</dt><dd><p>A float representing the load imposed on <cite>controller_name</cite> by the
-migrations of <cite>migrations</cite>.</p>
+migrations of <cite>migrations</cite> depending on whether <cite>resiliency</cite> is
+desired.</p>
 </dd>
 </dl>
 </dd>
@@ -353,6 +357,40 @@ constraints of <cite>instance_data</cite>. The keys are strings representing
 the name of the controllers and the corresponding value is a
 <cite>ConstraintDict</cite> object for the constraint associated with that
 controller.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.utils.get_load_contribution">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_load_contribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_load_contribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_load_contribution" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the load contribution of <cite>migration</cite> to <cite>controller</cite>.</p>
+<p>The load contribution of <cite>migration</cite> with respect to <cite>controller</cite> is
+the amount of load that the migration contributes in the constraint for
+<cite>controller</cite>. In the case of failure resiliency, this is the migration
+load if the controller is the source or destination of the migration,
+otherwise, it is 0. When not considering failure resiliency, the load is
+the migration load if <cite>controller</cite> is the destination controller for the
+migration, otherwise, it is 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migration: Migration</strong></dt><dd><p>The <cite>Migration</cite> object from which the load contribution is calculated.</p>
+</dd>
+<dt><strong>controller: str</strong></dt><dd><p>The name of the controller for which the load contribution is
+calculated.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resiliency should be considered.
+The default value is False.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>A float representing the load contribution of <cite>migration</cite> to
+<cite>controller</cite>, depending on <cite>resiliency</cite>.</p>
 </dd>
 </dl>
 </dd>

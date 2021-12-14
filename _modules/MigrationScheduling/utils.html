@@ -156,7 +156,43 @@
     <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">get_qos_group_cap_dict</span><span class="p">(</span><span class="n">instance_data</span><span class="o">.</span><span class="n">get_qos_consts</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span></div>
 
-<div class="viewcode-block" id="calculate_load_on_controller"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.calculate_load_on_controller">[docs]</a><span class="k">def</span> <span class="nf">calculate_load_on_controller</span><span class="p">(</span><span class="n">controller_name</span><span class="p">,</span> <span class="n">migrations</span><span class="p">):</span>
+<div class="viewcode-block" id="get_load_contribution"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_load_contribution">[docs]</a><span class="k">def</span> <span class="nf">get_load_contribution</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the load contribution of `migration` to `controller`.</span>
+
+<span class="sd">    The load contribution of `migration` with respect to `controller` is</span>
+<span class="sd">    the amount of load that the migration contributes in the constraint for</span>
+<span class="sd">    `controller`. In the case of failure resiliency, this is the migration</span>
+<span class="sd">    load if the controller is the source or destination of the migration,</span>
+<span class="sd">    otherwise, it is 0. When not considering failure resiliency, the load is</span>
+<span class="sd">    the migration load if `controller` is the destination controller for the</span>
+<span class="sd">    migration, otherwise, it is 0.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    migration: Migration</span>
+<span class="sd">        The `Migration` object from which the load contribution is calculated.</span>
+<span class="sd">    controller: str</span>
+<span class="sd">        The name of the controller for which the load contribution is</span>
+<span class="sd">        calculated.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean indicating whether failure resiliency should be considered.</span>
+<span class="sd">        The default value is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        A float representing the load contribution of `migration` to</span>
+<span class="sd">        `controller`, depending on `resiliency`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">resiliency</span> <span class="ow">and</span> <span class="n">migration</span><span class="o">.</span><span class="n">uses_controller</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">resiliency</span> <span class="ow">and</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()</span> <span class="o">==</span> <span class="n">controller</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span>
+    <span class="k">return</span> <span class="mf">0.0</span></div>
+
+<div class="viewcode-block" id="calculate_load_on_controller"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.calculate_load_on_controller">[docs]</a><span class="k">def</span> <span class="nf">calculate_load_on_controller</span><span class="p">(</span><span class="n">controller_name</span><span class="p">,</span>
+                                 <span class="n">migrations</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates the load that `migrations` impose on `controller_name`.</span>
 
 <span class="sd">    The load imposed by `migrations` on `controller_name` is the sum of the</span>
@@ -169,18 +205,22 @@
 <span class="sd">        The name of the controller for which the load is calculated.</span>
 <span class="sd">    migrations: collection</span>
 <span class="sd">        A collection of `Migration` objects used to calculate the load.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean indicating whether failure resiliency should be considered.</span>
+<span class="sd">        The default value is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        A float representing the load imposed on `controller_name` by the</span>
-<span class="sd">        migrations of `migrations`.</span>
+<span class="sd">        migrations of `migrations` depending on whether `resiliency` is</span>
+<span class="sd">        desired.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">total_load</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">migration</span> <span class="ow">in</span> <span class="n">migrations</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">migration</span><span class="o">.</span><span class="n">uses_controller</span><span class="p">(</span><span class="n">controller_name</span><span class="p">):</span>
-            <span class="n">total_load</span> <span class="o">+=</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">()</span>
+        <span class="n">total_load</span> <span class="o">+=</span> <span class="n">get_load_contribution</span><span class="p">(</span>
+            <span class="n">migration</span><span class="p">,</span> <span class="n">controller_name</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">total_load</span></div>
 
 <div class="viewcode-block" id="get_constraint_dict_for_controller"><a class="viewcode-back" href="../../utils.html#MigrationScheduling.utils.get_constraint_dict_for_controller">[docs]</a><span class="k">def</span> <span class="nf">get_constraint_dict_for_controller</span><span class="p">(</span><span class="n">control_const</span><span class="p">,</span> <span class="n">migrations</span><span class="p">):</span>
