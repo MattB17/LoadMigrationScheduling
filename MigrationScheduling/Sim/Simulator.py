@@ -6,6 +6,7 @@ distributions.
 import random
 import numpy as np
 from abc import ABC, abstractmethod
+from MigrationScheduling.Data import Migration
 
 
 
@@ -82,7 +83,7 @@ class Simulator(ABC):
 
         """
         self._num_controllers = max(
-            1, int(np.random.normal(0.3, 0.1) * num_migrations))
+            2, int(np.random.normal(0.3, 0.1) * num_migrations))
         self._controllers = [[0, 0.0, 0.0]
                              for _ in range(self._num_controllers)]
 
@@ -118,6 +119,34 @@ class Simulator(ABC):
             self._qos_groups[group_id] += 1
         return groups
 
+    def _add_load_to_controller(self, controller_idx, load):
+        """Adds `load` to the controller identified by `controller_idx`.
+
+        `load` represents the load of a migration being added to the
+        controller identified by `controller_idx`. The number of migrations
+        belonging to the controller is incremented by 1 and the maximum load
+        and sum of loads for migrations belonging to the controller are
+        updated based on `load`.
+
+        Parameters
+        ----------
+        controller_idx: int
+            An integer denoting the controller to which the load is being
+            added.
+        load: float
+            A float representing the load being added to the controller.
+
+        Returns
+        -------
+        None
+
+        """
+        self._controllers[controller_idx][0] += 1
+        self._controllers[controller_idx][1] = max(
+            load, self._controllers[controller_idx][1])
+        self._controllers[controller_idx][2] += load
+
+
     def _assign_to_controllers(self, load):
         """Picks controllers for a migration with load of `load`.
 
@@ -138,10 +167,9 @@ class Simulator(ABC):
             respectively.
 
         """
-        src, dst = random.sample(range(self._num_controllers, 2))
-        self._controllers[dst][0] += 1
-        self._controllers[dst][1] = max(load, self._controllers[dst][1])
-        self._controllers[dst][2] += load
+        src, dst = random.sample(range(self._num_controllers), 2)
+        self._add_load_to_controller(src, load)
+        self._add_load_to_controller(dst, load)
         return src, dst
 
     def _construct_migration_from_load(self, migration_idx, load):
@@ -235,9 +263,10 @@ class Simulator(ABC):
             A string representing the migration line.
 
         """
-        return "{0} {1} {2} {3}\n".format(
-            migration.get_switch(), migration.get_dst_controller(),
-            migration.get_load(), " ".join(migration.get_groups()))
+        return "{0} {1} {2} {3} {4}\n".format(
+            migration.get_switch(), migration.get_src_controller(),
+            migration.get_dst_controller(), migration.get_load(),
+            " ".join(migration.get_groups()))
 
     def _output_simulated_instance(self, output_file):
         """Outputs the simulated load migration scheduling instance.

@@ -175,8 +175,8 @@ class Parser:
         """
         migration = Migration(
             migration_data[0], migration_data[1],
-            migration_data[1], float(migration_data[2]))
-        curr_idx = 3
+            migration_data[2], float(migration_data[3]))
+        curr_idx = 4
         n = len(migration_data)
         while (curr_idx < n):
             migration.add_qos_group(migration_data[curr_idx])
