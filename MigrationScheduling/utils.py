@@ -84,7 +84,43 @@ def get_cap_dicts(instance_data):
     qos_caps = get_qos_group_cap_dict(instance_data.get_qos_consts())
     return controller_caps, qos_caps
 
-def calculate_load_on_controller(controller_name, migrations):
+def get_load_contribution(migration, controller, resiliency=False):
+    """Calculates the load contribution of `migration` to `controller`.
+
+    The load contribution of `migration` with respect to `controller` is
+    the amount of load that the migration contributes in the constraint for
+    `controller`. In the case of failure resiliency, this is the migration
+    load if the controller is the source or destination of the migration,
+    otherwise, it is 0. When not considering failure resiliency, the load is
+    the migration load if `controller` is the destination controller for the
+    migration, otherwise, it is 0.
+
+    Parameters
+    ----------
+    migration: Migration
+        The `Migration` object from which the load contribution is calculated.
+    controller: str
+        The name of the controller for which the load contribution is
+        calculated.
+    resiliency: bool
+        A boolean indicating whether failure resiliency should be considered.
+        The default value is False.
+
+    Returns
+    -------
+    float
+        A float representing the load contribution of `migration` to
+        `controller`, depending on `resiliency`.
+
+    """
+    if resiliency and migration.uses_controller(controller):
+        return migration.get_load()
+    if not resiliency and migration.get_dst_controller() == controller:
+        return migration.get_load()
+    return 0.0
+
+def calculate_load_on_controller(controller_name,
+                                 migrations, resiliency=False):
     """Calculates the load that `migrations` impose on `controller_name`.
 
     The load imposed by `migrations` on `controller_name` is the sum of the
@@ -97,18 +133,22 @@ def calculate_load_on_controller(controller_name, migrations):
         The name of the controller for which the load is calculated.
     migrations: collection
         A collection of `Migration` objects used to calculate the load.
+    resiliency: bool
+        A boolean indicating whether failure resiliency should be considered.
+        The default value is False.
 
     Returns
     -------
     float
         A float representing the load imposed on `controller_name` by the
-        migrations of `migrations`.
+        migrations of `migrations` depending on whether `resiliency` is
+        desired.
 
     """
     total_load = 0
     for migration in migrations:
-        if migration.uses_controller(controller_name):
-            total_load += migration.get_load()
+        total_load += get_load_contribution(
+            migration, controller_name, resiliency)
     return total_load
 
 def get_constraint_dict_for_controller(control_const, migrations):
