@@ -22,6 +22,13 @@ CONTROLLER_CAPS = {i: 1 for i in range(5)}
 # group capacities
 GROUP_CAPS = {i: 1 for i in range(4)}
 
+# set of switches migrating from given source controller
+SRC_CONTROLLERS = {0: {0, 1},
+                   1: {8, 9},
+                   2: {6, 7},
+                   3: {5},
+                   4: {2, 3, 4}}
+
 # set of switches migrating to given destination controller
 DST_CONTROLLERS = {0: {2},
                    1: {0, 7},
@@ -35,7 +42,7 @@ GROUPS = {0: {0, 1, 5, 8},
           2: {3, 6},
           3: {2, 3}}
 
-def test_optimizer():
+def test_optimizer_without_resiliency():
     # direct modelling
     m = gp.Model('test-migration')
     x_vars = m.addVars(SWITCH_IDS, ROUND_IDS, vtype=GRB.BINARY, name="x")
@@ -58,7 +65,35 @@ def test_optimizer():
     optimizer = Optimizer()
     optimizer.get_model_data(os.path.join(DIR,
         os.path.join("instances", "migrations0.txt")))
-    optVal = optimizer.build_ip_model(verbose=False)
+    optVal = optimizer.build_ip_model(resiliency=False, verbose=False)
+    assert round(optVal, 2) == round(m.objVal, 2)
+
+def test_optimizer_with_resiliency():
+    # direct modelling
+    m = gp.Model('test-migration')
+    x_vars = m.addVars(SWITCH_IDS, ROUND_IDS, vtype=GRB.BINARY, name="x")
+    lambda_var = m.addVar(name="lambda")
+    m.setObjective(lambda_var, GRB.MINIMIZE)
+    m.addConstrs((x_vars.sum(i, '*') == 1 for i in SWITCH_IDS), 'migrate')
+    m.addConstrs((r * x_vars[i, r] <= lambda_var
+                  for i in SWITCH_IDS for r in ROUND_IDS), "bounds")
+    m.addConstrs((sum(LOADS[i] * x_vars[i, r]
+                  for i in SRC_CONTROLLERS[j].union(DST_CONTROLLERS[j]))
+                  <= CONTROLLER_CAPS[j]
+                  for j in CONTROLLER_IDS for r in ROUND_IDS
+                  if (len(SRC_CONTROLLERS[j]) > 0 or
+                      len(DST_CONTROLLERS[j]) > 0)),
+                  "controller_cap")
+    m.addConstrs((sum(x_vars[i, r] for i in GROUPS[l]) <= GROUP_CAPS[l]
+                  for l in GROUP_IDS for r in ROUND_IDS),
+                  "group_cap")
+    m.optimize()
+
+    # optimizer
+    optimizer = Optimizer()
+    optimizer.get_model_data(os.path.join(DIR,
+        os.path.join("instances", "migrations0.txt")))
+    optVal = optimizer.build_ip_model(resiliency=True, verbose=False)
     assert round(optVal, 2) == round(m.objVal, 2)
 
 def test_vff_heuristic():

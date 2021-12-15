@@ -94,7 +94,14 @@ class ControllerConstraint:
         `resiliency`. A value of False indicates that the constraint switches
         are only switches that are part of migrations destined to the
         controller. A value of True also adds the switches that are being
-        migrated away from the controller
+        migrated away from the controller.
+
+        Parameters
+        ----------
+        resiliency: bool
+            A boolean specifying whether resiliency should be considered in
+            the constraint. The default value is False, specifying that
+            just the migrations destined to the controller are considered.
 
         Returns
         -------

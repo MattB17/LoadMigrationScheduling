@@ -76,7 +76,7 @@ class Optimizer:
         parser.parse_migrations(migration_file)
         self._data = parser.to_data()
 
-    def build_ip_model(self, verbose=True):
+    def build_ip_model(self, resiliency=False, verbose=True):
         """Builds an Integer Programming model for the migration instance.
 
         The model is instantiated and solved based on the pre-loaded instance
@@ -84,6 +84,11 @@ class Optimizer:
 
         Parameters
         ----------
+        resiliency: bool
+            A boolean specifying whether resiliency should be considered in
+            the model. The default value is False, specifying that the model
+            does not consider the possibility of failures during the
+            migration process.
         verbose: bool
             A boolean indicating whether verbose mode is used. If used the
             entire solution will be printed, otherwise, only gurobi messages
@@ -101,9 +106,10 @@ class Optimizer:
             optimization.
 
         """
-        return self._build_model(is_ip=True, verbose=verbose)
+        return self._build_model(
+            resiliency=resiliency, is_ip=True, verbose=verbose)
 
-    def build_lp_model(self, verbose=True):
+    def build_lp_model(self, resiliency=False, verbose=True):
         """Builds a Linear Programming model for the migration instance.
 
         The model is instantiated and solved based on the pre-loaded instance
@@ -111,6 +117,11 @@ class Optimizer:
 
         Parameters
         ----------
+        resiliency: bool
+            A boolean specifying whether resiliency should be considered in
+            the model. The default value is False, specifying that the model
+            does not consider the possibility of failures during the
+            migration process.
         verbose: bool
             A boolean indicating whether verbose mode is used. If used the
             entire solution will be printed, otherwise, only gurobi messages
@@ -128,13 +139,22 @@ class Optimizer:
             optimization.
 
         """
-        return self._build_model(is_ip=False, verbose=verbose)
+        return self._build_model(
+            resiliency=resiliency, is_ip=False, verbose=verbose)
 
-    def get_model_bounds(self):
+    def get_model_bounds(self, resiliency=False):
         """Computes upper and lower bounds for the model.
 
         The upper bound is computed by taking one round per migration. The
         lower bound is the solution to the linear program.
+
+        Parameters
+        ----------
+        resiliency: bool
+            A boolean specifying whether resiliency should be considered in
+            the model. The default value is False, specifying that the model
+            does not consider the possibility of failures during the
+            migration process.
 
         Returns
         -------
@@ -146,7 +166,8 @@ class Optimizer:
         """
         if self._data:
             ub = len(self._data.get_round_ids())
-            self._build_model(is_ip=False, verbose=False)
+            self._build_model(
+                resiliency=resiliency, is_ip=False, verbose=False)
             lb = int(np.ceil(self._model.objVal)) + 1
             return lb, ub
         raise exc.InstanceNotSpecified()
@@ -230,13 +251,18 @@ class Optimizer:
                 self._model.addConstr(r * x_vars[i, r] <= lambda_var,
                                       "bound[{0}, {1}]".format(i, r))
 
-    def _add_controller_constraints(self, x_vars):
+    def _add_controller_constraints(self, x_vars, resiliency=False):
         """Adds the set of controller constraints to the model using `x_vars`.
 
         Parameters
         ----------
         x_vars: gp.Vars
             The set of model variables used in the controller constraints.
+        resiliency: bool
+            A boolean specifying whether resiliency should be considered in
+            the model. The default value is False, specifying that the model
+            does not consider the possibility of failures during the
+            migration process.
 
         Returns
         -------
@@ -247,8 +273,8 @@ class Optimizer:
             for r in self._data.get_round_ids():
                 self._model.addConstr(sum(
                     self._data.get_load(s) *
-                    x_vars[self._data.get_switch_id(s), r]
-                    for s in control_const.get_constraint_switches())
+                    x_vars[self._data.get_switch_id(s), r] for s
+                    in control_const.get_constraint_switches(resiliency))
                     <= control_const.get_cap(),
                     "controller[{0}, {1}]".format(
                         control_const.get_controller_idx(), r))
@@ -273,7 +299,7 @@ class Optimizer:
                     for s in qos_const.get_switches()) <= qos_const.get_cap(),
                     "QoS[{0}, {1}]".format(qos_const.get_group_idx(), r))
 
-    def _add_constraints(self, lambda_var, x_vars):
+    def _add_constraints(self, lambda_var, x_vars, resiliency=False):
         """Adds all constraints to the model using `lambda_var` and `x_vars`.
 
         Parameters
@@ -284,6 +310,11 @@ class Optimizer:
         x_vars: gp.Vars
             A collection of boolean variables for each migration and round
             pair, indicating if the migration is scheduled in that round.
+        resiliency: bool
+            A boolean specifying whether resiliency should be considered in
+            the model. The default value is False, specifying that the model
+            does not consider the possibility of failures during the
+            migration process.
 
         Raises
         ------
@@ -298,12 +329,12 @@ class Optimizer:
         if self._model:
             self._add_migrate_constraints(x_vars)
             self._add_bound_constraints(lambda_var, x_vars)
-            self._add_controller_constraints(x_vars)
+            self._add_controller_constraints(x_vars, resiliency)
             self._add_qos_constraints(x_vars)
         else:
             raise exc.UninitializedModel()
 
-    def _build_model(self, is_ip=True, verbose=True):
+    def _build_model(self, resiliency=False, is_ip=True, verbose=True):
         """Builds the optimization album for `migration_file`.
 
         The data is loaded from `migration_file` and an optimization model
@@ -312,6 +343,11 @@ class Optimizer:
 
         Parameters
         ----------
+        resiliency: bool
+            A boolean specifying whether resiliency should be considered in
+            the model. The default value is False, specifying that the model
+            does not consider the possibility of failures during the
+            migration process.
         is_ip: bool
             A boolean flag indicating whether it is an IP model. If true
             the variables will be integer, otherwise, they will be continuous.
@@ -338,7 +374,7 @@ class Optimizer:
             self._model = gp.Model("migration")
             lambda_var, x_vars = self._initialize_variables(is_ip)
             self._model.setObjective(lambda_var, gp.GRB.MINIMIZE)
-            self._add_constraints(lambda_var, x_vars)
+            self._add_constraints(lambda_var, x_vars, resiliency)
             self._model.optimize()
             if verbose:
                 self._print_output(x_vars, is_ip)
