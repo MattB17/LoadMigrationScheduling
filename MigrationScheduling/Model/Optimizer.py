@@ -248,8 +248,8 @@ class Optimizer:
                 self._model.addConstr(sum(
                     self._data.get_load(s) *
                     x_vars[self._data.get_switch_id(s), r]
-                    for s in control_const.get_in_switches()) <=
-                    control_const.get_cap(),
+                    for s in control_const.get_constraint_switches())
+                    <= control_const.get_cap(),
                     "controller[{0}, {1}]".format(
                         control_const.get_controller_idx(), r))
 

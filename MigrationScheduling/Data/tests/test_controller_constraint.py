@@ -21,7 +21,6 @@ def test_instantiation(control_const):
     assert control_const.get_cap() == 12.5
     assert control_const.get_in_switches() == set()
     assert control_const.get_out_switches() == set()
-    assert control_const.get_switches() == set()
 
 @patch(VAL_STR, side_effect=exc.InvalidName(""))
 def test_invalid_name(mock_validate):
@@ -34,7 +33,13 @@ def test_adding_switches(control_const):
     control_const.add_out_switch("s7")
     assert control_const.get_in_switches() == {"s0", "s3"}
     assert control_const.get_out_switches() == {"s7"}
-    assert control_const.get_switches() == {"s0", "s3", "s7"}
+
+
+def test_constraint_switches(control_const):
+    control_const._in_switches = {"s0", "s3"}
+    control_const._out_switches = {"s7"}
+    assert control_const.get_constraint_switches(False) == {"s0", "s3"}
+    assert control_const.get_constraint_switches(True) == {"s0", "s3", "s7"}
 
 def test_str_no_switches(control_const):
     assert control_const.__str__() == ("Constraint for controller c2 " +

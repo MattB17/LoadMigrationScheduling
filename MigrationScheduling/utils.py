@@ -173,7 +173,7 @@ def get_constraint_dict_for_controller(control_const, migrations):
         control_const.get_cap(),
         calculate_load_on_controller(control_const.get_controller(),
                                      migrations),
-        control_const.get_switches())
+        control_const.get_constraint_switches(False))
 
 def get_constraint_dict_for_qos_group(qos_const):
     """Builds a constraint dict for `qos_const`.

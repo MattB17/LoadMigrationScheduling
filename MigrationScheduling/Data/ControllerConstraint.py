@@ -87,20 +87,25 @@ class ControllerConstraint:
         """
         return self._out_switches
 
-    def get_switches(self):
-        """The collection of switches that use the controller for migration.
+    def get_constraint_switches(self, resiliency=False):
+        """The switches that appear in the controller constraint.
 
-        A switch uses the controller for migration if the controller is either
-        the source or destination of the migration.
+        The collection of constraint switches depends on the value of
+        `resiliency`. A value of False indicates that the constraint switches
+        are only switches that are part of migrations destined to the
+        controller. A value of True also adds the switches that are being
+        migrated away from the controller
 
         Returns
         -------
         set
-            A set representing the switches that use the controller for
-            migration.
+            A set representing the switches that appear in the controller
+            constraint.
 
         """
-        return self._in_switches.union(self._out_switches)
+        if resiliency:
+            return self._in_switches.union(self._out_switches)
+        return self._in_switches
 
     def get_controller_idx(self):
         """The index of the controller corresponding to the constraint.
