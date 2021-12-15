@@ -36,6 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data/data.html">Migration Scheduling Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Sim/simulation.html">Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Model/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Scheduling Algorithms</a></li>
@@ -319,8 +320,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_load</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">*</span>
                     <span class="n">x_vars</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get_switch_id</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">r</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())</span> <span class="o">&lt;=</span>
-                    <span class="n">control_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">(),</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_constraint_switches</span><span class="p">())</span>
+                    <span class="o">&lt;=</span> <span class="n">control_const</span><span class="o">.</span><span class="n">get_cap</span><span class="p">(),</span>
                     <span class="s2">&quot;controller[</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">control_const</span><span class="o">.</span><span class="n">get_controller_idx</span><span class="p">(),</span> <span class="n">r</span><span class="p">))</span>
 
