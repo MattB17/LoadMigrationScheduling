@@ -166,7 +166,14 @@
 <span class="sd">        `resiliency`. A value of False indicates that the constraint switches</span>
 <span class="sd">        are only switches that are part of migrations destined to the</span>
 <span class="sd">        controller. A value of True also adds the switches that are being</span>
-<span class="sd">        migrated away from the controller</span>
+<span class="sd">        migrated away from the controller.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        resiliency: bool</span>
+<span class="sd">            A boolean specifying whether resiliency should be considered in</span>
+<span class="sd">            the constraint. The default value is False, specifying that</span>
+<span class="sd">            just the migrations destined to the controller are considered.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

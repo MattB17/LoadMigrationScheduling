@@ -187,10 +187,18 @@ controller ID.</p>
 <cite>resiliency</cite>. A value of False indicates that the constraint switches
 are only switches that are part of migrations destined to the
 controller. A value of True also adds the switches that are being
-migrated away from the controller</p>
+migrated away from the controller.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean specifying whether resiliency should be considered in
+the constraint. The default value is False, specifying that
+just the migrations destined to the controller are considered.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
 <dt>set</dt><dd><p>A set representing the switches that appear in the controller
 constraint.</p>
 </dd>

@@ -110,13 +110,18 @@ that the instance has not yet been specified.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="MigrationScheduling.Model.Optimizer.build_ip_model">
-<span class="sig-name descname"><span class="pre">build_ip_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_ip_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_ip_model" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build_ip_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_ip_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_ip_model" title="Permalink to this definition"></a></dt>
 <dd><p>Builds an Integer Programming model for the migration instance.</p>
 <p>The model is instantiated and solved based on the pre-loaded instance
 of the load migration scheduling problem.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean specifying whether resiliency should be considered in
+the model. The default value is False, specifying that the model
+does not consider the possibility of failures during the
+migration process.</p>
+</dd>
 <dt><strong>verbose: bool</strong></dt><dd><p>A boolean indicating whether verbose mode is used. If used the
 entire solution will be printed, otherwise, only gurobi messages
 will be printed. The default value is True.</p>
@@ -141,13 +146,18 @@ optimization.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MigrationScheduling.Model.Optimizer.build_lp_model">
-<span class="sig-name descname"><span class="pre">build_lp_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_lp_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_lp_model" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build_lp_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.build_lp_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.build_lp_model" title="Permalink to this definition"></a></dt>
 <dd><p>Builds a Linear Programming model for the migration instance.</p>
 <p>The model is instantiated and solved based on the pre-loaded instance
 of the load migration scheduling problem.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean specifying whether resiliency should be considered in
+the model. The default value is False, specifying that the model
+does not consider the possibility of failures during the
+migration process.</p>
+</dd>
 <dt><strong>verbose: bool</strong></dt><dd><p>A boolean indicating whether verbose mode is used. If used the
 entire solution will be printed, otherwise, only gurobi messages
 will be printed. The default value is True.</p>
@@ -172,13 +182,22 @@ optimization.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MigrationScheduling.Model.Optimizer.get_model_bounds">
-<span class="sig-name descname"><span class="pre">get_model_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.get_model_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.get_model_bounds" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_model_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/Model/Optimizer.html#Optimizer.get_model_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.Model.Optimizer.get_model_bounds" title="Permalink to this definition"></a></dt>
 <dd><p>Computes upper and lower bounds for the model.</p>
 <p>The upper bound is computed by taking one round per migration. The
 lower bound is the solution to the linear program.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean specifying whether resiliency should be considered in
+the model. The default value is False, specifying that the model
+does not consider the possibility of failures during the
+migration process.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
 <dt>int, int</dt><dd><p>An integer representing a lower bound on the number of rounds to
 complete all migrations and an integer representing an upper
 bound on the number of rounds to complete all migrations.</p>
