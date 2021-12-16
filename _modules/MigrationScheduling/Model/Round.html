@@ -175,7 +175,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span></div>
 
-<div class="viewcode-block" id="Round.can_schedule_migration"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.can_schedule_migration">[docs]</a>    <span class="k">def</span> <span class="nf">can_schedule_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
+<div class="viewcode-block" id="Round.can_schedule_migration"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.can_schedule_migration">[docs]</a>    <span class="k">def</span> <span class="nf">can_schedule_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Indicates if `migration` can be scheduled in the round.</span>
 
 <span class="sd">        Determines whether `migration` can be scheduled in the round given</span>
@@ -185,6 +185,12 @@
 <span class="sd">        ----------</span>
 <span class="sd">        migration: Migration</span>
 <span class="sd">            A `Migration` object representing the migration to be scheduled.</span>
+<span class="sd">        resiliency: bool</span>
+<span class="sd">            A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">            considered. A value of True indicates that the load of a migration</span>
+<span class="sd">            will be considered for both the source and destination controllers.</span>
+<span class="sd">            Otherwise, the load is only considered for the destination</span>
+<span class="sd">            controller.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -194,12 +200,11 @@
 <span class="sd">            groups. Otherwise, False.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">within_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_controller_cap</span><span class="p">(</span>
-            <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+        <span class="n">within_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_below_controller_caps</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
         <span class="n">within_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_qos_caps</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">within_controller</span> <span class="ow">and</span> <span class="n">within_groups</span></div>
 
-<div class="viewcode-block" id="Round.schedule_migration"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.schedule_migration">[docs]</a>    <span class="k">def</span> <span class="nf">schedule_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
+<div class="viewcode-block" id="Round.schedule_migration"><a class="viewcode-back" href="../../../Model/round.html#MigrationScheduling.Model.Round.schedule_migration">[docs]</a>    <span class="k">def</span> <span class="nf">schedule_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Schedules `migration` in the round.</span>
 
 <span class="sd">        Parameters</span>
@@ -207,16 +212,52 @@
 <span class="sd">        migration: Migration</span>
 <span class="sd">            A `Migration` object representing the migration being scheduled</span>
 <span class="sd">            in the round.</span>
+<span class="sd">        resiliency: bool</span>
+<span class="sd">            A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">            considered. A value of True indicates that the load of a migration</span>
+<span class="sd">            will be considered for both the source and destination controllers.</span>
+<span class="sd">            Otherwise, the load is only considered for the destination</span>
+<span class="sd">            controller.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_controller_cap</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span>
-                                    <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_schedule_for_controllers</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_qos_caps</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_migrations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">_below_controller_caps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Whether the migration is below the controller capacities.</span>
+
+<span class="sd">        `migration` is below the controller capacities if it&#39;s load is less</span>
+<span class="sd">        than or equal to the controllers involved in the migration. If the</span>
+<span class="sd">        value of `resiliency` is True then both the source and destination</span>
+<span class="sd">        controllers for the migration are considered. Otherwise, only the</span>
+<span class="sd">        destination controller is considered.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        migration: Migration</span>
+<span class="sd">            The `Migration` object being checked.</span>
+<span class="sd">        resiliency: bool</span>
+<span class="sd">            A boolean flag indicating whether failure resiliency is</span>
+<span class="sd">            considered.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the migration fits below the controller capacities for</span>
+<span class="sd">            the controllers involved in the migration. Otherwise, False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">within_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_controller_cap</span><span class="p">(</span>
+            <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">resiliency</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">within_controller</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_controller_cap</span><span class="p">(</span>
+                <span class="n">migration</span><span class="o">.</span><span class="n">get_src_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">within_controller</span>
 
     <span class="k">def</span> <span class="nf">_within_controller_cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">migration_load</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Whether `migration_load` is within the capacity of `controller`.</span>
@@ -270,6 +311,33 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_rem_qos_caps</span><span class="p">[</span><span class="n">qos_group</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_schedule_for_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Schedules `migration` based on the controllers for the migration.</span>
+
+<span class="sd">        The capacity is reduced for the controllers that are part of the</span>
+<span class="sd">        migration. If `resiliency` is True, both the source and destination</span>
+<span class="sd">        controllers are involved in the migration. Otherwise, only the</span>
+<span class="sd">        destination controller is involved.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        migration: Migration</span>
+<span class="sd">            The `Migration` object being scheduled.</span>
+<span class="sd">        resiliency: bool</span>
+<span class="sd">            A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">            considered.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_controller_cap</span><span class="p">(</span>
+            <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">resiliency</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_controller_cap</span><span class="p">(</span>
+                <span class="n">migration</span><span class="o">.</span><span class="n">get_src_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">_reduce_controller_cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reduces the controller capacity for `controller` by `load`.</span>

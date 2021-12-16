@@ -79,7 +79,8 @@
 <span class="kn">from</span> <span class="nn">MigrationScheduling.Model</span> <span class="kn">import</span> <span class="n">Round</span>
 
 
-<div class="viewcode-block" id="find_scheduling_round"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.find_scheduling_round">[docs]</a><span class="k">def</span> <span class="nf">find_scheduling_round</span><span class="p">(</span><span class="n">existing_rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">):</span>
+<div class="viewcode-block" id="find_scheduling_round"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.find_scheduling_round">[docs]</a><span class="k">def</span> <span class="nf">find_scheduling_round</span><span class="p">(</span><span class="n">existing_rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span>
+                          <span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The round in which to schedule `migration` among `existing_rounds`.</span>
 
 <span class="sd">    Loops through the rounds in `existing_rounds` to find the first round in</span>
@@ -96,6 +97,11 @@
 <span class="sd">        An integer representing the number of rounds in `existing_rounds`.</span>
 <span class="sd">    migration: Migration</span>
 <span class="sd">        A `Migration` object representing the migration to be scheduled.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">        considered. A value of True indicates that the load of a migration</span>
+<span class="sd">        will be considered for both the source and destination controllers.</span>
+<span class="sd">        Otherwise, the load is only considered for the destination controller.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -108,7 +114,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">curr_round</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">curr_round</span> <span class="o">&lt;</span> <span class="n">num_rounds</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">existing_rounds</span><span class="p">[</span><span class="n">curr_round</span><span class="p">]</span><span class="o">.</span><span class="n">can_schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">):</span>
+        <span class="n">can_schedule</span> <span class="o">=</span> <span class="n">existing_rounds</span><span class="p">[</span><span class="n">curr_round</span><span class="p">]</span><span class="o">.</span><span class="n">can_schedule_migration</span><span class="p">(</span>
+            <span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">can_schedule</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">curr_round</span>
         <span class="n">curr_round</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">curr_round</span></div>
@@ -205,7 +213,8 @@
 
 
 <div class="viewcode-block" id="schedule_migration_in_earliest_round"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.schedule_migration_in_earliest_round">[docs]</a><span class="k">def</span> <span class="nf">schedule_migration_in_earliest_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span>
-                                         <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">):</span>
+                                         <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">,</span>
+                                         <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Schedules `migration` in the earliest round possible given `rounds`.</span>
 
 <span class="sd">    `migration` is scheduled in the earliest round in `rounds` in which the</span>
@@ -229,6 +238,11 @@
 <span class="sd">        A dictionary of QoS group capacities. The keys are strings</span>
 <span class="sd">        representing the names of the controllers and the corresponding value</span>
 <span class="sd">        is an integer representing the capacity for that QoS group.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">        considered. A value of True indicates that the load of a migration</span>
+<span class="sd">        will be considered for both the source and destination controllers.</span>
+<span class="sd">        Otherwise, the load is only considered for the destination controller.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -240,11 +254,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">round_count</span> <span class="o">=</span> <span class="n">num_rounds</span>
     <span class="n">curr_rounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span> <span class="k">for</span> <span class="nb">round</span> <span class="ow">in</span> <span class="n">rounds</span><span class="p">]</span>
-    <span class="n">schedule_round</span> <span class="o">=</span> <span class="n">find_scheduling_round</span><span class="p">(</span><span class="n">rounds</span><span class="p">,</span> <span class="n">round_count</span><span class="p">,</span> <span class="n">migration</span><span class="p">)</span>
+    <span class="n">schedule_round</span> <span class="o">=</span> <span class="n">find_scheduling_round</span><span class="p">(</span>
+        <span class="n">rounds</span><span class="p">,</span> <span class="n">round_count</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">schedule_round</span> <span class="o">==</span> <span class="n">round_count</span><span class="p">:</span>
         <span class="n">curr_rounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Round</span><span class="p">(</span><span class="n">round_count</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">))</span>
         <span class="n">round_count</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">curr_rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">)</span>
+    <span class="n">curr_rounds</span><span class="p">[</span><span class="n">schedule_round</span><span class="p">]</span><span class="o">.</span><span class="n">schedule_migration</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">curr_rounds</span><span class="p">,</span> <span class="n">round_count</span></div>
 
 
@@ -355,7 +370,7 @@
         <span class="n">candidate_migrations</span><span class="p">,</span> <span class="n">const_name</span><span class="p">,</span> <span class="n">instance_data</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="vector_first_fit"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.vector_first_fit">[docs]</a><span class="k">def</span> <span class="nf">vector_first_fit</span><span class="p">(</span><span class="n">instance_data</span><span class="p">):</span>
+<div class="viewcode-block" id="vector_first_fit"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.vector_first_fit">[docs]</a><span class="k">def</span> <span class="nf">vector_first_fit</span><span class="p">(</span><span class="n">instance_data</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Runs the vectorized version of the first fit algorithm.</span>
 
 <span class="sd">    The vectorized first fit algorithm is inspired by the algorithm of the</span>
@@ -379,6 +394,11 @@
 <span class="sd">    instance_data: InstanceData</span>
 <span class="sd">        An `InstanceData` object representing the data for a load migration</span>
 <span class="sd">        scheduling instance, on which the algorithm is run.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">        considered. A value of True indicates that the load of a migration</span>
+<span class="sd">        will be considered for both the source and destination controllers.</span>
+<span class="sd">        Otherwise, the load is only considered for the destination controller.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -392,7 +412,8 @@
     <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_cap_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">migration</span> <span class="ow">in</span> <span class="n">instance_data</span><span class="o">.</span><span class="n">get_migrations</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span> <span class="o">=</span> <span class="n">schedule_migration_in_earliest_round</span><span class="p">(</span>
-            <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">)</span>
+            <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span>
+            <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">num_rounds</span></div>
 
 
