@@ -7,7 +7,8 @@ from MigrationScheduling import utils
 from MigrationScheduling.Model import Round
 
 
-def find_scheduling_round(existing_rounds, num_rounds, migration):
+def find_scheduling_round(existing_rounds, num_rounds,
+                          migration, resiliency=False):
     """The round in which to schedule `migration` among `existing_rounds`.
 
     Loops through the rounds in `existing_rounds` to find the first round in
@@ -24,6 +25,11 @@ def find_scheduling_round(existing_rounds, num_rounds, migration):
         An integer representing the number of rounds in `existing_rounds`.
     migration: Migration
         A `Migration` object representing the migration to be scheduled.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
 
     Returns
     -------
@@ -36,7 +42,9 @@ def find_scheduling_round(existing_rounds, num_rounds, migration):
     """
     curr_round = 0
     while curr_round < num_rounds:
-        if existing_rounds[curr_round].can_schedule_migration(migration):
+        can_schedule = existing_rounds[curr_round].can_schedule_migration(
+            migration, resiliency)
+        if can_schedule:
             return curr_round
         curr_round += 1
     return curr_round
@@ -133,7 +141,8 @@ def remove_migration_from_constraints(migration, consts_dict):
 
 
 def schedule_migration_in_earliest_round(rounds, num_rounds, migration,
-                                         controller_caps, qos_caps):
+                                         controller_caps, qos_caps,
+                                         resiliency=False):
     """Schedules `migration` in the earliest round possible given `rounds`.
 
     `migration` is scheduled in the earliest round in `rounds` in which the
@@ -157,6 +166,11 @@ def schedule_migration_in_earliest_round(rounds, num_rounds, migration,
         A dictionary of QoS group capacities. The keys are strings
         representing the names of the controllers and the corresponding value
         is an integer representing the capacity for that QoS group.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
 
     Returns
     -------
@@ -168,11 +182,12 @@ def schedule_migration_in_earliest_round(rounds, num_rounds, migration,
     """
     round_count = num_rounds
     curr_rounds = [round for round in rounds]
-    schedule_round = find_scheduling_round(rounds, round_count, migration)
+    schedule_round = find_scheduling_round(
+        rounds, round_count, migration, resiliency)
     if schedule_round == round_count:
         curr_rounds.append(Round(round_count, controller_caps, qos_caps))
         round_count += 1
-    curr_rounds[schedule_round].schedule_migration(migration)
+    curr_rounds[schedule_round].schedule_migration(migration, resiliency)
     return curr_rounds, round_count
 
 
@@ -283,7 +298,7 @@ def select_bottleneck_migration(instance_data, num_candidates, consts_dict):
         candidate_migrations, const_name, instance_data, consts_dict)
 
 
-def vector_first_fit(instance_data):
+def vector_first_fit(instance_data, resiliency=False):
     """Runs the vectorized version of the first fit algorithm.
 
     The vectorized first fit algorithm is inspired by the algorithm of the
@@ -307,6 +322,11 @@ def vector_first_fit(instance_data):
     instance_data: InstanceData
         An `InstanceData` object representing the data for a load migration
         scheduling instance, on which the algorithm is run.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
 
     Returns
     -------
@@ -320,7 +340,8 @@ def vector_first_fit(instance_data):
     controller_caps, qos_caps = utils.get_cap_dicts(instance_data)
     for migration in instance_data.get_migrations().values():
         rounds, num_rounds = schedule_migration_in_earliest_round(
-            rounds, num_rounds, migration, controller_caps, qos_caps)
+            rounds, num_rounds, migration,
+            controller_caps, qos_caps, resiliency)
     return num_rounds
 
 

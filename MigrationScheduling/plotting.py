@@ -88,8 +88,13 @@ def plot_results(results_df, result_cols, x_title, y_title, output_file):
     plt.figure(figsize=(10, 7))
     for result_col in result_cols:
         col_name = result_col.split("_")[0].upper()
-        plt.plot(results_df.index, results_df[result_col],
-                 specs.STYLE_MAP[col_name], label=col_name)
+        plt.plot(results_df.index,
+                 results_df[result_col],
+                 specs.STYLE_MAP[col_name],
+                 color=specs.COLOR_MAP[col_name],
+                 linewidth=specs.LINEWIDTH_MAP[col_name],
+                 alpha=specs.ALPHA_MAP[col_name],
+                 label=col_name)
     add_plot_formatting(x_title, y_title, output_file)
 
 def plot_runtimes(results_df, x_var, time_vars,

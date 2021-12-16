@@ -26,10 +26,16 @@ CBF_CHOICES = 2
 SEED_NUM = 42
 
 # a map representing the colors to use for plotting.
-COLOR_MAP = {"VFF": "red", "CBF": "black", "OPT": "blue"}
+COLOR_MAP = {"VFF": "blue", "CBF": "orange", "OPT": "black"}
 
 # a map representing the styles to use for plotting
-STYLE_MAP = {"VFF": "r^", "CBF": "k+", "OPT": 'b-.'}
+STYLE_MAP = {"VFF": "-", "CBF": "^", "OPT": '-.'}
+
+# a map representing the linewidths for plotting
+LINEWIDTH_MAP = {"VFF": 2, "CBF": 1, "OPT": 1}
+
+# alpha values for plotting
+ALPHA_MAP = {"VFF": 1.0, "CBF": 0.6, "OPT": 1.0}
 
 # the set of valid bottlenek settings
 BOTTLENECK_SETTINGS = {'low', 'medium', 'high'}

@@ -103,7 +103,7 @@ class Round:
         """
         return self._migrations
 
-    def can_schedule_migration(self, migration):
+    def can_schedule_migration(self, migration, resiliency=False):
         """Indicates if `migration` can be scheduled in the round.
 
         Determines whether `migration` can be scheduled in the round given
@@ -113,6 +113,12 @@ class Round:
         ----------
         migration: Migration
             A `Migration` object representing the migration to be scheduled.
+        resiliency: bool
+            A boolean value indicating whether failure resiliency should be
+            considered. A value of True indicates that the load of a migration
+            will be considered for both the source and destination controllers.
+            Otherwise, the load is only considered for the destination
+            controller.
 
         Returns
         -------
@@ -122,12 +128,11 @@ class Round:
             groups. Otherwise, False.
 
         """
-        within_controller = self._within_controller_cap(
-            migration.get_dst_controller(), migration.get_load())
+        within_controller = self._below_controller_caps(migration, resiliency)
         within_groups = self._within_qos_caps(migration.get_groups())
         return within_controller and within_groups
 
-    def schedule_migration(self, migration):
+    def schedule_migration(self, migration, resiliency=False):
         """Schedules `migration` in the round.
 
         Parameters
@@ -135,16 +140,52 @@ class Round:
         migration: Migration
             A `Migration` object representing the migration being scheduled
             in the round.
+        resiliency: bool
+            A boolean value indicating whether failure resiliency should be
+            considered. A value of True indicates that the load of a migration
+            will be considered for both the source and destination controllers.
+            Otherwise, the load is only considered for the destination
+            controller.
 
         Returns
         -------
         None
 
         """
-        self._reduce_controller_cap(migration.get_dst_controller(),
-                                    migration.get_load())
+        self._schedule_for_controllers(migration, resiliency)
         self._reduce_qos_caps(migration.get_groups())
         self._migrations.add(migration.get_switch())
+
+    def _below_controller_caps(self, migration, resiliency=False):
+        """Whether the migration is below the controller capacities.
+
+        `migration` is below the controller capacities if it's load is less
+        than or equal to the controllers involved in the migration. If the
+        value of `resiliency` is True then both the source and destination
+        controllers for the migration are considered. Otherwise, only the
+        destination controller is considered.
+
+        Parameters
+        ----------
+        migration: Migration
+            The `Migration` object being checked.
+        resiliency: bool
+            A boolean flag indicating whether failure resiliency is
+            considered.
+
+        Returns
+        -------
+        bool
+            True if the migration fits below the controller capacities for
+            the controllers involved in the migration. Otherwise, False.
+
+        """
+        within_controller = self._within_controller_cap(
+            migration.get_dst_controller(), migration.get_load())
+        if resiliency:
+            return within_controller and self._within_controller_cap(
+                migration.get_src_controller(), migration.get_load())
+        return within_controller
 
     def _within_controller_cap(self, controller, migration_load):
         """Whether `migration_load` is within the capacity of `controller`.
@@ -198,6 +239,33 @@ class Round:
                 self._rem_qos_caps[qos_group] < 1):
                 return False
         return True
+
+    def _schedule_for_controllers(self, migration, resiliency=False):
+        """Schedules `migration` based on the controllers for the migration.
+
+        The capacity is reduced for the controllers that are part of the
+        migration. If `resiliency` is True, both the source and destination
+        controllers are involved in the migration. Otherwise, only the
+        destination controller is involved.
+
+        Parameters
+        ----------
+        migration: Migration
+            The `Migration` object being scheduled.
+        resiliency: bool
+            A boolean value indicating whether failure resiliency should be
+            considered.
+
+        Returns
+        -------
+        None
+
+        """
+        self._reduce_controller_cap(
+            migration.get_dst_controller(), migration.get_load())
+        if resiliency:
+            self._reduce_controller_cap(
+                migration.get_src_controller(), migration.get_load())
 
     def _reduce_controller_cap(self, controller, load):
         """Reduces the controller capacity for `controller` by `load`.
