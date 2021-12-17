@@ -151,7 +151,8 @@ def calculate_load_on_controller(controller_name,
             migration, controller_name, resiliency)
     return total_load
 
-def get_constraint_dict_for_controller(control_const, migrations):
+def get_constraint_dict_for_controller(control_const,
+                                       migrations, resiliency=False):
     """Builds a constraint dict for `control_consts`.
 
     Parameters
@@ -161,6 +162,11 @@ def get_constraint_dict_for_controller(control_const, migrations):
     migrations: collection
         A collection of `Migration` objects representing the migrations
         used to build the constraint dict.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
 
     Returns
     -------
@@ -172,7 +178,7 @@ def get_constraint_dict_for_controller(control_const, migrations):
     return ConstraintDict(
         control_const.get_cap(),
         calculate_load_on_controller(control_const.get_controller(),
-                                     migrations),
+                                     migrations, resiliency),
         control_const.get_constraint_switches(False))
 
 def get_constraint_dict_for_qos_group(qos_const):
@@ -193,7 +199,7 @@ def get_constraint_dict_for_qos_group(qos_const):
     switches = qos_const.get_switches()
     return ConstraintDict(qos_const.get_cap(), len(switches), switches)
 
-def get_controller_constraint_dicts(instance_data):
+def get_controller_constraint_dicts(instance_data, resiliency=False):
     """The constraint dictionaries for the constraints in `instance_data`.
 
     Builds a dictionary of `ConstraintDict` objects for the controller
@@ -204,6 +210,11 @@ def get_controller_constraint_dicts(instance_data):
     instance_data: InstanceData
         An `InstanceData` object specifying a load migration scheduling
         instance.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
 
     Returns
     -------
@@ -218,7 +229,8 @@ def get_controller_constraint_dicts(instance_data):
     migrations = set(instance_data.get_migrations().values())
     return {
         control_const.get_controller() :
-        get_constraint_dict_for_controller(control_const, migrations)
+        get_constraint_dict_for_controller(
+            control_const, migrations, resiliency)
         for control_const in instance_data.get_control_consts()}
 
 def get_qos_constraint_dicts(qos_consts):
@@ -246,7 +258,7 @@ def get_qos_constraint_dicts(qos_consts):
             get_constraint_dict_for_qos_group(qos_const)
             for qos_const in qos_consts}
 
-def get_constraints_dict(instance_data):
+def get_constraints_dict(instance_data, resiliency=False):
     """Dictionaries of the constraints from `instance_data`.
 
     Dictionaries of the `ConstraintDict` object for the controller
@@ -257,6 +269,11 @@ def get_constraints_dict(instance_data):
     instance_data: InstanceData
         An `InstanceData` object used to build the dictionaries of
         constraints.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
 
     Returns
     -------
@@ -267,7 +284,7 @@ def get_constraints_dict(instance_data):
         corresponding values is the associated `ConstraintDict` object.
 
     """
-    control_dict = get_controller_constraint_dicts(instance_data)
+    control_dict = get_controller_constraint_dicts(instance_data, resiliency)
     qos_dict = get_qos_constraint_dicts(instance_data.get_qos_consts())
     return {**control_dict, **qos_dict}
 

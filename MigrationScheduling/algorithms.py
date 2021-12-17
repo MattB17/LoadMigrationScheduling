@@ -345,7 +345,7 @@ def vector_first_fit(instance_data, resiliency=False):
     return num_rounds
 
 
-def current_bottleneck_first(instance_data, num_choices):
+def current_bottleneck_first(instance_data, num_choices, resiliency=False):
     """Runs the current bottleneck first scheduling algorithm.
 
     The current bottleneck first schedules one migration per iteration in
@@ -370,6 +370,11 @@ def current_bottleneck_first(instance_data, num_choices):
         when selecting a migration from the bottleneck constraint. The most
         loaded migration among the candidates will be selected. A value of
         -1 signifies to consider all migrations of the bottleneck constraint.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
 
     Returns
     -------
@@ -381,7 +386,7 @@ def current_bottleneck_first(instance_data, num_choices):
     rounds = []
     num_rounds = 0
     controller_caps, qos_caps = utils.get_cap_dicts(instance_data)
-    constraints_dict = utils.get_constraints_dict(instance_data)
+    constraints_dict = utils.get_constraints_dict(instance_data, resiliency)
     while constraints_dict:
         migration = select_bottleneck_migration(
             instance_data, num_choices, constraints_dict)
