@@ -243,7 +243,7 @@ number of migrations from that group allowed within a single round.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_constraint_dict_for_controller">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraint_dict_for_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_const</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraint_dict_for_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraint_dict_for_controller" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraint_dict_for_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_const</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migrations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraint_dict_for_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraint_dict_for_controller" title="Permalink to this definition"></a></dt>
 <dd><p>Builds a constraint dict for <cite>control_consts</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -252,6 +252,11 @@ number of migrations from that group allowed within a single round.</p>
 </dd>
 <dt><strong>migrations: collection</strong></dt><dd><p>A collection of <cite>Migration</cite> objects representing the migrations
 used to build the constraint dict.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean value indicating whether failure resiliency should be
+considered. A value of True indicates that the load of a migration
+will be considered for both the source and destination controllers.
+Otherwise, the load is only considered for the destination controller.</p>
 </dd>
 </dl>
 </dd>
@@ -288,7 +293,7 @@ used to build the constraint dict.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_constraints_dict">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraints_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraints_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraints_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_constraints_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_constraints_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_constraints_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Dictionaries of the constraints from <cite>instance_data</cite>.</p>
 <p>Dictionaries of the <cite>ConstraintDict</cite> object for the controller
 constraints and QoS constraints are built from <cite>instance_data</cite>.</p>
@@ -297,6 +302,11 @@ constraints and QoS constraints are built from <cite>instance_data</cite>.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object used to build the dictionaries of
 constraints.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean value indicating whether failure resiliency should be
+considered. A value of True indicates that the load of a migration
+will be considered for both the source and destination controllers.
+Otherwise, the load is only considered for the destination controller.</p>
 </dd>
 </dl>
 </dd>
@@ -338,7 +348,7 @@ dictionary is built.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.utils.get_controller_constraint_dicts">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_controller_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_controller_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_controller_constraint_dicts" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.utils.</span></span><span class="sig-name descname"><span class="pre">get_controller_constraint_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/utils.html#get_controller_constraint_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.utils.get_controller_constraint_dicts" title="Permalink to this definition"></a></dt>
 <dd><p>The constraint dictionaries for the constraints in <cite>instance_data</cite>.</p>
 <p>Builds a dictionary of <cite>ConstraintDict</cite> objects for the controller
 constraints specified by <cite>instance_data</cite>.</p>
@@ -347,6 +357,11 @@ constraints specified by <cite>instance_data</cite>.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object specifying a load migration scheduling
 instance.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean value indicating whether failure resiliency should be
+considered. A value of True indicates that the load of a migration
+will be considered for both the source and destination controllers.
+Otherwise, the load is only considered for the destination controller.</p>
 </dd>
 </dl>
 </dd>

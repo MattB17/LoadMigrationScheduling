@@ -102,7 +102,7 @@ names of the constraints and the corresponding value is a
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.current_bottleneck_first">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">current_bottleneck_first</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_choices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#current_bottleneck_first"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.current_bottleneck_first" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">current_bottleneck_first</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_choices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#current_bottleneck_first"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.current_bottleneck_first" title="Permalink to this definition"></a></dt>
 <dd><p>Runs the current bottleneck first scheduling algorithm.</p>
 <p>The current bottleneck first schedules one migration per iteration in
 the earliest round in which it can fit. If it cannot fit in any existing
@@ -125,6 +125,11 @@ scheduling instance, on which the algorithm is run.</p>
 when selecting a migration from the bottleneck constraint. The most
 loaded migration among the candidates will be selected. A value of
 -1 signifies to consider all migrations of the bottleneck constraint.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean value indicating whether failure resiliency should be
+considered. A value of True indicates that the load of a migration
+will be considered for both the source and destination controllers.
+Otherwise, the load is only considered for the destination controller.</p>
 </dd>
 </dl>
 </dd>
@@ -237,13 +242,52 @@ from <cite>migrations</cite>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.algorithms.remove_migration_from_constraints">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">remove_migration_from_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consts_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#remove_migration_from_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.remove_migration_from_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">remove_migration_from_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consts_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#remove_migration_from_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.remove_migration_from_constraints" title="Permalink to this definition"></a></dt>
 <dd><p>Removes <cite>migration</cite> from <cite>consts_dict</cite>.</p>
 <p><cite>consts_dict</cite> is updated to reflect the removal of <cite>migration</cite>,
 signalling that the migration has been scheduled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>migration: Migration</strong></dt><dd><p>A <cite>Migration</cite> object representing the migration being removed from
+the set of constraints.</p>
+</dd>
+<dt><strong>consts_dict: dict</strong></dt><dd><p>A dictionary of constraints. The keys are strings representing the
+names of the constraints and the corresponding value is a
+<cite>ConstraintDict</cite> object representing the constraint.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean value indicating whether failure resiliency should be
+considered. A value of True indicates that the load of a migration
+will be considered for both the source and destination controllers.
+Otherwise, the load is only considered for the destination controller.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>The dictionary obtained from <cite>consts_dict</cite> after removing
+<cite>migration</cite> from all the constraints involving the migration.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.algorithms.remove_migration_from_controller">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">remove_migration_from_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consts_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#remove_migration_from_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.remove_migration_from_controller" title="Permalink to this definition"></a></dt>
+<dd><p>Removes <cite>migration</cite> from the controller <cite>controller</cite> in <cite>consts_dict</cite>.</p>
+<p><cite>consts_dict</cite> is updated to reflect the removal of <cite>migration</cite> from
+the controller named <cite>controller</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migration: Migration</strong></dt><dd><p>A <cite>Migration</cite> object representing the migration being removed from
+the controller constraint.</p>
+</dd>
+<dt><strong>controller: str</strong></dt><dd><p>A string representing the name of the controller from which the
+migration is removed.</p>
+</dd>
 <dt><strong>consts_dict: dict</strong></dt><dd><p>A dictionary of constraints. The keys are strings representing the
 names of the constraints and the corresponding value is a
 <cite>ConstraintDict</cite> object representing the constraint.</p>
@@ -252,8 +296,39 @@ names of the constraints and the corresponding value is a
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>dict</dt><dd><p>The dictionary obtained from <cite>consts_dict</cite> after removing
-<cite>migration</cite> from all the constraints involving the migration.</p>
+<dt>dict</dt><dd><p>The dictionary obtained from <cite>consts_dict</cite> after removing <cite>migration</cite>
+from the constraint for <cite>controller</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MigrationScheduling.algorithms.remove_migration_from_group">
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.algorithms.</span></span><span class="sig-name descname"><span class="pre">remove_migration_from_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consts_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MigrationScheduling/algorithms.html#remove_migration_from_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.algorithms.remove_migration_from_group" title="Permalink to this definition"></a></dt>
+<dd><p>Removes <cite>migration</cite> from the QoS group <cite>group</cite> in <cite>consts_dict</cite>.</p>
+<p><cite>consts_dict</cite> is updated to reflect the removal of <cite>migration</cite> from the
+QoS group named <cite>group</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>migration: Migation</strong></dt><dd><p>A <cite>Migration</cite> object representing the migration being removed from
+the QoS group constraint.</p>
+</dd>
+<dt><strong>group: str</strong></dt><dd><p>A string representing the name of the QoS group from which the
+migration is removed.</p>
+</dd>
+<dt><strong>consts_dict: dict</strong></dt><dd><p>A dictionary of constraints. The keys are strings representing the
+names of the constraints and the corresponding value is a
+<cite>ConstraintDict</cite> object representing the constraint.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>The dictionary obtained from <cite>consts_dict</cite> after removing <cite>migration</cite>
+from the constraint for <cite>controller</cite>.</p>
 </dd>
 </dl>
 </dd>

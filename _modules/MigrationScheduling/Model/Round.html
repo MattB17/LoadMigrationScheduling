@@ -254,8 +254,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">within_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_controller_cap</span><span class="p">(</span>
             <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">resiliency</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">within_controller</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_controller_cap</span><span class="p">(</span>
+        <span class="k">if</span> <span class="n">within_controller</span> <span class="ow">and</span> <span class="n">resiliency</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_controller_cap</span><span class="p">(</span>
                 <span class="n">migration</span><span class="o">.</span><span class="n">get_src_controller</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">within_controller</span>
 

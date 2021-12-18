@@ -181,14 +181,20 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">constraint_dict</span><span class="o">.</span><span class="n">get_switches</span><span class="p">(),</span> <span class="n">num_candidates</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="remove_migration_from_constraints"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.remove_migration_from_constraints">[docs]</a><span class="k">def</span> <span class="nf">remove_migration_from_constraints</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Removes `migration` from `consts_dict`.</span>
+<div class="viewcode-block" id="remove_migration_from_controller"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.remove_migration_from_controller">[docs]</a><span class="k">def</span> <span class="nf">remove_migration_from_controller</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes `migration` from the controller `controller` in `consts_dict`.</span>
 
-<span class="sd">    `consts_dict` is updated to reflect the removal of `migration`,</span>
-<span class="sd">    signalling that the migration has been scheduled.</span>
+<span class="sd">    `consts_dict` is updated to reflect the removal of `migration` from</span>
+<span class="sd">    the controller named `controller`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    migration: Migration</span>
+<span class="sd">        A `Migration` object representing the migration being removed from</span>
+<span class="sd">        the controller constraint.</span>
+<span class="sd">    controller: str</span>
+<span class="sd">        A string representing the name of the controller from which the</span>
+<span class="sd">        migration is removed.</span>
 <span class="sd">    consts_dict: dict</span>
 <span class="sd">        A dictionary of constraints. The keys are strings representing the</span>
 <span class="sd">        names of the constraints and the corresponding value is a</span>
@@ -197,18 +203,84 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
+<span class="sd">        The dictionary obtained from `consts_dict` after removing `migration`</span>
+<span class="sd">        from the constraint for `controller`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">consts_dict</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span><span class="o">.</span><span class="n">remove_switch</span><span class="p">(</span>
+        <span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">consts_dict</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())):</span>
+        <span class="k">del</span> <span class="n">consts_dict</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">consts_dict</span></div>
+
+<div class="viewcode-block" id="remove_migration_from_group"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.remove_migration_from_group">[docs]</a><span class="k">def</span> <span class="nf">remove_migration_from_group</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes `migration` from the QoS group `group` in `consts_dict`.</span>
+
+<span class="sd">    `consts_dict` is updated to reflect the removal of `migration` from the</span>
+<span class="sd">    QoS group named `group`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    migration: Migation</span>
+<span class="sd">        A `Migration` object representing the migration being removed from</span>
+<span class="sd">        the QoS group constraint.</span>
+<span class="sd">    group: str</span>
+<span class="sd">        A string representing the name of the QoS group from which the</span>
+<span class="sd">        migration is removed.</span>
+<span class="sd">    consts_dict: dict</span>
+<span class="sd">        A dictionary of constraints. The keys are strings representing the</span>
+<span class="sd">        names of the constraints and the corresponding value is a</span>
+<span class="sd">        `ConstraintDict` object representing the constraint.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        The dictionary obtained from `consts_dict` after removing `migration`</span>
+<span class="sd">        from the constraint for `controller`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">consts_dict</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">remove_switch</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">consts_dict</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())):</span>
+        <span class="k">del</span> <span class="n">consts_dict</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">consts_dict</span></div>
+
+<div class="viewcode-block" id="remove_migration_from_constraints"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.remove_migration_from_constraints">[docs]</a><span class="k">def</span> <span class="nf">remove_migration_from_constraints</span><span class="p">(</span><span class="n">migration</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">,</span>
+                                      <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes `migration` from `consts_dict`.</span>
+
+<span class="sd">    `consts_dict` is updated to reflect the removal of `migration`,</span>
+<span class="sd">    signalling that the migration has been scheduled.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    migration: Migration</span>
+<span class="sd">        A `Migration` object representing the migration being removed from</span>
+<span class="sd">        the set of constraints.</span>
+<span class="sd">    consts_dict: dict</span>
+<span class="sd">        A dictionary of constraints. The keys are strings representing the</span>
+<span class="sd">        names of the constraints and the corresponding value is a</span>
+<span class="sd">        `ConstraintDict` object representing the constraint.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">        considered. A value of True indicates that the load of a migration</span>
+<span class="sd">        will be considered for both the source and destination controllers.</span>
+<span class="sd">        Otherwise, the load is only considered for the destination controller.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
 <span class="sd">        The dictionary obtained from `consts_dict` after removing</span>
 <span class="sd">        `migration` from all the constraints involving the migration.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">consts_dict</span><span class="p">[</span><span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()]</span><span class="o">.</span><span class="n">remove_switch</span><span class="p">(</span>
-        <span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">(),</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_load</span><span class="p">())</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">consts_dict</span><span class="p">[</span><span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()]</span><span class="o">.</span><span class="n">get_switches</span><span class="p">()):</span>
-        <span class="k">del</span> <span class="n">consts_dict</span><span class="p">[</span><span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">()]</span>
+    <span class="n">consts_dict</span> <span class="o">=</span> <span class="n">remove_migration_from_controller</span><span class="p">(</span>
+        <span class="n">migration</span><span class="p">,</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_dst_controller</span><span class="p">(),</span> <span class="n">consts_dict</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">resiliency</span><span class="p">:</span>
+        <span class="n">consts_dict</span> <span class="o">=</span> <span class="n">remove_migration_from_controller</span><span class="p">(</span>
+            <span class="n">migration</span><span class="p">,</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_src_controller</span><span class="p">(),</span> <span class="n">consts_dict</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">migration</span><span class="o">.</span><span class="n">get_groups</span><span class="p">():</span>
-        <span class="n">consts_dict</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">remove_switch</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">get_switch</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">consts_dict</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">get_switches</span><span class="p">()):</span>
-            <span class="k">del</span> <span class="n">consts_dict</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
+        <span class="n">consts_dict</span> <span class="o">=</span> <span class="n">remove_migration_from_group</span><span class="p">(</span>
+            <span class="n">migration</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">consts_dict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">consts_dict</span></div>
 
 
@@ -417,7 +489,7 @@
     <span class="k">return</span> <span class="n">num_rounds</span></div>
 
 
-<div class="viewcode-block" id="current_bottleneck_first"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.current_bottleneck_first">[docs]</a><span class="k">def</span> <span class="nf">current_bottleneck_first</span><span class="p">(</span><span class="n">instance_data</span><span class="p">,</span> <span class="n">num_choices</span><span class="p">):</span>
+<div class="viewcode-block" id="current_bottleneck_first"><a class="viewcode-back" href="../../algorithms.html#MigrationScheduling.algorithms.current_bottleneck_first">[docs]</a><span class="k">def</span> <span class="nf">current_bottleneck_first</span><span class="p">(</span><span class="n">instance_data</span><span class="p">,</span> <span class="n">num_choices</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Runs the current bottleneck first scheduling algorithm.</span>
 
 <span class="sd">    The current bottleneck first schedules one migration per iteration in</span>
@@ -442,6 +514,11 @@
 <span class="sd">        when selecting a migration from the bottleneck constraint. The most</span>
 <span class="sd">        loaded migration among the candidates will be selected. A value of</span>
 <span class="sd">        -1 signifies to consider all migrations of the bottleneck constraint.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean value indicating whether failure resiliency should be</span>
+<span class="sd">        considered. A value of True indicates that the load of a migration</span>
+<span class="sd">        will be considered for both the source and destination controllers.</span>
+<span class="sd">        Otherwise, the load is only considered for the destination controller.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -453,14 +530,15 @@
     <span class="n">rounds</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">num_rounds</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_cap_dicts</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
-    <span class="n">constraints_dict</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_constraints_dict</span><span class="p">(</span><span class="n">instance_data</span><span class="p">)</span>
+    <span class="n">constraints_dict</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_constraints_dict</span><span class="p">(</span><span class="n">instance_data</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">constraints_dict</span><span class="p">:</span>
         <span class="n">migration</span> <span class="o">=</span> <span class="n">select_bottleneck_migration</span><span class="p">(</span>
             <span class="n">instance_data</span><span class="p">,</span> <span class="n">num_choices</span><span class="p">,</span> <span class="n">constraints_dict</span><span class="p">)</span>
         <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span> <span class="o">=</span> <span class="n">schedule_migration_in_earliest_round</span><span class="p">(</span>
-            <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span> <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">)</span>
+            <span class="n">rounds</span><span class="p">,</span> <span class="n">num_rounds</span><span class="p">,</span> <span class="n">migration</span><span class="p">,</span>
+            <span class="n">controller_caps</span><span class="p">,</span> <span class="n">qos_caps</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
         <span class="n">constraints_dict</span> <span class="o">=</span> <span class="n">remove_migration_from_constraints</span><span class="p">(</span>
-            <span class="n">migration</span><span class="p">,</span> <span class="n">constraints_dict</span><span class="p">)</span>
+            <span class="n">migration</span><span class="p">,</span> <span class="n">constraints_dict</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">num_rounds</span></div>
 </pre></div>
 
