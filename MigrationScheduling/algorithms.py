@@ -109,14 +109,20 @@ def select_candidate_migrations(constraint_dict, num_candidates):
     else:
         return random.sample(constraint_dict.get_switches(), num_candidates)
 
-def remove_migration_from_constraints(migration, consts_dict):
-    """Removes `migration` from `consts_dict`.
+def remove_migration_from_controller(migration, controller, consts_dict):
+    """Removes `migration` from the controller `controller` in `consts_dict`.
 
-    `consts_dict` is updated to reflect the removal of `migration`,
-    signalling that the migration has been scheduled.
+    `consts_dict` is updated to reflect the removal of `migration` from
+    the controller named `controller`.
 
     Parameters
     ----------
+    migration: Migration
+        A `Migration` object representing the migration being removed from
+        the controller constraint.
+    controller: str
+        A string representing the name of the controller from which the
+        migration is removed.
     consts_dict: dict
         A dictionary of constraints. The keys are strings representing the
         names of the constraints and the corresponding value is a
@@ -125,18 +131,84 @@ def remove_migration_from_constraints(migration, consts_dict):
     Returns
     -------
     dict
+        The dictionary obtained from `consts_dict` after removing `migration`
+        from the constraint for `controller`.
+
+    """
+    consts_dict[controller].remove_switch(
+        migration.get_switch(), migration.get_load())
+    if not (len(consts_dict[controller].get_switches())):
+        del consts_dict[controller]
+    return consts_dict
+
+def remove_migration_from_group(migration, group, consts_dict):
+    """Removes `migration` from the QoS group `group` in `consts_dict`.
+
+    `consts_dict` is updated to reflect the removal of `migration` from the
+    QoS group named `group`.
+
+    Parameters
+    ----------
+    migration: Migation
+        A `Migration` object representing the migration being removed from
+        the QoS group constraint.
+    group: str
+        A string representing the name of the QoS group from which the
+        migration is removed.
+    consts_dict: dict
+        A dictionary of constraints. The keys are strings representing the
+        names of the constraints and the corresponding value is a
+        `ConstraintDict` object representing the constraint.
+
+    Returns
+    -------
+    dict
+        The dictionary obtained from `consts_dict` after removing `migration`
+        from the constraint for `controller`.
+
+    """
+    consts_dict[group].remove_switch(migration.get_switch(), 1)
+    if not (len(consts_dict[group].get_switches())):
+        del consts_dict[group]
+    return consts_dict
+
+def remove_migration_from_constraints(migration, consts_dict,
+                                      resiliency=False):
+    """Removes `migration` from `consts_dict`.
+
+    `consts_dict` is updated to reflect the removal of `migration`,
+    signalling that the migration has been scheduled.
+
+    Parameters
+    ----------
+    migration: Migration
+        A `Migration` object representing the migration being removed from
+        the set of constraints.
+    consts_dict: dict
+        A dictionary of constraints. The keys are strings representing the
+        names of the constraints and the corresponding value is a
+        `ConstraintDict` object representing the constraint.
+    resiliency: bool
+        A boolean value indicating whether failure resiliency should be
+        considered. A value of True indicates that the load of a migration
+        will be considered for both the source and destination controllers.
+        Otherwise, the load is only considered for the destination controller.
+
+    Returns
+    -------
+    dict
         The dictionary obtained from `consts_dict` after removing
         `migration` from all the constraints involving the migration.
 
     """
-    consts_dict[migration.get_dst_controller()].remove_switch(
-        migration.get_switch(), migration.get_load())
-    if not len(consts_dict[migration.get_dst_controller()].get_switches()):
-        del consts_dict[migration.get_dst_controller()]
+    consts_dict = remove_migration_from_controller(
+        migration, migration.get_dst_controller(), consts_dict)
+    if resiliency:
+        consts_dict = remove_migration_from_controller(
+            migration, migration.get_src_controller(), consts_dict)
     for group in migration.get_groups():
-        consts_dict[group].remove_switch(migration.get_switch(), 1)
-        if not len(consts_dict[group].get_switches()):
-            del consts_dict[group]
+        consts_dict = remove_migration_from_group(
+            migration, group, consts_dict)
     return consts_dict
 
 
@@ -391,7 +463,8 @@ def current_bottleneck_first(instance_data, num_choices, resiliency=False):
         migration = select_bottleneck_migration(
             instance_data, num_choices, constraints_dict)
         rounds, num_rounds = schedule_migration_in_earliest_round(
-            rounds, num_rounds, migration, controller_caps, qos_caps)
+            rounds, num_rounds, migration,
+            controller_caps, qos_caps, resiliency)
         constraints_dict = remove_migration_from_constraints(
-            migration, constraints_dict)
+            migration, constraints_dict, resiliency)
     return num_rounds

@@ -19,23 +19,27 @@ def test_with_no_rounds(mock_migration):
 
 def test_with_one_round(mock_migration, mock_round):
     mock_round.can_schedule_migration = MagicMock(return_value=True)
-    assert find_scheduling_round([mock_round], 1, mock_migration) == 0
-    mock_round.can_schedule_migration.assert_called_once()
+    assert find_scheduling_round([mock_round], 1, mock_migration, False) == 0
+    mock_round.can_schedule_migration.assert_called_once_with(
+        mock_migration, False)
 
 def test_with_multi_round_can_fit(mock_migration, mock_round):
     rounds = [mock_round, MagicMock(), MagicMock()]
     mock_round.can_schedule_migration = MagicMock(return_value=False)
     rounds[1].can_schedule_migration = MagicMock(return_value=True)
     rounds[2].can_schedule_migration = MagicMock()
-    assert find_scheduling_round(rounds, 3, mock_migration) == 1
-    mock_round.can_schedule_migration.assert_called_once()
-    rounds[1].can_schedule_migration.assert_called_once()
+    assert find_scheduling_round(rounds, 3, mock_migration, False) == 1
+    mock_round.can_schedule_migration.assert_called_once_with(
+        mock_migration, False)
+    rounds[1].can_schedule_migration.assert_called_once_with(
+        mock_migration, False)
     rounds[2].can_schedule_migration.assert_not_called()
 
 def test_with_multi_round_cant_fit(mock_migration, mock_round):
     rounds = [mock_round, MagicMock(), MagicMock(), MagicMock()]
     for round in rounds:
         round.can_schedule_migration = MagicMock(return_value=False)
-    assert find_scheduling_round(rounds, 4, mock_migration) == 4
+    assert find_scheduling_round(rounds, 4, mock_migration, True) == 4
     for round in rounds:
-        round.can_schedule_migration.assert_called_once()
+        round.can_schedule_migration.assert_called_once_with(
+            mock_migration, True)
