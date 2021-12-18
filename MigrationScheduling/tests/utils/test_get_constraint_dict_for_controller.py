@@ -16,8 +16,9 @@ def test_with_no_migrations(mock_const, mock_load):
     control_const.get_cap = MagicMock(return_value=2.34)
     control_const.get_controller = MagicMock(return_value='c2')
     control_const.get_constraint_switches = MagicMock(return_value=switch_set)
-    assert get_constraint_dict_for_controller(control_const, []) == const_dict
-    mock_load.assert_called_once_with('c2', [])
+    assert get_constraint_dict_for_controller(
+        control_const, [], False) == const_dict
+    mock_load.assert_called_once_with('c2', [], False)
     mock_const.assert_called_once_with(2.34, 0.0, switch_set)
     control_const.get_cap.assert_called_once()
     control_const.get_controller.assert_called_once()
@@ -36,8 +37,8 @@ def test_with_migrations(mock_const, mock_load):
     control_const.get_controller = MagicMock(return_value='c0')
     control_const.get_constraint_switches = MagicMock(return_value=switch_set)
     assert get_constraint_dict_for_controller(
-        control_const, migrations) == const_dict
-    mock_load.assert_called_once_with('c0', migrations)
+        control_const, migrations, True) == const_dict
+    mock_load.assert_called_once_with('c0', migrations, True)
     mock_const.assert_called_once_with(5.16, 11.75, switch_set)
     control_const.get_cap.assert_called_once()
     control_const.get_controller.assert_called_once()

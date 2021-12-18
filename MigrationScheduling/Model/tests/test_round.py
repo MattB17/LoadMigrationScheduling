@@ -158,6 +158,26 @@ def test_reduce_qos_caps_complex(complex_round):
     assert complex_round.get_remaining_qos_capacities() == {
         'g0': 1, 'g1': 0, 'g2': 4, 'g3': 0}
 
+def test_schedule_for_controllers_no_resiliency(simple_round,
+                                                simple_migration):
+    simple_round._reduce_controller_cap = MagicMock(side_effect=None)
+    simple_round._schedule_for_controllers(simple_migration, False)
+    simple_migration.get_src_controller.assert_not_called()
+    simple_migration.get_dst_controller.assert_called_once()
+    simple_migration.get_load.assert_called_once()
+    simple_round._reduce_controller_cap.assert_called_once_with('c2', 10.5)
+
+def test_schedule_for_controllers_with_resiliency(complex_round,
+                                                  complex_migration):
+    complex_round._reduce_controller_cap = MagicMock(side_effect=None)
+    complex_round._schedule_for_controllers(complex_migration, True)
+    complex_migration.get_src_controller.assert_called_once()
+    complex_migration.get_dst_controller.assert_called_once()
+    assert complex_migration.get_load.call_count == 2
+    reduce_calls = [call('c1', 1.0), call('c0', 1.0)]
+    assert complex_round._reduce_controller_cap.call_count == 2
+    complex_round._reduce_controller_cap.assert_has_calls(reduce_calls)
+
 def test_can_schedule_migration_no_groups(simple_round, no_group_migration):
     simple_round._below_controller_caps = MagicMock(return_value=True)
     simple_round._within_qos_caps = MagicMock(return_value=True)
