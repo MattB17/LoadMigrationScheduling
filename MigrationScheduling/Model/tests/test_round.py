@@ -1,7 +1,7 @@
 import io
 import sys
 import pytest
-from unittest.mock import MagicMock
+from unittest.mock import call, MagicMock
 from MigrationScheduling.Model import Round
 
 
@@ -22,6 +22,7 @@ def complex_round():
 @pytest.fixture(scope="function")
 def no_group_migration():
     migration = MagicMock()
+    migration.get_src_controller = MagicMock(return_value='c3')
     migration.get_dst_controller = MagicMock(return_value='c0')
     migration.get_load = MagicMock(return_value=2.1)
     migration.get_groups = MagicMock(return_value=set())
@@ -31,6 +32,7 @@ def no_group_migration():
 @pytest.fixture(scope="function")
 def simple_migration():
     migration = MagicMock()
+    migration.get_src_controller = MagicMock(return_value='c7')
     migration.get_dst_controller = MagicMock(return_value='c2')
     migration.get_load = MagicMock(return_value=10.5)
     migration.get_groups = MagicMock(return_value={'g0'})
@@ -40,6 +42,7 @@ def simple_migration():
 @pytest.fixture(scope="function")
 def complex_migration():
     migration = MagicMock()
+    migration.get_src_controller = MagicMock(return_value='c0')
     migration.get_dst_controller = MagicMock(return_value='c1')
     migration.get_load = MagicMock(return_value=1.0)
     migration.get_groups = MagicMock(return_value={'g0', 'g1', 'g2'})
@@ -85,6 +88,51 @@ def test_within_qos_caps_complex(simple_round, complex_round):
     assert complex_round._within_qos_caps({'g0', 'g1', 'g2'})
     assert not complex_round._within_qos_caps({'g0', 'g3'})
 
+def test_below_gives_false_no_resiliency(simple_round, no_group_migration):
+    simple_round._within_controller_cap = MagicMock(return_value=False)
+    assert not simple_round._below_controller_caps(no_group_migration, False)
+    no_group_migration.get_src_controller.assert_not_called()
+    no_group_migration.get_dst_controller.assert_called_once()
+    no_group_migration.get_load.assert_called_once()
+    simple_round._within_controller_cap.assert_called_once_with('c0', 2.1)
+
+def test_below_gives_true_no_resiliency(simple_round, simple_migration):
+    simple_round._within_controller_cap = MagicMock(return_value=True)
+    assert simple_round._below_controller_caps(simple_migration, False)
+    simple_migration.get_src_controller.assert_not_called()
+    simple_migration.get_dst_controller.assert_called_once()
+    simple_migration.get_load.assert_called_once()
+    simple_round._within_controller_cap.assert_called_once_with('c2', 10.5)
+
+def test_above_dst_with_resiliency(complex_round, complex_migration):
+    complex_round._within_controller_cap = MagicMock(return_value=False)
+    assert not complex_round._below_controller_caps(complex_migration, True)
+    complex_migration.get_src_controller.assert_not_called()
+    complex_migration.get_dst_controller.assert_called_once()
+    complex_migration.get_load.assert_called_once()
+    complex_round._within_controller_cap.assert_called_once_with('c1', 1.0)
+
+def test_above_src_with_resiliency(complex_round, complex_migration):
+    complex_round._within_controller_cap = MagicMock(
+        side_effect=(True, False))
+    assert not complex_round._below_controller_caps(complex_migration, True)
+    complex_migration.get_src_controller.assert_called_once()
+    complex_migration.get_dst_controller.assert_called_once()
+    assert complex_migration.get_load.call_count == 2
+    within_calls = [call('c1', 1.0), call('c0', 1.0)]
+    assert complex_round._within_controller_cap.call_count == 2
+    complex_round._within_controller_cap.assert_has_calls(within_calls)
+
+def test_below_gives_true_with_resiliency(simple_round, simple_migration):
+    simple_round._within_controller_cap = MagicMock(side_effect=(True, True))
+    assert simple_round._below_controller_caps(simple_migration, True)
+    simple_migration.get_src_controller.assert_called_once()
+    simple_migration.get_dst_controller.assert_called_once()
+    assert simple_migration.get_load.call_count == 2
+    within_calls = [call('c2', 10.5), call('c7', 10.5)]
+    assert simple_round._within_controller_cap.call_count == 2
+    simple_round._within_controller_cap.assert_has_calls(within_calls)
+
 def test_reduce_controller_cap_simple(simple_round):
     simple_round._reduce_controller_cap('c0', 2.0)
     rem_caps = simple_round.get_remaining_controller_capacities()
@@ -111,115 +159,100 @@ def test_reduce_qos_caps_complex(complex_round):
         'g0': 1, 'g1': 0, 'g2': 4, 'g3': 0}
 
 def test_can_schedule_migration_no_groups(simple_round, no_group_migration):
-    simple_round._within_controller_cap = MagicMock(return_value=True)
+    simple_round._below_controller_caps = MagicMock(return_value=True)
     simple_round._within_qos_caps = MagicMock(return_value=True)
-    assert simple_round.can_schedule_migration(no_group_migration)
-    no_group_migration.get_dst_controller.assert_called_once()
-    no_group_migration.get_load.assert_called_once()
+    assert simple_round.can_schedule_migration(no_group_migration, False)
     no_group_migration.get_groups.assert_called_once()
-    simple_round._within_controller_cap.assert_called_once_with('c0', 2.1)
+    simple_round._below_controller_caps.assert_called_once_with(
+        no_group_migration, False)
     simple_round._within_qos_caps.assert_called_once_with(set())
 
 def test_can_schedule_migration_with_group(complex_round, simple_migration):
-    complex_round._within_controller_cap = MagicMock(return_value=True)
+    complex_round._below_controller_caps = MagicMock(return_value=True)
     complex_round._within_qos_caps = MagicMock(return_value=True)
-    assert complex_round.can_schedule_migration(simple_migration)
-    simple_migration.get_dst_controller.assert_called_once()
-    simple_migration.get_load.assert_called_once()
+    assert complex_round.can_schedule_migration(simple_migration, True)
     simple_migration.get_groups.assert_called_once()
-    complex_round._within_controller_cap.assert_called_once_with('c2', 10.5)
+    complex_round._below_controller_caps.assert_called_once_with(
+        simple_migration, True)
     complex_round._within_qos_caps.assert_called_once_with({'g0'})
 
 def test_can_schedule_migration_with_multi_groups(complex_round,
                                                   complex_migration):
-    complex_round._within_controller_cap = MagicMock(return_value=True)
+    complex_round._below_controller_caps = MagicMock(return_value=True)
     complex_round._within_qos_caps = MagicMock(return_value=True)
-    assert complex_round.can_schedule_migration(complex_migration)
-    complex_migration.get_dst_controller.assert_called_once()
-    complex_migration.get_load.assert_called_once()
+    assert complex_round.can_schedule_migration(complex_migration, False)
     complex_migration.get_groups.assert_called_once()
-    complex_round._within_controller_cap.assert_called_once_with('c1', 1.0)
+    complex_round._below_controller_caps.assert_called_once_with(
+        complex_migration, False)
     complex_round._within_qos_caps.assert_called_once_with({'g0', 'g1', 'g2'})
 
 def test_cant_schedule_controller_cap_too_low(simple_round):
     migration = MagicMock()
-    migration.get_dst_controller = MagicMock(return_value='c0')
-    migration.get_load = MagicMock(return_value=5.1)
     migration.get_groups = MagicMock(return_value={'g0'})
-    simple_round._within_controller_cap = MagicMock(return_value=False)
+    simple_round._below_controller_caps = MagicMock(return_value=False)
     simple_round._within_qos_caps = MagicMock(return_value=True)
-    assert not simple_round.can_schedule_migration(migration)
-    migration.get_dst_controller.assert_called_once()
-    migration.get_load.assert_called_once()
+    assert not simple_round.can_schedule_migration(migration, False)
     migration.get_groups.assert_called_once()
-    simple_round._within_controller_cap.assert_called_once_with('c0', 5.1)
+    simple_round._below_controller_caps.assert_called_once_with(
+        migration, False)
     simple_round._within_qos_caps.assert_called_once_with({'g0'})
 
 def test_cant_schedule_group_cap_too_low(complex_round):
     migration = MagicMock()
-    migration.get_dst_controller = MagicMock(return_value='c0')
-    migration.get_load = MagicMock(return_value=0.5)
     migration.get_groups = MagicMock(return_value={'g3'})
-    complex_round._within_controller_cap = MagicMock(return_value=True)
+    complex_round._below_controller_caps = MagicMock(return_value=True)
     complex_round._within_qos_caps = MagicMock(return_value=False)
-    assert not complex_round.can_schedule_migration(migration)
-    migration.get_dst_controller.assert_called_once()
-    migration.get_load.assert_called_once()
+    assert not complex_round.can_schedule_migration(migration, True)
     migration.get_groups.assert_called_once()
-    complex_round._within_controller_cap.assert_called_once_with('c0', 0.5)
+    complex_round._below_controller_caps.assert_called_once_with(
+        migration, True)
     complex_round._within_qos_caps.assert_called_once_with({'g3'})
 
 
 def test_cant_schedule_both_too_low(complex_round):
     migration = MagicMock()
-    migration.get_dst_controller = MagicMock(return_value='c2')
-    migration.get_load = MagicMock(return_value=15.3)
     migration.get_groups = MagicMock(return_value={'g0', 'g1', 'g2', 'g3'})
-    complex_round._within_controller_cap = MagicMock(return_value=False)
+    complex_round._below_controller_caps = MagicMock(return_value=False)
     complex_round._within_qos_caps = MagicMock(return_value=False)
-    assert not complex_round.can_schedule_migration(migration)
-    migration.get_dst_controller.assert_called_once()
-    migration.get_load.assert_called_once()
+    assert not complex_round.can_schedule_migration(migration, True)
     migration.get_groups.assert_called_once()
-    complex_round._within_controller_cap.assert_called_once_with('c2', 15.3)
+    complex_round._below_controller_caps.assert_called_once_with(
+        migration, True)
     complex_round._within_qos_caps.assert_called_once_with(
         {'g0', 'g1', 'g2', 'g3'})
 
 def test_schedule_migration_no_groups(simple_round, no_group_migration):
-    simple_round._reduce_controller_cap = MagicMock(side_effect=None)
+    simple_round._schedule_for_controllers = MagicMock(side_effect=None)
     simple_round._reduce_qos_caps = MagicMock(side_effect=None)
-    simple_round.schedule_migration(no_group_migration)
+    simple_round.schedule_migration(no_group_migration, False)
     assert simple_round._migrations == {'s0'}
-    no_group_migration.get_dst_controller.assert_called_once()
-    no_group_migration.get_load.assert_called_once()
     no_group_migration.get_groups.assert_called_once()
     no_group_migration.get_switch.assert_called_once()
-    simple_round._reduce_controller_cap.assert_called_once_with('c0', 2.1)
+    simple_round._schedule_for_controllers.assert_called_once_with(
+        no_group_migration, False)
     simple_round._reduce_qos_caps.assert_called_once_with(set())
 
 def test_schedule_migration_one_group(complex_round, simple_migration):
-    complex_round._reduce_controller_cap = MagicMock(side_effect=None)
+    complex_round._schedule_for_controllers = MagicMock(side_effect=None)
     complex_round._reduce_qos_caps = MagicMock(side_effect=None)
-    complex_round.schedule_migration(simple_migration)
+    complex_round.schedule_migration(simple_migration, True)
     assert complex_round._migrations == {'s3'}
-    simple_migration.get_dst_controller.assert_called_once()
-    simple_migration.get_load.assert_called_once()
     simple_migration.get_groups.assert_called_once()
     simple_migration.get_switch.assert_called_once()
-    complex_round._reduce_controller_cap.assert_called_once_with('c2', 10.5)
+    complex_round._schedule_for_controllers.assert_called_once_with(
+        simple_migration, True)
     complex_round._reduce_qos_caps.assert_called_once_with({'g0'})
 
 def test_schedule_migration_with_multi_groups(complex_round,
                                               complex_migration):
-    complex_round._reduce_controller_cap = MagicMock(side_effect=None)
+    complex_round._schedule_for_controllers = MagicMock(side_effect=None)
     complex_round._reduce_qos_caps = MagicMock(side_effect=None)
-    complex_round.schedule_migration(complex_migration)
+    complex_round.schedule_migration(complex_migration, True)
     assert complex_round._migrations == {'s1'}
-    complex_migration.get_dst_controller.assert_called_once()
-    complex_migration.get_load.assert_called_once()
     complex_migration.get_groups.assert_called_once()
     complex_migration.get_switch.assert_called_once()
-    complex_round._reduce_controller_cap.assert_called_once_with('c1', 1.0)
+    complex_round._schedule_for_controllers.assert_called_once_with(
+        complex_migration, True)
     complex_round._reduce_qos_caps.assert_called_once_with({'g0', 'g1', 'g2'})
 
 def test_print_migrations_no_migrations(empty_round):

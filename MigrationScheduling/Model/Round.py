@@ -182,8 +182,8 @@ class Round:
         """
         within_controller = self._within_controller_cap(
             migration.get_dst_controller(), migration.get_load())
-        if resiliency:
-            return within_controller and self._within_controller_cap(
+        if within_controller and resiliency:
+            return self._within_controller_cap(
                 migration.get_src_controller(), migration.get_load())
         return within_controller
 
