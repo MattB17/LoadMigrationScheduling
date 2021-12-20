@@ -22,7 +22,7 @@ def mock_data():
 @patch(SCHEDULE_STR)
 def test_with_no_migrations(mock_schedule, mock_caps, mock_data):
     mock_data.get_migrations = MagicMock(return_value={})
-    assert vector_first_fit(mock_data) == 0
+    assert vector_first_fit(mock_data, False) == 0
     mock_data.get_migrations.assert_called_once()
     mock_caps.assert_called_once_with(mock_data)
     mock_schedule.assert_not_called()
@@ -35,11 +35,11 @@ def test_with_one_migration(mock_schedule, mock_caps, mock_data):
     mock_data.get_migrations = MagicMock(return_value={'s0': migration})
     round = MagicMock()
     mock_schedule.return_value = ([round], 1)
-    assert vector_first_fit(mock_data) == 1
+    assert vector_first_fit(mock_data, False) == 1
     mock_data.get_migrations.assert_called_once()
     mock_caps.assert_called_once_with(mock_data)
     mock_schedule.assert_called_once_with(
-        [], 0, migration, CONTROL_CAPS1, QOS_CAPS1)
+        [], 0, migration, CONTROL_CAPS1, QOS_CAPS1, False)
 
 @patch(CAPS_STR, return_value=(CONTROL_CAPS2, QOS_CAPS2))
 @patch(SCHEDULE_STR)
@@ -54,15 +54,15 @@ def test_with_multi_migrations(mock_schedule, mock_caps, mock_data):
                                  (rounds[:2], 2),
                                  (rounds[:2], 2),
                                  (rounds, 3))
-    assert vector_first_fit(mock_data) == 3
+    assert vector_first_fit(mock_data, True) == 3
     mock_data.get_migrations.assert_called_once()
     mock_dict.values.assert_called_once()
     mock_caps.assert_called_once_with(mock_data)
     schedule_calls = [
-        call([], 0, migrations[0], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:1], 1, migrations[1], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:2], 2, migrations[2], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:2], 2, migrations[3], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:2], 2, migrations[4], CONTROL_CAPS2, QOS_CAPS2)]
+        call([], 0, migrations[0], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:1], 1, migrations[1], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:2], 2, migrations[2], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:2], 2, migrations[3], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:2], 2, migrations[4], CONTROL_CAPS2, QOS_CAPS2, True)]
     assert mock_schedule.call_count == 5
     mock_schedule.assert_has_calls(schedule_calls)

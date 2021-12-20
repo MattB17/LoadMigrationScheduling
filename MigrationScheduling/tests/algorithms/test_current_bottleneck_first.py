@@ -32,9 +32,9 @@ CONSTS_DICT2 = {'c1': MagicMock(),
 def test_with_no_migrations(mock_caps, mock_consts, mock_select,
                             mock_schedule, mock_remove):
     mock_data = MagicMock()
-    assert current_bottleneck_first(mock_data, 1) == 0
+    assert current_bottleneck_first(mock_data, 1, False) == 0
     mock_caps.assert_called_once_with(mock_data)
-    mock_consts.assert_called_once_with(mock_data)
+    mock_consts.assert_called_once_with(mock_data, False)
     mock_select.assert_not_called()
     mock_schedule.assert_not_called()
     mock_remove.assert_not_called()
@@ -53,13 +53,13 @@ def test_with_one_migration(mock_caps, mock_consts, mock_select,
     mock_select.return_value = migration
     mock_schedule.return_value = ([round], 1)
     mock_remove.return_value = {}
-    assert current_bottleneck_first(mock_data, 1) == 1
+    assert current_bottleneck_first(mock_data, 1, False) == 1
     mock_caps.assert_called_once_with(mock_data)
-    mock_consts.assert_called_once_with(mock_data)
+    mock_consts.assert_called_once_with(mock_data, False)
     mock_select.assert_called_once_with(mock_data, 1, CONSTS_DICT1)
     mock_schedule.assert_called_once_with(
-        [], 0, migration, CONTROL_CAPS1, QOS_CAPS1)
-    mock_remove.assert_called_once_with(migration, CONSTS_DICT1)
+        [], 0, migration, CONTROL_CAPS1, QOS_CAPS1, False)
+    mock_remove.assert_called_once_with(migration, CONSTS_DICT1, False)
 
 
 @patch(REMOVE_STR)
@@ -84,21 +84,21 @@ def test_with_multi_migrations(mock_caps, mock_consts, mock_select,
                                  (rounds[:2], 2),
                                  (rounds, 3))
     mock_remove.side_effect = (dict1, dict2, dict3, dict4, {})
-    assert current_bottleneck_first(mock_data, 2) == 3
+    assert current_bottleneck_first(mock_data, 2, True) == 3
     mock_caps.assert_called_once_with(mock_data)
-    mock_consts.assert_called_once_with(mock_data)
+    mock_consts.assert_called_once_with(mock_data, True)
     dicts = [CONSTS_DICT2, dict1, dict2, dict3, dict4]
     select_calls = [call(mock_data, 2, const_dict) for const_dict in dicts]
     assert mock_select.call_count == 5
     mock_select.assert_has_calls(select_calls)
     schedule_calls = [
-        call([], 0, migrations[0], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:1], 1, migrations[1], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:1], 1, migrations[2], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:1], 1, migrations[3], CONTROL_CAPS2, QOS_CAPS2),
-        call(rounds[:2], 2, migrations[4], CONTROL_CAPS2, QOS_CAPS2)]
+        call([], 0, migrations[0], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:1], 1, migrations[1], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:1], 1, migrations[2], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:1], 1, migrations[3], CONTROL_CAPS2, QOS_CAPS2, True),
+        call(rounds[:2], 2, migrations[4], CONTROL_CAPS2, QOS_CAPS2, True)]
     assert mock_schedule.call_count == 5
     mock_schedule.assert_has_calls(schedule_calls)
-    remove_calls = [call(migrations[i], dicts[i]) for i in range(5)]
+    remove_calls = [call(migrations[i], dicts[i], True) for i in range(5)]
     assert mock_remove.call_count == 5
     mock_remove.assert_has_calls(remove_calls)
