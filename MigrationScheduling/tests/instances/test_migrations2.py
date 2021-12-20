@@ -6,6 +6,7 @@ from MigrationScheduling.Model import Optimizer
 
 DIR = os.path.dirname(os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+DATA_PATH = os.path.join(DIR, os.path.join("instances", "migrations2.txt"))
 
 # indices of network objects
 SWITCH_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -71,8 +72,7 @@ def test_optimizer_without_resiliency():
 
     # optimizer
     optimizer = Optimizer()
-    optimizer.get_model_data(os.path.join(DIR,
-        os.path.join("instances", "migrations2.txt")))
+    optimizer.get_model_data(DATA_PATH)
     optVal = optimizer.build_ip_model(resiliency=False, verbose=False)
     assert round(optVal, 2) == round(m.objVal, 2)
 
@@ -99,18 +99,28 @@ def test_optimizer_with_resiliency():
 
     # optimizer
     optimizer = Optimizer()
-    optimizer.get_model_data(os.path.join(DIR,
-        os.path.join("instances", "migrations2.txt")))
+    optimizer.get_model_data(DATA_PATH)
     optVal = optimizer.build_ip_model(resiliency=True, verbose=False)
     assert round(optVal, 2) == round(m.objVal, 2)
 
-def test_vff_heuristic():
+
+def test_vff_heuristic_no_resilience():
     optimizer = Optimizer()
-    optimizer.get_model_data(os.path.join(DIR,
-        os.path.join("instances", "migrations2.txt")))
-    vff_val = algorithms.vector_first_fit(optimizer.instance_data())
+    optimizer.get_model_data(DATA_PATH)
+    vff_val = algorithms.vector_first_fit(optimizer.instance_data(), False)
 
     # the VFF solution has value 2:
     # - migrations 0, 1, 4, 5, 6, 7, 8, 9 are scheduled in round 1
     # - migrations 2 and 3 are scheduled in round 2
+    assert vff_val == 2
+
+
+def test_vff_heuristic_with_resilience():
+    optimizer = Optimizer()
+    optimizer.get_model_data(DATA_PATH)
+    vff_val = algorithms.vector_first_fit(optimizer.instance_data(), True)
+
+    # the VFF solution has value 2:
+    # - migrations 0, 1, 4, 5, 6, 7, and 8 are scheduled in round 1
+    # - migrations 2, 3, and 9 are scheduled in round 2
     assert vff_val == 2
