@@ -215,7 +215,7 @@
     <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">opt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">build_ip_model</span><span class="p">(</span>
-            <span class="n">resiliency</span><span class="o">=</span><span class="n">resilience</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">resiliency</span><span class="o">=</span><span class="n">resiliency</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">opt_time</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
@@ -266,8 +266,8 @@
     <span class="k">return</span> <span class="n">results_str</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
 
-<div class="viewcode-block" id="get_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">get_results_for_instances</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">instance_files</span><span class="p">,</span>
-                              <span class="n">file_pattern</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">):</span>
+<div class="viewcode-block" id="get_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.get_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">get_results_for_instances</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">instance_files</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">,</span>
+                              <span class="n">input_dir</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Gets results for all the instances specified in `instance_files`.</span>
 
 <span class="sd">    For each instance in `instance_files` the result string is computed and</span>
@@ -284,6 +284,9 @@
 <span class="sd">        A string representing the pattern used for the instance files.</span>
 <span class="sd">    input_dir: str</span>
 <span class="sd">        A string specifying the directory from which the instances are read.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean indicating whether failure resilience is considered when</span>
+<span class="sd">        calculating solutions. The default value is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -293,7 +296,7 @@
     <span class="k">for</span> <span class="n">instance_file</span> <span class="ow">in</span> <span class="n">instance_files</span><span class="p">:</span>
         <span class="n">output_idx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">extract_file_idx</span><span class="p">(</span><span class="n">instance_file</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">)</span>
         <span class="n">results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">build_results_string</span><span class="p">(</span>
-            <span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_file</span><span class="p">,</span> <span class="n">output_idx</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span></div>
+            <span class="n">input_dir</span><span class="p">,</span> <span class="n">instance_file</span><span class="p">,</span> <span class="n">output_idx</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="write_optimal_results"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.write_optimal_results">[docs]</a><span class="k">def</span> <span class="nf">write_optimal_results</span><span class="p">(</span><span class="n">instance_file</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">,</span> <span class="n">result_idx</span><span class="p">,</span>
                           <span class="n">output_dir</span><span class="p">,</span> <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -393,7 +396,8 @@
 
 
 <div class="viewcode-block" id="calculate_heuristic_results_for_instances"><a class="viewcode-back" href="../../Model/analysis.html#MigrationScheduling.analysis.calculate_heuristic_results_for_instances">[docs]</a><span class="k">def</span> <span class="nf">calculate_heuristic_results_for_instances</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">,</span>
-                                              <span class="n">instance_files</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+                                              <span class="n">instance_files</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span>
+                                              <span class="n">resiliency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Gets the heuristic results for each instance in `instance_files`.</span>
 
 <span class="sd">    For each instance in `instance_files`, the instance is solved with the</span>
@@ -414,6 +418,9 @@
 <span class="sd">    output_file: str</span>
 <span class="sd">        A string representing the name of the file to which the results will</span>
 <span class="sd">        be written.</span>
+<span class="sd">    resiliency: bool</span>
+<span class="sd">        A boolean indicating whether failure resilience is considered when</span>
+<span class="sd">        calculating solutions. The default value is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -428,8 +435,8 @@
         <span class="n">instances</span> <span class="o">=</span> <span class="n">get_instances_for_core</span><span class="p">(</span>
             <span class="n">instance_files</span><span class="p">,</span> <span class="n">instances_per_core</span><span class="p">,</span> <span class="n">core_num</span><span class="p">)</span>
         <span class="n">procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">get_results_for_instances</span><span class="p">,</span>
-                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span>
-                                      <span class="n">file_pattern</span><span class="p">,</span> <span class="n">input_dir</span><span class="p">)))</span>
+                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">file_pattern</span><span class="p">,</span>
+                                      <span class="n">input_dir</span><span class="p">,</span> <span class="n">resiliency</span><span class="p">)))</span>
     <span class="n">initialize_and_join_processes</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span>
     <span class="n">write_results_to_file</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">output_file</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
