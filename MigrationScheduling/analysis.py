@@ -86,7 +86,7 @@ def initialize_and_join_processes(procs):
         proc.join()
 
 
-def build_heuristics_string(instance_data):
+def build_heuristics_string(instance_data, resiliency=False):
     """Builds the heuristics string for `instance_data`.
 
     The heuristics string is a space separated string containing the results
@@ -97,6 +97,9 @@ def build_heuristics_string(instance_data):
     instance_data: InstanceData
         An `InstanceData` object specifying an instance of the load migration
         scheduling problem.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -105,18 +108,18 @@ def build_heuristics_string(instance_data):
 
     """
     start = timer()
-    vff = algorithms.vector_first_fit(instance_data)
+    vff = algorithms.vector_first_fit(instance_data, resiliency)
     vff_time = timer() - start
 
     start = timer()
     cbf = algorithms.current_bottleneck_first(
-        instance_data, specs.CBF_CHOICES)
+        instance_data, specs.CBF_CHOICES, resiliency)
     cbf_time = timer() - start
 
     return "{0} {1} {2} {3}".format(vff, vff_time, cbf, cbf_time)
 
 
-def build_optimal_string(optimizer):
+def build_optimal_string(optimizer, resiliency=False):
     """Builds the optimal string from the optimizer.
 
     The optimal string is a space-separated string reporting the optimal
@@ -127,6 +130,9 @@ def build_optimal_string(optimizer):
     optimizer: Optimizer
         An `Optimizer` object used to find the optimal solution for an
         instance of the load migration scheduling problem.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -136,7 +142,8 @@ def build_optimal_string(optimizer):
     """
     start = timer()
     try:
-        opt = int(optimizer.build_ip_model(verbose=False)) + 1
+        opt = 1 + int(optimizer.build_ip_model(
+            resiliency=resilience, verbose=False))
     except:
         opt = np.nan
     opt_time = timer() - start
@@ -144,7 +151,8 @@ def build_optimal_string(optimizer):
     return "{0} {1}".format(opt, opt_time)
 
 
-def build_results_string(input_dir, instance_file, output_idx, run_optimizer):
+def build_results_string(input_dir, instance_file, output_idx,
+                         run_optimizer=False, resiliency=False):
     """Builds the results string for the instance given in `instance_file`.
 
     The results string is a space separated string specifying the size of the
@@ -162,9 +170,12 @@ def build_results_string(input_dir, instance_file, output_idx, run_optimizer):
     output_idx: int
         An integer identifying the index of the instance being output.
     run_optimizer: bool
-        A bool specifying whether the optimizer will be run to find the
+        A boolean specifying whether the optimizer will be run to find the
         optimal solution of the instance. Otherwise, just the heuristic
-        algorithms are run.
+        algorithms are run. The default value is False.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -176,10 +187,10 @@ def build_results_string(input_dir, instance_file, output_idx, run_optimizer):
     optimizer.get_model_data(os.path.join(input_dir, instance_file))
     results_str = "{0} {1} {2}".format(
         output_idx, optimizer.get_size_string(),
-        build_heuristics_string(optimizer.instance_data()))
+        build_heuristics_string(optimizer.instance_data(), resiliency))
     if run_optimizer:
         results_str = "{0} {1}".format(
-            results_str, build_optimal_string(optimizer))
+            results_str, build_optimal_string(optimizer, resiliency))
     return results_str + "\n"
 
 
@@ -212,7 +223,8 @@ def get_results_for_instances(results_list, instance_files,
         results_list.append(build_results_string(
             input_dir, instance_file, output_idx, False))
 
-def write_optimal_results(instance_file, input_dir, result_idx, output_dir):
+def write_optimal_results(instance_file, input_dir, result_idx,
+                          output_dir, resiliency=False):
     """Writes the results of solving `instance_file` optimally.
 
     The instance specified in `instance_file` is solved optimally and with
@@ -231,6 +243,9 @@ def write_optimal_results(instance_file, input_dir, result_idx, output_dir):
     output_dir: str
         A string identifying the directory to which the results will be
         written.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -242,10 +257,10 @@ def write_optimal_results(instance_file, input_dir, result_idx, output_dir):
     with open(output_file, 'w') as results_file:
         results_file.write(utils.get_results_header(True))
         results_file.write(build_results_string(
-            input_dir, instance_file, result_idx, True))
+            input_dir, instance_file, result_idx, True, resiliency))
 
-def solve_instances_optimally(instance_files, input_dir,
-                              file_pattern, output_dir):
+def solve_instances_optimally(instance_files, input_dir, file_pattern,
+                              output_dir, resiliency=False):
     """Finds the optimal solution for each instance in `instance_files`.
 
     Each file in `instance_files` is read from `input_dir` and the
@@ -265,6 +280,9 @@ def solve_instances_optimally(instance_files, input_dir,
     output_dir: str
         A string representing the name of the directory to which the results
         will be written.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -273,7 +291,8 @@ def solve_instances_optimally(instance_files, input_dir,
     """
     for instance_file in instance_files:
         curr_idx = utils.extract_file_idx(instance_file, file_pattern)
-        write_optimal_results(instance_file, input_dir, curr_idx, output_dir)
+        write_optimal_results(
+            instance_file, input_dir, curr_idx, output_dir, resiliency)
 
 
 def write_results_to_file(results_list, output_file, with_opt=False):
@@ -344,7 +363,8 @@ def calculate_heuristic_results_for_instances(input_dir, file_pattern,
 
 
 def calculate_optimal_results_for_instances(input_dir, file_pattern,
-                                            instance_files, output_dir):
+                                            instance_files, output_dir,
+                                            resiliency=False):
     """Gets the optimal results for each instance in `instance_files`.
 
     For each instance in `instance_files`, the instance is solved optimally
@@ -365,6 +385,9 @@ def calculate_optimal_results_for_instances(input_dir, file_pattern,
     output_file: str
         A string representing the name of the file to which the results will
         be written.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -378,8 +401,8 @@ def calculate_optimal_results_for_instances(input_dir, file_pattern,
         instances = get_instances_for_core(
             instance_files, instances_per_core, core_num)
         procs.append(mp.Process(target=solve_instances_optimally,
-                                args=(instances, input_dir,
-                                      file_pattern, output_dir)))
+                                args=(instances, input_dir, file_pattern,
+                                      output_dir, resiliency)))
     initialize_and_join_processes(procs)
 
 
