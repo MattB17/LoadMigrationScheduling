@@ -76,7 +76,7 @@
 analysis of results.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.build_heuristics_string">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">build_heuristics_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#build_heuristics_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.build_heuristics_string" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">build_heuristics_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#build_heuristics_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.build_heuristics_string" title="Permalink to this definition"></a></dt>
 <dd><p>Builds the heuristics string for <cite>instance_data</cite>.</p>
 <p>The heuristics string is a space separated string containing the results
 of running the heuristic algorithms on <cite>instance_data</cite>.</p>
@@ -85,6 +85,9 @@ of running the heuristic algorithms on <cite>instance_data</cite>.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>instance_data: InstanceData</strong></dt><dd><p>An <cite>InstanceData</cite> object specifying an instance of the load migration
 scheduling problem.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resilience is considered when
+calculating solutions. The default value is False.</p>
 </dd>
 </dl>
 </dd>
@@ -99,7 +102,7 @@ scheduling problem.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.build_optimal_string">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">build_optimal_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#build_optimal_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.build_optimal_string" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">build_optimal_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#build_optimal_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.build_optimal_string" title="Permalink to this definition"></a></dt>
 <dd><p>Builds the optimal string from the optimizer.</p>
 <p>The optimal string is a space-separated string reporting the optimal
 result and time taken by the optimizer to find the optimal solution.</p>
@@ -108,6 +111,9 @@ result and time taken by the optimizer to find the optimal solution.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>optimizer: Optimizer</strong></dt><dd><p>An <cite>Optimizer</cite> object used to find the optimal solution for an
 instance of the load migration scheduling problem.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resilience is considered when
+calculating solutions. The default value is False.</p>
 </dd>
 </dl>
 </dd>
@@ -122,7 +128,7 @@ instance of the load migration scheduling problem.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.build_results_string">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">build_results_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#build_results_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.build_results_string" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">build_results_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#build_results_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.build_results_string" title="Permalink to this definition"></a></dt>
 <dd><p>Builds the results string for the instance given in <cite>instance_file</cite>.</p>
 <p>The results string is a space separated string specifying the size of the
 instance being solved followed by the results and time used to compute
@@ -138,9 +144,12 @@ be solved.</p>
 </dd>
 <dt><strong>output_idx: int</strong></dt><dd><p>An integer identifying the index of the instance being output.</p>
 </dd>
-<dt><strong>run_optimizer: bool</strong></dt><dd><p>A bool specifying whether the optimizer will be run to find the
+<dt><strong>run_optimizer: bool</strong></dt><dd><p>A boolean specifying whether the optimizer will be run to find the
 optimal solution of the instance. Otherwise, just the heuristic
-algorithms are run.</p>
+algorithms are run. The default value is False.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resilience is considered when
+calculating solutions. The default value is False.</p>
 </dd>
 </dl>
 </dd>
@@ -187,7 +196,7 @@ be written.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.calculate_optimal_results_for_instances">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_optimal_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#calculate_optimal_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.calculate_optimal_results_for_instances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_optimal_results_for_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#calculate_optimal_results_for_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.calculate_optimal_results_for_instances" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the optimal results for each instance in <cite>instance_files</cite>.</p>
 <p>For each instance in <cite>instance_files</cite>, the instance is solved optimally
 and with the vector first fit and current bottleneck first algorithms. A
@@ -206,6 +215,9 @@ instances for which the results are calculated.</p>
 </dd>
 <dt><strong>output_file: str</strong></dt><dd><p>A string representing the name of the file to which the results will
 be written.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resilience is considered when
+calculating solutions. The default value is False.</p>
 </dd>
 </dl>
 </dd>
@@ -765,7 +777,7 @@ written.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.solve_instances_optimally">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">solve_instances_optimally</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#solve_instances_optimally"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.solve_instances_optimally" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">solve_instances_optimally</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#solve_instances_optimally"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.solve_instances_optimally" title="Permalink to this definition"></a></dt>
 <dd><p>Finds the optimal solution for each instance in <cite>instance_files</cite>.</p>
 <p>Each file in <cite>instance_files</cite> is read from <cite>input_dir</cite> and the
 corresponding instance is solved optimally and with the heuristic
@@ -784,6 +796,9 @@ instances are read.</p>
 <dt><strong>output_dir: str</strong></dt><dd><p>A string representing the name of the directory to which the results
 will be written.</p>
 </dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resilience is considered when
+calculating solutions. The default value is False.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -796,7 +811,7 @@ will be written.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MigrationScheduling.analysis.write_optimal_results">
-<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_optimal_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_optimal_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_optimal_results" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MigrationScheduling.analysis.</span></span><span class="sig-name descname"><span class="pre">write_optimal_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resiliency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MigrationScheduling/analysis.html#write_optimal_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MigrationScheduling.analysis.write_optimal_results" title="Permalink to this definition"></a></dt>
 <dd><p>Writes the results of solving <cite>instance_file</cite> optimally.</p>
 <p>The instance specified in <cite>instance_file</cite> is solved optimally and with
 the heuristic algorithms and the results are written to <cite>output_dir</cite>.</p>
@@ -813,6 +828,9 @@ file is read.</p>
 </dd>
 <dt><strong>output_dir: str</strong></dt><dd><p>A string identifying the directory to which the results will be
 written.</p>
+</dd>
+<dt><strong>resiliency: bool</strong></dt><dd><p>A boolean indicating whether failure resilience is considered when
+calculating solutions. The default value is False.</p>
 </dd>
 </dl>
 </dd>
