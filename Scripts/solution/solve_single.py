@@ -13,17 +13,18 @@ utils.initialize_seeds(specs.SEED_NUM)
 
 if __name__ == "__main__":
     file_path = sys.argv[1]
-    run_optimizer = (sys.argv[2].lower() == "true")
+    resiliency = (sys.argv[2].lower() == "true")
+    run_optimizer = (sys.argv[3].lower() == "true")
     optimizer = Optimizer()
     optimizer.get_model_data(file_path)
     if run_optimizer:
         lb, ub = optimizer.get_model_bounds()
         print("Lower Bound: {}".format(lb))
         print("Upper Bound: {}".format(ub))
-        optimizer.build_ip_model(verbose=True)
+        optimizer.build_ip_model(resilency=resiliency, verbose=True)
 
     print("Number of Rounds for Vector First Fit: {}".format(
-        algorithms.vector_first_fit(optimizer.instance_data())))
+        algorithms.vector_first_fit(optimizer.instance_data(), resiliency)))
     print("Number of Rounds for Current Bottleneck First: {}".format(
         algorithms.current_bottleneck_first(
-            optimizer.instance_data(), specs.CBF_CHOICES)))
+            optimizer.instance_data(), specs.CBF_CHOICES, resiliency)))

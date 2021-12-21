@@ -143,7 +143,7 @@ def build_optimal_string(optimizer, resiliency=False):
     start = timer()
     try:
         opt = 1 + int(optimizer.build_ip_model(
-            resiliency=resilience, verbose=False))
+            resiliency=resiliency, verbose=False))
     except:
         opt = np.nan
     opt_time = timer() - start
@@ -194,8 +194,8 @@ def build_results_string(input_dir, instance_file, output_idx,
     return results_str + "\n"
 
 
-def get_results_for_instances(results_list, instance_files,
-                              file_pattern, input_dir):
+def get_results_for_instances(results_list, instance_files, file_pattern,
+                              input_dir, resiliency=False):
     """Gets results for all the instances specified in `instance_files`.
 
     For each instance in `instance_files` the result string is computed and
@@ -212,6 +212,9 @@ def get_results_for_instances(results_list, instance_files,
         A string representing the pattern used for the instance files.
     input_dir: str
         A string specifying the directory from which the instances are read.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -221,7 +224,7 @@ def get_results_for_instances(results_list, instance_files,
     for instance_file in instance_files:
         output_idx = utils.extract_file_idx(instance_file, file_pattern)
         results_list.append(build_results_string(
-            input_dir, instance_file, output_idx, False))
+            input_dir, instance_file, output_idx, False, resiliency))
 
 def write_optimal_results(instance_file, input_dir, result_idx,
                           output_dir, resiliency=False):
@@ -321,7 +324,8 @@ def write_results_to_file(results_list, output_file, with_opt=False):
 
 
 def calculate_heuristic_results_for_instances(input_dir, file_pattern,
-                                              instance_files, output_file):
+                                              instance_files, output_file,
+                                              resiliency=False):
     """Gets the heuristic results for each instance in `instance_files`.
 
     For each instance in `instance_files`, the instance is solved with the
@@ -342,6 +346,9 @@ def calculate_heuristic_results_for_instances(input_dir, file_pattern,
     output_file: str
         A string representing the name of the file to which the results will
         be written.
+    resiliency: bool
+        A boolean indicating whether failure resilience is considered when
+        calculating solutions. The default value is False.
 
     Returns
     -------
@@ -356,8 +363,8 @@ def calculate_heuristic_results_for_instances(input_dir, file_pattern,
         instances = get_instances_for_core(
             instance_files, instances_per_core, core_num)
         procs.append(mp.Process(target=get_results_for_instances,
-                                args=(results, instances,
-                                      file_pattern, input_dir)))
+                                args=(results, instances, file_pattern,
+                                      input_dir, resiliency)))
     initialize_and_join_processes(procs)
     write_results_to_file(list(results), output_file, False)
 

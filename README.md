@@ -65,15 +65,17 @@ The simulation scripts output files of the form `migration<x>.txt` where `<x>` i
 There are two options for solving migration scheduling instances found in the `Scripts/solution` folder:
 * `solve_single` - used to solve a single load migration scheduling instance
   * the results are printed to the screen and is primarily used for testing
-  * run the script with `python Scripts/solution/solve_single.py <file> <run_optimizer>`
+  * run the script with `python Scripts/solution/solve_single.py <file> <with_failure_resiliency> <run_optimizer>`
   * the arguments are as follows:
     * `<file>` - the path to the file being solved
+    * `<with_failure_resiliency>` - a boolean flag indicating whether failure resiliency should be considered. A value of "true" signals that the load on both the source and destination controllers will be considered when designing a migration scheme whereas a "value" of false signals that the load will only be considered for the destination controller.
     * `<run_optimizer>` - a boolean flag indicating whether to also run the optimizer. A value of "false" signals that just the heuristics will be run while a value of "true" signals the heuristics and optimizer will be run.
 * `solve_bulk` - used to solve a group of load migration scheduling instances
   * the results will be output to a file called `results.txt` which has one row per instance
-  * run the script with `python Scripts/solution/solve_bulk.py <input_dir> <output_dir> <file_pattern> <run_optimizer>`
+  * run the script with `python Scripts/solution/solve_bulk.py <input_dir> <output_dir> <file_pattern> <with_failure_resiliency> <run_optimizer>`
   * the arguments are as follows:
     * `<input_dir>` - the path to the directory containing the instance files
     * `<output_dir>` - the path to the directory to which the results will be output
     * `<file_pattern>` - the file pattern of the input files. If a simulator was used to generate the files then the pattern will be "migration".
+    * `<with_failure_resiliency>` - a boolean flag indicating whether failure resiliency should be considered. A value of "true" signals that the load on both the source and destination controllers will be considered when designing a migration scheme whereas a "value" of false signals that the load will only be considered for the destination controller.
     * `<run_optimizer>` - a boolean flag indicating whether to also run the optimizer. A value of "false" signals that just the heuristics will be run while a value of "true" signals the heuristics and optimizer will be run.

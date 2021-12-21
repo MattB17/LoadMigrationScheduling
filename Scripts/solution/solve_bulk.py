@@ -27,4 +27,4 @@ if __name__ == "__main__":
     else:
         output_file = os.path.join(output_dir, "results.txt")
         analysis.calculate_heuristic_results_for_instances(
-            input_dir, file_pattern, instance_files, output_file)
+            input_dir, file_pattern, instance_files, output_file, resiliency)
