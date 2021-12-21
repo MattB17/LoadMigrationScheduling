@@ -23,7 +23,7 @@ def test_with_no_files(mock_manager, mock_cores, mock_instances,
     manager.list = MagicMock(return_value=[])
     mock_manager.return_value = manager
     calculate_heuristic_results_for_instances(
-        "/some/dir", "migrations", [], "/another/dir/output.txt")
+        "/some/dir", "migrations", [], "/another/dir/output.txt", True)
     mock_manager.assert_called_once()
     manager.list.assert_called_once()
     mock_cores.assert_called_once_with(0)
@@ -50,15 +50,16 @@ def test_with_one_core(mock_manager, mock_cores, mock_instances,
     mock_process.return_value = process
     with patch('builtins.list', return_value=["results0\n"]) as mock_list:
         calculate_heuristic_results_for_instances(
-            "/an/input/dir", "instance",
-            ["instance0.txt"], "/output/dir/results.csv")
+            "/an/input/dir", "instance", ["instance0.txt"],
+            "/output/dir/results.csv", False)
     mock_manager.assert_called_once()
     manager.list.assert_called_once()
     mock_cores.assert_called_once_with(1)
     mock_instances.assert_called_once_with(["instance0.txt"], 1, 0)
     mock_process.assert_called_once_with(
         target=get_results_for_instances,
-        args=(mock_results, ["instance0.txt"], "instance", "/an/input/dir"))
+        args=(mock_results, ["instance0.txt"],
+              "instance", "/an/input/dir", False))
     mock_init.assert_called_once_with([process])
     mock_list.assert_called_once_with(mock_results)
     mock_write.assert_called_once_with(
@@ -84,7 +85,8 @@ def test_with_multi_core(mock_manager, mock_cores, mock_instances,
     results_lst = ["results{}\n".format(idx) for idx in range(15)]
     with patch('builtins.list', return_value=results_lst) as mock_list:
         calculate_heuristic_results_for_instances(
-            "/a/third/dir", "migration", files, "/a/random/dir/results.dat")
+            "/a/third/dir", "migration", files,
+            "/a/random/dir/results.dat", True)
     mock_manager.assert_called_once()
     manager.list.assert_called_once()
     mock_cores.assert_called_once_with(15)
@@ -93,7 +95,7 @@ def test_with_multi_core(mock_manager, mock_cores, mock_instances,
     mock_instances.assert_has_calls(instance_calls)
     process_calls = [call(target=get_results_for_instances,
                           args=(mock_results, files[(5*idx):(5*(idx+1))],
-                                "migration", "/a/third/dir"))
+                                "migration", "/a/third/dir", True))
                      for idx in range(3)]
     assert mock_process.call_count == 3
     mock_process.assert_has_calls(process_calls)
